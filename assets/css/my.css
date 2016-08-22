@@ -1,0 +1,288 @@
+.login_signup_btn{
+	font-size: 17px;
+	background: #021f2f;
+	color: #fff;
+	padding: 15px;
+}
+
+.login_signup_btn:hover{
+	cursor: pointer;
+	background: #5f8cb4;
+}
+
+.btn{
+	font-size: 16px;
+	background: #021f2f;
+	color: #fff;
+	padding: 6px;
+	/*margin-top: 25px;*/
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.btn1{
+	font-size: 12px;
+	background: #021f2f;
+	color: #fff;
+	padding: 3px;
+	/*margin-top: 25px;*/
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.btn:hover, .btn1:hover{
+	cursor: pointer;
+	background: #5f8cb4;
+}
+
+input[type="text"], input[type="password"], input[type="email"], textarea{
+	width: 100%;
+}
+
+select{
+	width: 100%;
+	height: 35px;
+}
+
+.bPopupBtn{
+	background: #2B91AF;
+	color: #fff;
+	padding: 5px 15px 5px 15px;
+	font-size: 16px;
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+
+.bPopupBtn:hover{
+	cursor: pointer;
+	background: #5f8cb4;
+}
+
+.forgot{
+	width: 50%;
+	float: left;
+	text-align: left;
+}
+
+.register{
+	width: 50%;
+	float: left;
+	text-align: right;
+}
+
+#regContent{
+	margin-top: 20px;
+}
+
+.lineh{
+	width: 100%;
+	height: 10px;
+}
+
+#individual:hover, #organization:hover{
+	cursor: pointer;
+}
+
+#registerPopup{
+	top: 0px !important;
+}
+
+#loginPopup{
+	top: 0px !important;
+	padding-bottom: 30px;
+}
+
+#forgotPopup{
+	/*margin-top: 15px;*/
+	top: 0px !important;
+	padding-bottom: 60px;
+}
+
+li{
+	color: #5f8cb4;
+}
+
+.select-box1{
+	width: 90.3%;
+}
+
+.input-box1{
+	width: 88% !important;
+}
+
+.calculator_sec{
+	font-size: 16px;
+	margin-top: 10px;
+	margin-bottom: 5px;
+}
+
+.checkbox_sec{
+	margin-top: 20px;
+}
+
+.sec1{
+	background: #5f8cb4;
+	border: 1px solid #5f8cb4;
+	padding: 15px;
+	text-align: center;
+}
+
+.sec2{
+	border: 1px solid #5f8cb4;
+	padding: 15px;
+	text-align: center;
+}
+
+.sec1 h3{
+	color: #fff;
+}
+
+.sec2 h3{
+	color: #5f8cb4;
+}
+
+.sec1:hover, .sec2:hover{
+	cursor: pointer;
+}
+
+#username{
+	color: #2d3237;
+}
+
+div#load_screen{
+	background: #000;
+	opacity: 1;
+	position: fixed;
+	z-index:10;
+	top: 0px;
+	width: 100%;
+	height: 1600px;
+}
+
+div#load_screen > div#loading{
+	color:#FFF;
+	width:120px;
+	height:24px;
+	margin: 300px auto;
+}
+
+.mydetails_sec{
+	width: 100%;
+	height: 80px;
+	font-size: 16px;
+	margin-top: 10px;
+	margin-bottom: 5px;
+}
+
+.line_wht{
+	width: 100%;
+	height: 30px;
+}
+
+.sidebarLogo{
+	height: 65px;
+	padding-left: 90px;
+}
+
+.sidebarImage{
+	width: 100%;
+	height: 300px;
+}
+
+.sectionSeperator{
+	width: 100%;
+	height: 40px;
+}
+
+.ratedItem{
+	font-size: 13px;
+	width: 100%;
+	text-align: justify;
+	margin-bottom: 4px;
+}
+
+.spoolResultsItem{
+	width: 100%;
+	height: 40px;
+	font-size: 22px;
+}
+
+.spoolResultsItem a:hover{
+	color: #366086;
+}
+
+.rowHead{
+	width: 100%;
+	height: 60px;
+}
+
+.rowHData{
+	width: 16%;
+	height: 60px;
+	float: left;
+	text-align: center;
+	border: 1px solid #ddd;
+}
+
+.rowData{
+	width: 100%;
+	height: 60px;
+}
+
+.rowTD{
+	width: 16%;
+	height: 60px;
+	float: left;
+	text-align: center;
+	padding-top: 10px;
+	border: 1px solid #ddd;
+	border-top: none;
+}
+
+.rowTD input{
+	width: 130px;
+}
+
+.rowTD select{
+	width: 150px;
+}
+
+
+
+
+
+
+
+.rowHead0{
+	width: 100%;
+	height: 60px;
+}
+
+.rowHData0{
+	width: 16%;
+	height: 60px;
+	float: left;
+	text-align: center;
+	border-bottom: none;
+}
+
+.rowData0{
+	width: 100%;
+	height: 60px;
+}
+
+.rowTD0{
+	width: 16%;
+	height: 60px;
+	float: left;
+	text-align: center;
+	padding-top: 10px;
+}
+
+.rowTD0 input{
+	width: 130px;
+}
+
+.rowTD0 select{
+	width: 150px;
+}
