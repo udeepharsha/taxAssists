@@ -42,20 +42,18 @@ function searchWHTReportsForIndividual(){
 }
 
 function loadReportsCorporate(startMonth, endMonth, startYear, toYear){
-	var WHTArchives = Parse.Object.extend("WHTArchives");
-	var query = new Parse.Query(WHTArchives);
-	query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-	query.find({
-		success: function(results) {
-			document.getElementById("resultsSection").innerHTML = "";
 
-			var count = 0;
+	$.ajax({
+        type: 'POST',
+        url: 'loadWatReports',
+        success: function(data) {
+        	var data = JSON.parse(data);
 
-			for (var i = 0; i < results.length; i++) {
-				var obj = results[i];
-
-				var year = obj.get('year');
-				var month = obj.get('monthCovered');
+        	var count = 0;
+        	for(var i = 0; i < data.length; i++){
+	        	var obj = data[i];			
+	        	var year = obj['year_under_review'];
+	        	var month = obj['month_under_review'];
 
 				var startDate = new Date(startYear, parseInt(startMonth), 1);
 				var endDate = new Date(toYear, parseInt(endMonth), 1);
@@ -69,16 +67,52 @@ function loadReportsCorporate(startMonth, endMonth, startYear, toYear){
 					
 					count++;
 				}
-			};
+
+			}
 
 			if(count == 0){
 				document.getElementById("resultsSection").innerHTML = "&nbsp;&nbsp; No reports available!"
 			}
-		},
-		error: function(error) {
-			alert(error.message);
-		}
-	});
+        }
+    });
+
+	// var WHTArchives = Parse.Object.extend("WHTArchives");
+	// var query = new Parse.Query(WHTArchives);
+	// query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
+	// query.find({
+	// 	success: function(results) {
+	// 		document.getElementById("resultsSection").innerHTML = "";
+
+	// 		var count = 0;
+
+	// 		for (var i = 0; i < results.length; i++) {
+	// 			var obj = results[i];
+
+	// 			var year = obj.get('year');
+	// 			var month = obj.get('monthCovered');
+
+	// 			var startDate = new Date(startYear, parseInt(startMonth), 1);
+	// 			var endDate = new Date(toYear, parseInt(endMonth), 1);
+
+	// 			var currentDate = new Date(year, returnMonthValue(month), 1);
+
+	// 			if(currentDate >= startDate && currentDate <= endDate){
+	// 				var secDiv = '<div class="twelve columns spoolResultsItem"> <a href="#" onclick="downloadCorporateExcel(\''+obj.id+'\')">&#8594; '+obj.get('monthArchived')+'</a> </div>';
+
+	// 				document.getElementById("resultsSection").innerHTML = document.getElementById("resultsSection").innerHTML + secDiv;
+					
+	// 				count++;
+	// 			}
+	// 		};
+
+	// 		if(count == 0){
+	// 			document.getElementById("resultsSection").innerHTML = "&nbsp;&nbsp; No reports available!"
+	// 		}
+	// 	},
+	// 	error: function(error) {
+	// 		alert(error.message);
+	// 	}
+	// });
 }
 
 function downloadCorporateExcel(identity){
@@ -409,20 +443,56 @@ function getWHTDeductionCorporate(amount, type){
 
 //WHT Individual Details ---
 function loadReportsIndividual(startMonth, endMonth, startYear, toYear){
-	var WHTIndividualArchives = Parse.Object.extend("WHTIndividualArchives");
-	var query = new Parse.Query(WHTIndividualArchives);
-	query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-	query.find({
-		success: function(results) {
-			document.getElementById("resultsSection1").innerHTML = "";
+	// var WHTIndividualArchives = Parse.Object.extend("WHTIndividualArchives");
+	// var query = new Parse.Query(WHTIndividualArchives);
+	// query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
+	// query.find({
+	// 	success: function(results) {
+	// 		document.getElementById("resultsSection1").innerHTML = "";
 
-			var count = 0;
+	// 		var count = 0;
 
-			for (var i = 0; i < results.length; i++) {
-				var obj = results[i];
+	// 		for (var i = 0; i < results.length; i++) {
+	// 			var obj = results[i];
 
-				var year = obj.get('year');
-				var month = obj.get('monthCovered');
+	// 			var year = obj.get('year');
+	// 			var month = obj.get('monthCovered');
+
+	// 			var startDate = new Date(startYear, parseInt(startMonth), 1);
+	// 			var endDate = new Date(toYear, parseInt(endMonth), 1);
+
+	// 			var currentDate = new Date(year, returnMonthValue(month), 1);
+
+	// 			if(currentDate >= startDate && currentDate <= endDate){
+	// 				var secDiv = '<div class="twelve columns spoolResultsItem"> <a href="#" onclick="downloadIndividualExcel(\''+obj.id+'\')">&#8594; '+obj.get('monthArchived')+'</a> </div>';
+
+	// 				document.getElementById("resultsSection1").innerHTML = document.getElementById("resultsSection1").innerHTML + secDiv;
+					
+	// 				count++;
+	// 			}
+	// 		};
+
+	// 		if(count == 0){
+	// 			document.getElementById("resultsSection1").innerHTML = "&nbsp;&nbsp; No reports available!"
+	// 		}
+	// 	},
+	// 	error: function(error) {
+	// 		alert(error.message);
+	// 	}
+	// });
+
+	$.ajax({
+        type: 'POST',
+        url: 'loadWatReportsIndividuals',
+        success: function(data) {
+        	var data = JSON.parse(data);
+
+        	document.getElementById("resultsSection1").innerHTML = "";
+        	var count = 0;
+        	for(var i = 0; i < data.length; i++){
+	        	var obj = data[i];			
+	        	var year = obj['year_under_review'];
+	        	var month = obj['month_under_review'];
 
 				var startDate = new Date(startYear, parseInt(startMonth), 1);
 				var endDate = new Date(toYear, parseInt(endMonth), 1);
@@ -430,22 +500,20 @@ function loadReportsIndividual(startMonth, endMonth, startYear, toYear){
 				var currentDate = new Date(year, returnMonthValue(month), 1);
 
 				if(currentDate >= startDate && currentDate <= endDate){
-					var secDiv = '<div class="twelve columns spoolResultsItem"> <a href="#" onclick="downloadIndividualExcel(\''+obj.id+'\')">&#8594; '+obj.get('monthArchived')+'</a> </div>';
+					var secDiv = '<div class="twelve columns spoolResultsItem"> <a href="#" onclick="downloadCorporateExcel(\''+obj.id+'\')">&#8594; '+obj.get('monthArchived')+'</a> </div>';
 
 					document.getElementById("resultsSection1").innerHTML = document.getElementById("resultsSection1").innerHTML + secDiv;
 					
 					count++;
 				}
-			};
+				
+			}
 
 			if(count == 0){
 				document.getElementById("resultsSection1").innerHTML = "&nbsp;&nbsp; No reports available!"
 			}
-		},
-		error: function(error) {
-			alert(error.message);
-		}
-	});
+        }
+    });
 }
 
 function downloadIndividualExcel(identity){

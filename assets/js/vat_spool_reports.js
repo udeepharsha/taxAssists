@@ -1,6 +1,6 @@
-var user = getCurrentUser();
 var isArchived = false;
 var archivedDocument = "";
+var base_url = 'http://localhost/TaxAssists/';
 
 $(window).load(function() {
 	"use strict";
@@ -13,7 +13,7 @@ function searchForVatReports(){
 	var from = document.getElementById("from").value;
 	var to = document.getElementById("to").value;
 
-	document.getElementById("resultsSection").innerHTML = '<img src="images/loading.gif" style="width:35px; height:35px; margin-left:15px;">';
+	document.getElementById("resultsSection").innerHTML = '<img src=" '+base_url+'assets/images/loading.gif" style="width:37px; height:37px;">';
 
 	var startMonth = from.split("/")[0];
 	var endMonth = to.split("/")[0];
@@ -23,7 +23,7 @@ function searchForVatReports(){
 	loadReports(startMonth, endMonth, startYear, toYear);
 }
 
-function loadReports(startMonth, endMonth, startYear, toYear){
+function loadReports2(startMonth, endMonth, startYear, toYear){
 	var VATArchives = Parse.Object.extend("VATArchives");
 	var query = new Parse.Query(VATArchives);
 	query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
@@ -62,6 +62,77 @@ function loadReports(startMonth, endMonth, startYear, toYear){
 			document.getElementById("loadingSec").innerHTML = "";
 		}
 	});
+}
+
+function loadReports(startMonth, endMonth, startYear, toYear){
+	// var VATArchives = Parse.Object.extend("VATArchives");
+	// var query = new Parse.Query(VATArchives);
+	// query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
+	// query.find({
+	// 	success: function(results) {
+	// 		document.getElementById("resultsSection").innerHTML = "";
+
+	// 		var count = 0;
+
+	// 		for (var i = 0; i < results.length; i++) {
+	// 			var obj = results[i];
+
+	// 			var year = obj.get('yearUnderReview');
+	// 			var month = obj.get('monthUnderReview');
+
+	// 			var startDate = new Date(startYear, (parseInt(startMonth) - 1), 1);
+	// 			var endDate = new Date(toYear, (parseInt(endMonth) - 1), 1);
+
+	// 			var currentDate = new Date(year, returnMonthValue(month), 1);
+
+	// 			if(currentDate >= startDate && currentDate <= endDate){
+	// 				var secDiv = '<div class="twelve columns spoolResultsItem"> <a href="#" onclick="downloadExcel(\''+obj.id+'\')">&#8594; '+obj.get('monthArchived')+'</a> </div><br/>';
+
+	// 				document.getElementById("resultsSection").innerHTML = document.getElementById("resultsSection").innerHTML + secDiv;
+					
+	// 				count++;
+	// 			}
+	// 		}
+
+	// 		if(count == 0){
+	// 			document.getElementById("resultsSection").innerHTML = "&nbsp;&nbsp; No reports available!"
+	// 		}
+	// 	},
+	// 	error: function(error) {
+	// 		alert(error.message);
+	// 		document.getElementById("loadingSec").innerHTML = "";
+	// 	}
+	// });
+	$.ajax({
+        type: 'POST',
+        url: 'loadReports',
+        success: function(data) {
+        	var data = JSON.parse(data);
+
+        	var count = 0;
+        	for(var i = 0; i < data.length; i++){
+	        	var obj = data[i];			
+	        	var year = obj['year_under_review'];
+	        	var month = obj['month_under_review'];
+
+	        	var startDate = new Date(startYear, (parseInt(startMonth) - 1), 1);
+				var endDate = new Date(toYear, (parseInt(endMonth) - 1), 1);
+				var currentDate = new Date(year, returnMonthValue(month), 1);
+
+				if(currentDate >= startDate && currentDate <= endDate){
+					var secDiv = '<div class="twelve columns spoolResultsItem"> <a href="#" onclick="downloadExcel(\''+obj.id+'\')">&#8594; '+obj.get('monthArchived')+'</a> </div><br/>';
+
+					document.getElementById("resultsSection").innerHTML = document.getElementById("resultsSection").innerHTML + secDiv;
+					
+					count++;
+				}
+			}
+
+			if(count == 0){
+				document.getElementById("resultsSection").innerHTML = "&nbsp;&nbsp; No reports available!"
+			}
+        }
+    });
 }
 
 function downloadExcel(identity){

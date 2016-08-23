@@ -11,6 +11,8 @@ $(document).ready(function() {
 		event.preventDefault();
 		var formData = new FormData(this);
 
+		archiveForMonth(formData);
+
 		var declare = document.getElementById("declare").checked;
 
 		if(declare){
@@ -124,7 +126,7 @@ function saveAfetrArchive(){
 	}
 }
 
-function archiveForMonth(){
+function archiveForMonth2(){
 	var monthUnderReview = document.getElementById("monthUnderReview").value;
 	var yearUnderReview = document.getElementById("yearUnderReview").value;
 	var taxNo = document.getElementById("taxNo").value;
@@ -223,6 +225,38 @@ function archiveForMonth(){
 	}
 }
 
+function archiveForMonth(formData){
+
+	var declare = document.getElementById("declare").checked;
+
+	if(declare){
+		document.getElementById("loadingSec").innerHTML = '<img src=" '+base_url+'assets/images/loading.gif" style="width:37px; height:37px;">';
+
+		$.ajax({
+			url: 'home/archiveForMonth',
+			type: 'POST',
+			data: formData,
+			cache: false,
+			contentType: false,
+			processData: false,
+			success: function(data, status) {
+				if(data == 11){
+					alert("Your vat calculation form is archived!");
+					document.getElementById("loadingSec").innerHTML = '<div style="width:100%; height:6px;"></div> Successfully Archived!</a>';
+					document.getElementById("loadingSec1").innerHTML = '<select id="archiveType" style="width:200px;"> <option value="Excel">Export As Excel</option> <option value="Html">Export As Html</option> </select> <br/> <button onclick="exportData()">Export</button> &nbsp;&nbsp;&nbsp; <button id="exportEmailBtn" onclick="exportDataEmail()">Email Archive</button>';
+				}
+				else{
+					document.getElementById("loadingSec").innerHTML = "";
+				}
+			}
+		});
+
+	}
+	else{
+		alert("Please complete field before you save or archive!");
+	}
+}
+
 function loadVatDetails(){
 	var VAT = Parse.Object.extend("VAT");
 	var query = new Parse.Query(VAT);
@@ -303,12 +337,10 @@ function changeValues2(){
 
 function exportDataEmail(){
 	document.getElementById("exportEmailBtn").disabled = true;
-	document.getElementById("userEmail").value = user.get('email');
-	
 	$.ajax({
         type: 'POST',
-        url: 'archieveScripts/vat/saveHtmlEmail.php',
-        data: $("#form_name").serialize(),
+        url: 'home/saveHtmlEmail',
+        data: $("#submit_vat").serialize(),
         success: function(result) {
         	var res = result.split("#");
         	var linkId = res[res.length - 1];
@@ -326,8 +358,8 @@ function exportData(){
 	if(archiveType == "Html"){
 		$.ajax({
             type: 'POST',
-            url: 'archieveScripts/vat/saveHtml.php',
-            data: $("#form_name").serialize(),
+            url: 'home/saveHtml',
+            data: $("#submit_vat").serialize(),
             success: function(result) {
             	var res = result.split("#");
             	var linkId = res[res.length - 1];
@@ -340,8 +372,8 @@ function exportData(){
 	else if(archiveType == "Excel"){
 		$.ajax({
             type: 'POST',
-            url: 'archieveScripts/vat/saveHtml.php',
-            data: $("#form_name").serialize(),
+            url: 'home/saveHtml',
+            data: $("#submit_vat").serialize(),
             success: function(result) {
             	var res = result.split("#");
             	var linkId = res[res.length - 1];

@@ -1,23 +1,3 @@
-<?php
-     if(!isset($_SESSION)) 
-    { 
-     session_start();
-    }
-
-    if( !isset($_SESSION["logged_in"]) ) {
-     header("Location: ".base_url()."");
-    } 
-    else{
-     $role_id = $_SESSION["role_id"];
-        if( ($role_id == 1) ||  ($role_id == 2) ){
-        }
-        else{
-            header("Location: ".base_url()."");
-        }
-    }
-
-?>
-
 <!DOCTYPE html>
 <!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
 <!--[if (gte IE 9)|!(IE)]><!-->
@@ -34,7 +14,7 @@
 <title>Vi-M taxassist</title>
 <!-- Favicon
     ============================================== -->
-<link rel="icon" href="images/favicon.ico"/>
+<link rel="icon" href="<?php echo base_url(); ?>assets/images/favicon.ico"/>
 <!-- Mobile Specific
 ================================================== -->
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
@@ -56,10 +36,11 @@
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/jquery-ui.css">
 <script src="<?php echo base_url(); ?>assets/scripts/jquery-ui.js"></script>
 <script type="text/javascript">
-   
      $(function() {
-         $( "#from" ).datepicker();
-         $( "#to" ).datepicker();
+         $( "#fromCorporate" ).datepicker();
+         $( "#toCorporate" ).datepicker();
+         $( "#fromIndividual" ).datepicker();
+         $( "#toIndividual" ).datepicker();
      });
 </script>
 
@@ -72,33 +53,23 @@
 <div class="loader"><div class="ring"><div class="spin"></div></div></div>
 
 <form id="form_name" name="form_name" method="POST" action="#" onsubmit="return false;">
-     <input type="hidden" id="monthUnderReview" name="monthUnderReview" />
-     <input type="hidden" id="yearUnderReview" name="yearUnderReview" />
+     <input type="hidden" id="monthCovered" name="monthCovered" />
+     <input type="hidden" id="year" name="year" />
      <input type="hidden" id="taxNo" name="taxNo" />
-     <input type="hidden" id="vatNo" name="vatNo" />
      <input type="hidden" id="firsTaxOffice" name="firsTaxOffice" />
-     <input type="hidden" id="outputSalesIncome" name="outputSalesIncome" />
-     <input type="hidden" id="exemptedZero" name="exemptedZero" />
-     <input type="hidden" id="totalSuppliesVat" name="totalSuppliesVat" />
-     <input type="hidden" id="outputVat" name="outputVat" />
-     <input type="hidden" id="vatOnLocalSupplies" name="vatOnLocalSupplies" />
-     <input type="hidden" id="vatOnImportedGoods" name="vatOnImportedGoods" />
-     <input type="hidden" id="vatOnSubcontracted" name="vatOnSubcontracted" />
-     <input type="hidden" id="totalInputTaxClaimable" name="totalInputTaxClaimable" />
-     <input type="hidden" id="excessInputVat" name="excessInputVat" />
-     <input type="hidden" id="vatPayableForMonth" name="vatPayableForMonth" />
-     <input type="hidden" id="authorizedSignatory" name="authorizedSignatory" />
-     <input type="hidden" id="designation" name="designation" />
-     <input type="hidden" id="signature" name="signature" />
-     <input type="hidden" id="companyStampAndDate" name="companyStampAndDate" />
+     <input type="hidden" id="stateTaxFillingOffice" name="stateTaxFillingOffice" />
+     <input type="hidden" id="taxStationCode" name="taxStationCode" />
+     <input type="hidden" id="table1" name="table1" />
+     <input type="hidden" id="table2" name="table2" />
 </form>
+
 <!-- Header
 ================================================== -->
 <header id="header">
 	<div class="topbar">
 		<div class="container">
 			<div class="eight columns call">
-				Welcome <span id="username"><?php echo $_SESSION['username'] ?></span>
+				Welcome <span id="username"></span>
 			</div>
 			<div class="eight columns">
 				<ul class="social-icons right">
@@ -122,8 +93,8 @@
      	<div class="thirteen columns">
      		<nav id="navigation" class="menu">
      			<ul id="responsive">
-     				<li><a href="<?= base_url('home')?>" id="current">VAT</a> </li>
-                         <li><a href="<?= base_url('wht')?>">WHT</a></li>
+     				<li><a href="<?= base_url('home')?>">VAT</a> </li>
+                         <li><a href="<?= base_url('wht')?>" id="current">WHT</a></li>
                          <li><a href="<?= base_url('paye')?>">PAYE</a></li>
      				<li><a href="feedback.html">Feedback</a></li>
      				<li><a href="mydetails.html">My Details</a></li>
@@ -144,17 +115,17 @@
      <div id="parallex-inner" class="parallex">
           <div class="container">
                <div class="eight columns"  data-animated="fadeInUp">
-                    <h1>VAT Spool Reports</h1>
+                    <h1>WHT Spool Reports</h1>
                     <br/>
                     <p>
-                    	Every business organisation (or taxpayer) is mandatorily required, within 6 months of commencement of business, to compute and remit VAT (at 5%) on all taxable goods and services supplied by the business. (Note that some goods and services are exempted from VAT as shown in the exempted goods & services field below). VAT is to be computed and filed (using the VAT returns form to which the layout below is tailored) before the 21st of every month following the month of transactions. For other personalized questions and one on one consultations on VAT or your taxes in general, please use the feedback page and we will respond very quickly.
+                    	Every business organisation (or taxpayer) is required, immediately upon commencement of business activities, to withhold some specified rates of tax from payments made to its suppliers of goods and services (except goods supplied in the ordinary course of business* (see meaning in supply of goods section below) on a monthly basis. Such WHT deductions are to be remitted to either the state or federal tax authorities (depending on suppliers' business status) before the 21 of every month following the month of deduction. The reporting schedule from this page is the statutory WHT remittance schedule which you can use in making your monthly WHT remittances. For other personalized questions and one on one consultations on WHT or your taxes in general, please use the feedback page and we will respond very quickly.
                     </p>
                </div>
                <div class="eight columns">
                     <nav id="breadcrumbs">
                          <ul>
                               <li><a href="#">Home</a></li>
-                              <li><a href="#">Vat</a></li>
+                              <li><a href="#">Wht</a></li>
                               <li>Details</li>
                          </ul>
                     </nav>
@@ -163,25 +134,29 @@
      </div>
 
      <div class="container">
-          <!-- 1/3 -->
-          <div class="one-third column">
-               <a href="<?= base_url('home')?>">
+          <div class="four column" style="width:23%">
+               <a href="<?= base_url('wht')?>">
                     <div class="sec2">
-                         <h3 class="headline">Calculate</h3>
+                        <h3 class="headline">Corporate Suppliers</h3>
                     </div>
                </a>
           </div>
-          <!-- 1/3 -->
-          <div class="one-third column">
-               <a href="<?= base_url('home/spoolReports')?>">
+          <div class="four column" style="width:24%">
+               <a href="<?= base_url('wht/individualSuppliers')?>">
+                    <div class="sec2">
+                         <h3 class="headline">Individual Suppliers</h3>
+                    </div>
+               </a>
+          </div>
+          <div class="four column" style="width:23%">
+               <a href="<?= base_url('wht/spoolReports')?>">
                     <div class="sec1">
                          <h3 class="headline">Spool Reports</h3>
                     </div>
                </a>
           </div>
-          <!-- 1/3 -->
-          <div class="one-third column">
-               <a href="<?= base_url('home/assistMe')?>">
+          <div class="four column" style="width:23%">
+               <a href="<?= base_url('wht/assistMe')?>">
                     <div class="sec2">
                          <h3 class="headline">Assist Me</h3>
                     </div>
@@ -193,24 +168,24 @@
 
 	<div class="container">
 		<div class="siz-teen columns">
-			<h3 class="headline">Preriod Covered:</h3>
+			<h3 class="headline">CORPORATE SUPPLIERS :</h3>
 		</div>
 	</div>
 
 	<div class="container">
 		<div class="one-third columns">
-			<input type="text" class="input-box1" id="from" placeholder="From" />
+			<input type="text" class="input-box1" id="fromCorporate" placeholder="From" />
 		</div>
 
 		<div class="one-third columns">
-			<input type="text" id="to" placeholder="To" />
+			<input type="text" id="toCorporate" placeholder="To" />
 		</div>
 
 		<div class="one-third columns" style="margin-left:25px;">
-			<input type="submit" class="input-box1" value="Submit  " onclick="searchForVatReports()" />
+			<input type="submit" class="input-box1" value="Submit  " onclick="searchWHTReportsForCorporate()" />
 		</div>
 
-          <div class="one-third columns" id="generatingExcel" style="margin-left:25px; margin-top:6px; font-size:20px;">
+          <div class="one-third columns" id="generatingExcelCorporate" style="margin-left:25px; margin-top:6px; font-size:20px;">
           </div>
 	</div>
 
@@ -223,9 +198,43 @@
 
 	<br/><br/>
 
+     <div class="container">
+          <div class="siz-teen columns">
+               <h3 class="headline">INDIVIDUAL SUPPLIERS :</h3>
+          </div>
+     </div>
+
+     <div class="container">
+          <div class="one-third columns">
+               <input type="text" class="input-box1" id="fromIndividual" placeholder="From" />
+          </div>
+
+          <div class="one-third columns">
+               <input type="text" id="toIndividual" placeholder="To" />
+          </div>
+
+          <div class="one-third columns" style="margin-left:25px;">
+               <input type="submit" class="input-box1" value="Submit  " onclick="searchWHTReportsForIndividual()" />
+          </div>
+
+          <div class="one-third columns" id="generatingExcelIndividual" style="margin-left:25px; margin-top:6px; font-size:20px;">
+          </div>
+     </div>
+
+     <br/>
+
+     <div class="container" id="resultsSection1">
+          <!-- <img src="images/loading.gif" style="width:35px; height:35px;"> -->
+          &nbsp;&nbsp;&nbsp; Search results will appear here...
+     </div>
+
+     <br/><br/>
+     
 	<div class="container">
      	<div class="six-teen columns">
-     		<h5>PLEASE NOTE: It is the responsibility of the taxpayers, who are users of Vi-M’s Tax Assist app to ensure that their taxes are paid and filed as and when due. Vi-M accepts no responsibility for failure or default in this regard.</h5>
+     		<h5>
+                    PLEASE NOTE: It is the responsibility of the taxpayers, who are users of Vi-M’s Tax Assist app to ensure that their taxes are paid and filed as and when due. Vi-M accepts no responsibility for failure or default in this regard.
+               </h5>
      	</div>
 	</div>
 </div>
@@ -267,7 +276,7 @@
                               <div class="widget-thumb"> <a href="#"><img src="<?php echo base_url(); ?>assets/images/content/portfolio-04.jpg" alt="" /></a> </div>
                               <div class="widget-text">
                                    <h4><a href="blog-post.html">Vi-M Professional Solutions</a></h4>
-                                   <span>Delivering value tailored to clients’ needs...</span>
+                                   <span>Delivering value tailored to clients' needs...</span>
                               </div>
                               <div class="clearfix"></div>
                          </li>
@@ -347,7 +356,7 @@
 <div id="footer-bottom">
      <!-- Container -->
      <div class="container">
-          <div class="eight columns">© Copyright 2016 <a href="index.html">Vi-M Professional Solutions</a>. All Rights Reserved.</div>
+          <div class="eight columns">&copy; Copyright 2016 <a href="index.html">Vi-M Professional Solutions</a>. All Rights Reserved.</div>
           <div class="eight columns">
                <ul class="social-icons-footer">
                     <li><a href="https://www.facebook.com/vimprofessionalsolutions/" target="_blank" class="tooltip top" title="Facebook"><i class="icon-facebook"></i></a></li>
@@ -359,7 +368,7 @@
      <!-- Container / End -->
 </div>
 
-<script type="text/javascript" src="<?php echo base_url(); ?>assets/js/vat_spool_reports.js"></script>
+<script type="text/javascript" src="<?php echo base_url(); ?>assets/js/wht_spool_reports.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 </body>
 </html>

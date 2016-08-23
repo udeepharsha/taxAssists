@@ -10,21 +10,34 @@ class Home_model extends CI_Model {
 	}
 
 	public function submitVat($datau){
-
 		$this->db->from('vat');
+		$this->db->where('user_id',$this->session->userdata('user_id'));
+                $data = $this->db->get()->result();
+                $data_length = count($data);
+
+                if($data_length == 0){
+                	echo $this->db->insert('vat', $datau);
+                }
+                else{
+                	$this->db->where('user_id',$this->session->userdata('user_id'));
+                	echo $this->db->update('vat', $datau);
+                }	
+	}
+
+	public function archiveForMonth($datas){
+		$this->db->from('vat_archives');
 		$this->db->where('user_id',$this->session->userdata('user_id'));
         $data = $this->db->get()->result();
         $data_length = count($data);
 
         if($data_length == 0){
-        	echo $this->db->insert('vat', $datau);
+        	echo $this->db->insert('vat_archives', $datas);
         }
         else{
         	$this->db->where('user_id',$this->session->userdata('user_id'));
-        	echo $this->db->update('vat', $datau);
+        	echo $this->db->update('vat_archives', $datas);
         }
-
-		
+        $this->submitVat($datas);
 	}
 
 	public function loadVatData(){
@@ -32,6 +45,13 @@ class Home_model extends CI_Model {
 		$this->db->where('user_id',$this->session->userdata('user_id'));
         $data = $this->db->get()->result();
         return $data;
+	}
+
+	public function loadReports(){
+		$this->db->from('vat_archives');
+		$this->db->where('user_id',$this->session->userdata('user_id'));
+        $data = $this->db->get()->result();
+        return json_encode($data);
 	}
 	
 

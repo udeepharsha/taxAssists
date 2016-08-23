@@ -96,9 +96,9 @@
      		<div class="thirteen columns">
      			<nav id="navigation" class="menu">
      				<ul id="responsive">
-     					<li><a href="vat.html" id="current">VAT</a> </li>
-     					<li><a href="wht.html">WHT</a></li>
-     					<li><a href="paye.html">PAYE</a></li>
+     					<li><a href="<?= base_url('home')?>" id="current">VAT</a> </li>
+     					<li><a href="<?= base_url('wht')?>">WHT</a></li>
+     					<li><a href="<?= base_url('paye')?>">PAYE</a></li>
      					<li><a href="feedback.html">Feedback</a></li>
      					<li><a href="mydetails.html">My Details</a></li>
      					<li>
@@ -180,7 +180,7 @@
 	<div class="container">
           <!-- 1/3 -->
           <div class="one-third column">
-               <a href="vat.html">
+               <a href="<?= base_url('home')?>">
                     <div class="sec1">
                          <h3 class="headline">Calculate</h3>
                     </div>
@@ -196,7 +196,7 @@
           </div>
           <!-- 1/3 -->
           <div class="one-third column">
-               <a href="assist-me.html">
+               <a href="<?= base_url('home/assistMe')?>">
                     <div class="sec2">
                          <h3 class="headline">Assist Me</h3>
                     </div>
@@ -474,9 +474,15 @@
 
 				<div class="twelve columns" id="">
 		     		<div style="float:left;">
-		     			<button type="submit" class="btn">Save</button>
+		     			<!-- <button type="submit" class="btn">Save</button>
 
-		     			<button class="btn" onclick="archiveForMonth()">Archive for month</button>
+		     			<button class="btn" onclick="archiveForMonth()">Archive for month</button> -->
+
+
+		     			<button type="submit" name="save" class="btn" alt="Save" value="Save">Save</button>
+						<button type="submit" name="archive" class="btn" alt="Archive" value="archive">Archive for month</button>
+
+
 		     		</div>
 
 		     		<div style="float:left; margin-left:20px; font-size:20px;" id="loadingSec">	     			

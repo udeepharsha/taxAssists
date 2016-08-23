@@ -1,66 +1,101 @@
-var user = getCurrentUser();
 var suppliersOfService = [];
 var suppliersOfGoods = [];
 var serviceRowCount = 0;
 var goodsRowCount = 0;
 var isArchived = false;
 var archivedDocument = "";
+var base_url = 'http://localhost/TaxAssists/';
 
-function saveDetails(){
-	var monthCovered = document.getElementById("monthCovered").value;
-	var year = document.getElementById("year").value;
-	var taxNo = document.getElementById("taxNo").value;
-	var firsTaxOffice = document.getElementById("firsTaxOffice").value;
-	var stateTaxFillingOffice = document.getElementById("stateTaxFillingOffice").value;
-	var taxStationCode = document.getElementById("taxStationCode").value;
+// function saveDetails(){
+// 	var monthCovered = document.getElementById("monthCovered").value;
+// 	var year = document.getElementById("year").value;
+// 	var taxNo = document.getElementById("taxNo").value;
+// 	var firsTaxOffice = document.getElementById("firsTaxOffice").value;
+// 	var stateTaxFillingOffice = document.getElementById("stateTaxFillingOffice").value;
+// 	var taxStationCode = document.getElementById("taxStationCode").value;
 
-	document.getElementById("loadingSec").innerHTML = '<img src="images/loading.gif" style="width:37px; height:37px;">';
+// 	document.getElementById("loadingSec").innerHTML = '<img src="images/loading.gif" style="width:37px; height:37px;">';
 
-	var WHTIndividual = Parse.Object.extend("WHTIndividual");
-	var query = new Parse.Query(WHTIndividual);
-	query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-	query.first({
-		success: function(resultsObj) {
-			var WHTIndividual = Parse.Object.extend("WHTIndividual");
-			var wht = new WHTIndividual();
+// 	var WHTIndividual = Parse.Object.extend("WHTIndividual");
+// 	var query = new Parse.Query(WHTIndividual);
+// 	query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
+// 	query.first({
+// 		success: function(resultsObj) {
+// 			var WHTIndividual = Parse.Object.extend("WHTIndividual");
+// 			var wht = new WHTIndividual();
 
-			wht.set("objectId", resultsObj.id);
-			wht.set("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-			wht.set("monthCovered", monthCovered);
-			wht.set("year", year);
-			wht.set("taxNo", taxNo);
-			wht.set("firsTaxOffice", firsTaxOffice);
-			wht.set("stateTaxFillingOffice", stateTaxFillingOffice);
-			wht.set("taxStationCode", taxStationCode);
-			wht.set("suppliersOfService", suppliersOfService);
-			wht.set("suppliersOfGoods", suppliersOfGoods);
+// 			wht.set("objectId", resultsObj.id);
+// 			wht.set("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
+// 			wht.set("monthCovered", monthCovered);
+// 			wht.set("year", year);
+// 			wht.set("taxNo", taxNo);
+// 			wht.set("firsTaxOffice", firsTaxOffice);
+// 			wht.set("stateTaxFillingOffice", stateTaxFillingOffice);
+// 			wht.set("taxStationCode", taxStationCode);
+// 			wht.set("suppliersOfService", suppliersOfService);
+// 			wht.set("suppliersOfGoods", suppliersOfGoods);
 
-			var acl = new Parse.ACL();
-			acl.setPublicReadAccess(false);
-			acl.setPublicWriteAccess(false);
-			acl.setReadAccess(user, true);
-			acl.setWriteAccess(user, true);
-			wht.setACL(acl);
+// 			var acl = new Parse.ACL();
+// 			acl.setPublicReadAccess(false);
+// 			acl.setPublicWriteAccess(false);
+// 			acl.setReadAccess(user, true);
+// 			acl.setWriteAccess(user, true);
+// 			wht.setACL(acl);
 
-			wht.save(null, {
-				success: function(wht) {
+// 			wht.save(null, {
+// 				success: function(wht) {
+// 					alert("Your wht calculation form is saved! If you think this is final version for month, please archive it. Only archived reports can be spooled later!");
+// 					document.getElementById("loadingSec").innerHTML = '<div style="width:100%; height:6px;"></div> Successfully Saved!';
+					
+// 					exportDataSave();
+// 				},
+// 				error: function(wht, error) {
+// 					alert(error.message);
+// 					document.getElementById("loadingSec").innerHTML = "";
+// 				}
+// 			});
+// 		},
+// 		error: function(error) {
+// 			alert(error.message);
+// 			document.getElementById("loadingSec").innerHTML = "";
+// 		}
+// 	});
+// }
+
+
+$(document).ready(function() {
+
+
+	$('#individual_suppliers').on('submit', function(event){
+		event.preventDefault();
+		var formData = new FormData(this);
+
+		archiveForMonth(formData);
+
+		document.getElementById("loadingSec").innerHTML = '<img src=" '+base_url+'assets/images/loading.gif" style="width:37px; height:37px;">';
+
+		$.ajax({
+			url: 'individualSuppliersSubmit',
+			type: 'POST',
+			data: formData,
+			cache: false,
+			contentType: false,
+			processData: false,
+			success: function(data, status) {
+				if(data == 1){
 					alert("Your wht calculation form is saved! If you think this is final version for month, please archive it. Only archived reports can be spooled later!");
 					document.getElementById("loadingSec").innerHTML = '<div style="width:100%; height:6px;"></div> Successfully Saved!';
-					
-					exportDataSave();
-				},
-				error: function(wht, error) {
-					alert(error.message);
+					//exportDataSave();
+				}
+				else{
 					document.getElementById("loadingSec").innerHTML = "";
 				}
-			});
-		},
-		error: function(error) {
-			alert(error.message);
-			document.getElementById("loadingSec").innerHTML = "";
-		}
+			}
+		});
+
 	});
-}
+
+});
 
 function saveAfetrArchive(){
 	var monthCovered = document.getElementById("monthCovered").value;
@@ -113,73 +148,98 @@ function saveAfetrArchive(){
 	});
 }
 
-function archiveForMonth(){
-	var monthCovered = document.getElementById("monthCovered").value;
-	var year = document.getElementById("year").value;
-	var taxNo = document.getElementById("taxNo").value;
-	var firsTaxOffice = document.getElementById("firsTaxOffice").value;
-	var stateTaxFillingOffice = document.getElementById("stateTaxFillingOffice").value;
-	var taxStationCode = document.getElementById("taxStationCode").value;
+function archiveForMonth(formData){
 
-	document.getElementById("loadingSec").innerHTML = '<img src="images/loading.gif" style="width:37px; height:37px;">';
+	document.getElementById("loadingSec").innerHTML = '<img src=" '+base_url+'assets/images/loading.gif" style="width:37px; height:37px;">';
 
-	var WHTIndividualArchives = Parse.Object.extend("WHTIndividualArchives");
-	var query = new Parse.Query(WHTIndividualArchives);
-	query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-	query.equalTo("monthArchived", monthCovered+" "+year);
-	query.first({
-		success: function(resultsObj) {
-			console.log(resultsObj);
-
-			if(resultsObj){
-				resultsObj.destroy({
-					success: function(resultsObj) {
-						// alert("Removed existing archived file!");
-					},
-					error: function(resultsObj, error) {
-					}
-				});
+	$.ajax({
+		url: 'archiveForMonthIndividualSuppliers',
+		type: 'POST',
+		data: formData,
+		cache: false,
+		contentType: false,
+		processData: false,
+		success: function(data, status) {
+			alert(data);
+			if(data == 1){
+				//saveAfetrArchive();
+				alert("Your wht calculation form is archived!");
+				document.getElementById("loadingSec").innerHTML = '<div style="width:100%; height:6px;"></div> Successfully Archived!</a>';
+				document.getElementById("loadingSec1").innerHTML = '<select id="archiveType" style="width:200px;"> <option value="Excel">Export As Excel</option> <option value="Html">Export As Html</option> </select> <br/> <button onclick="exportData()">Export</button> &nbsp;&nbsp;&nbsp; <button id="exportEmailBtn" onclick="exportDataEmail()">Email Archive</button>';
 			}
-
-			var WHTIndividualArchives = Parse.Object.extend("WHTIndividualArchives");
-			var whtArchives = new WHTIndividualArchives();
-
-			whtArchives.set("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-			whtArchives.set("monthCovered", monthCovered);
-			whtArchives.set("year", year);
-			whtArchives.set("taxNo", taxNo);
-			whtArchives.set("firsTaxOffice", firsTaxOffice);
-			whtArchives.set("stateTaxFillingOffice", stateTaxFillingOffice);
-			whtArchives.set("taxStationCode", taxStationCode);
-			whtArchives.set("suppliersOfService", suppliersOfService);
-			whtArchives.set("suppliersOfGoods", suppliersOfGoods);
-			whtArchives.set("monthArchived", monthCovered+" "+year);
-
-			var acl = new Parse.ACL();
-			acl.setPublicReadAccess(false);
-			acl.setPublicWriteAccess(false);
-			acl.setReadAccess(user, true);
-			acl.setWriteAccess(user, true);
-			whtArchives.setACL(acl);
-
-			whtArchives.save(null, {
-				success: function(vatArchives) {
-					saveAfetrArchive();
-					alert("Your wht calculation form is archived!");
-					document.getElementById("loadingSec").innerHTML = '<div style="width:100%; height:6px;"></div> Successfully Archived!</a>';
-					document.getElementById("loadingSec1").innerHTML = '<select id="archiveType" style="width:200px;"> <option value="Excel">Export As Excel</option> <option value="Html">Export As Html</option> </select> <br/> <button onclick="exportData()">Export</button> &nbsp;&nbsp;&nbsp; <button id="exportEmailBtn" onclick="exportDataEmail()">Email Archive</button>';
-				},
-				error: function(vatArchives, error) {
-					alert(error.message);
-					document.getElementById("loadingSec").innerHTML = "";
-				}
-			});
-		},
-		error: function(error) {
-			alert(error.message);
-			document.getElementById("loadingSec").innerHTML = "";
+			else{
+				document.getElementById("loadingSec").innerHTML = "";
+			}
 		}
 	});
+
+
+	// var monthCovered = document.getElementById("monthCovered").value;
+	// var year = document.getElementById("year").value;
+	// var taxNo = document.getElementById("taxNo").value;
+	// var firsTaxOffice = document.getElementById("firsTaxOffice").value;
+	// var stateTaxFillingOffice = document.getElementById("stateTaxFillingOffice").value;
+	// var taxStationCode = document.getElementById("taxStationCode").value;
+
+	// document.getElementById("loadingSec").innerHTML = '<img src="images/loading.gif" style="width:37px; height:37px;">';
+
+	// var WHTIndividualArchives = Parse.Object.extend("WHTIndividualArchives");
+	// var query = new Parse.Query(WHTIndividualArchives);
+	// query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
+	// query.equalTo("monthArchived", monthCovered+" "+year);
+	// query.first({
+	// 	success: function(resultsObj) {
+	// 		console.log(resultsObj);
+
+	// 		if(resultsObj){
+	// 			resultsObj.destroy({
+	// 				success: function(resultsObj) {
+	// 					// alert("Removed existing archived file!");
+	// 				},
+	// 				error: function(resultsObj, error) {
+	// 				}
+	// 			});
+	// 		}
+
+	// 		var WHTIndividualArchives = Parse.Object.extend("WHTIndividualArchives");
+	// 		var whtArchives = new WHTIndividualArchives();
+
+	// 		whtArchives.set("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
+	// 		whtArchives.set("monthCovered", monthCovered);
+	// 		whtArchives.set("year", year);
+	// 		whtArchives.set("taxNo", taxNo);
+	// 		whtArchives.set("firsTaxOffice", firsTaxOffice);
+	// 		whtArchives.set("stateTaxFillingOffice", stateTaxFillingOffice);
+	// 		whtArchives.set("taxStationCode", taxStationCode);
+	// 		whtArchives.set("suppliersOfService", suppliersOfService);
+	// 		whtArchives.set("suppliersOfGoods", suppliersOfGoods);
+	// 		whtArchives.set("monthArchived", monthCovered+" "+year);
+
+	// 		var acl = new Parse.ACL();
+	// 		acl.setPublicReadAccess(false);
+	// 		acl.setPublicWriteAccess(false);
+	// 		acl.setReadAccess(user, true);
+	// 		acl.setWriteAccess(user, true);
+	// 		whtArchives.setACL(acl);
+
+	// 		whtArchives.save(null, {
+	// 			success: function(vatArchives) {
+	// 				saveAfetrArchive();
+	// 				alert("Your wht calculation form is archived!");
+	// 				document.getElementById("loadingSec").innerHTML = '<div style="width:100%; height:6px;"></div> Successfully Archived!</a>';
+	// 				document.getElementById("loadingSec1").innerHTML = '<select id="archiveType" style="width:200px;"> <option value="Excel">Export As Excel</option> <option value="Html">Export As Html</option> </select> <br/> <button onclick="exportData()">Export</button> &nbsp;&nbsp;&nbsp; <button id="exportEmailBtn" onclick="exportDataEmail()">Email Archive</button>';
+	// 			},
+	// 			error: function(vatArchives, error) {
+	// 				alert(error.message);
+	// 				document.getElementById("loadingSec").innerHTML = "";
+	// 			}
+	// 		});
+	// 	},
+	// 	error: function(error) {
+	// 		alert(error.message);
+	// 		document.getElementById("loadingSec").innerHTML = "";
+	// 	}
+	// });
 }
 
 function loadWhtDetails(){
@@ -679,13 +739,13 @@ function exportData(){
 	if(archiveType == "Html"){
 		$.ajax({
             type: 'POST',
-            url: 'archieveScripts/wht/saveHmtl.php',
-            data: $("#form_name").serialize(),
+            url: 'saveHtml',
+            data: $("#individual_suppliers").serialize(),
             success: function(result) {
             	var res = result.split("#");
             	var linkId = res[res.length - 1];
 
-                var win = window.open("files/"+linkId, '_blank');
+                var win = window.open("../files/"+linkId, '_blank');
   				win.focus();
             }
         });
@@ -693,13 +753,13 @@ function exportData(){
 	else if(archiveType == "Excel"){
 		$.ajax({
             type: 'POST',
-            url: 'archieveScripts/wht/saveHmtl.php',
-            data: $("#form_name").serialize(),
+            url: 'saveHtml',
+            data: $("#individual_suppliers").serialize(),
             success: function(result) {
             	var res = result.split("#");
             	var linkId = res[res.length - 1];
 
-                window.location = "generate.php?linkId="+linkId;
+                window.location = "../generate.php?linkId="+linkId;
             }
         });
 	}
@@ -760,13 +820,13 @@ function exportDataSave(){
 
 	$.ajax({
 	    type: 'POST',
-	    url: 'archieveScripts/wht/saveHmtlSave.php',
-	    data: $("#form_name").serialize(),
+	    url: 'saveHtmlSave',
+	    data: $("#individual_suppliers").serialize(),
 	    success: function(result) {
 	    	var res = result.split("#");
 	    	var linkId = res[res.length - 1];
 
-	        var win = window.open("files/"+linkId, '_blank');
+	        var win = window.open("../files/"+linkId, '_blank');
 			win.focus();
 	    }
 	});
