@@ -34,6 +34,12 @@
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/login_signup.js"></script>
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/submit_wht_individual_suppliers.js"></script>
 
+<script type="text/javascript">
+	$(document).ready(function(){
+		loadWhtDetails();
+	});
+</script>
+
 
 <!--[if lt IE 9]>
 	<script src="../../../html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -245,6 +251,8 @@
 					Tax Identification No.
 					<div id="taxNoDiv">
 						<input type="text" class="input-box1" name="taxNo" id="taxNo" />
+						<input type="hidden" name="suppliersOfService" id="suppliersOfService"/>
+						<input type="hidden" name="suppliersOfGoods" id="suppliersOfGoods"/>
 					</div>
 				</div>
 

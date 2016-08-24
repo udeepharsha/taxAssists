@@ -1,4 +1,3 @@
-var user = getCurrentUser();
 var monthlyValues = [];
 var yearlyValues = [];
 var monthlyRowCount = 0;
@@ -13,6 +12,7 @@ var employeeCumulativeArray1 = [];
 var employeeCumulativeArray2 = [];
 var employeeCumulativeArray3 = [];
 var employeeLength;
+var base_url = 'http://localhost/TaxAssists/';
 
 $(document).ready(function() {
 	"use strict";
@@ -103,7 +103,7 @@ function searchMonthReports(){
 		var startYear = fromMonthly.split("/")[2];
 		var toYear = toMonthly.split("/")[2];
 
-		document.getElementById("resultsSection").innerHTML = '<img src="images/loading.gif" style="width:35px; height:35px; margin-left:15px;">';
+		document.getElementById("resultsSection").innerHTML = '<img src=" '+base_url+'assets/images/loading.gif" style="width:37px; height:37px;">';
 
 		loadMonthlyReports1(empName, startMonth, endMonth, startYear, toYear);
 	}
@@ -116,7 +116,7 @@ function searchMonthReports(){
 		var startYear = fromMonthly.split("/")[2];
 		var toYear = toMonthly.split("/")[2];
 
-		document.getElementById("resultsSection").innerHTML = '<img src="images/loading.gif" style="width:35px; height:35px; margin-left:15px;">';
+		document.getElementById("resultsSection").innerHTML = '<img src=" '+base_url+'assets/images/loading.gif" style="width:37px; height:37px;">';
 
 		loadMonthlyReports2(startMonth, endMonth, startYear, toYear);
 	}
@@ -129,14 +129,14 @@ function searchAnnualReports(){
 		var empName = document.getElementById("empSelect2").value;
 		var fromYearly = document.getElementById("fromYearly").value;
 
-		document.getElementById("resultsSection1").innerHTML = '<img src="images/loading.gif" style="width:35px; height:35px; margin-left:15px;">';
+		document.getElementById("resultsSection1").innerHTML = '<img src=" '+base_url+'assets/images/loading.gif" style="width:37px; height:37px;">';
 
 		loadYearlyReports1(empName, fromYearly);
 	}
 	else{
 		var fromYearly = document.getElementById("fromYearly").value;
 
-		document.getElementById("resultsSection1").innerHTML = '<img src="images/loading.gif" style="width:35px; height:35px; margin-left:15px;">';
+		document.getElementById("resultsSection1").innerHTML = '<img src=" '+base_url+'assets/images/loading.gif" style="width:37px; height:37px;">';
 
 		loadYearlyReports2(fromYearly);
 	}
@@ -213,29 +213,27 @@ function assistsMe(){
 
 //Monthly Reports
 function loadMonthlyReports1(empName, startMonth, endMonth, startYear, toYear){
-	var PAYEMonthlyArchives = Parse.Object.extend("PAYEMonthlyArchives");
-	var query = new Parse.Query(PAYEMonthlyArchives);
 
-	query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-	query.ascending("createdAt");
+	$.ajax({
+        type: 'POST',
+        url: 'loadMonthlyReports1',
+        success: function(data) {
+        	alert(data);
+        	var data = JSON.parse(data);
 
-	query.find({
-		success: function(results) {
-			document.getElementById("resultsSection").innerHTML = "";
-
-			var count = 0;
+        	var count = 0;
 			var newArr = [];
 
-			for (var i = 0; i < results.length; i++) {
-				var obj = results[i];
+        	for(var i = 0; i < data.length; i++){
+	        	var obj = data[i];	
 
-				var index = getIndexIfObjWithOwnAttr(obj.get('monthlyValues'), "employeeName", empName);
+	        	var index = getIndexIfObjWithOwnAttr(obj['monthly_values'], "employeeName", empName);
 
-				if(index >= 0){
-					var year = obj.get('year');
-					var month = obj.get('monthArchived').split(" ")[0];
+	        	if(index >= 0){
+	        		var year = obj['year'];
+		        	var month = obj['monthArchived'].split(" ")[0];
 
-					var startDate = new Date(startYear, parseInt(startMonth), 1);
+		        	var startDate = new Date(startYear, parseInt(startMonth), 1);
 					var endDate = new Date(toYear, parseInt(endMonth), 1);
 
 					var currentDate = new Date(year, returnMonthValue(month), 1);
@@ -251,27 +249,84 @@ function loadMonthlyReports1(empName, startMonth, endMonth, startYear, toYear){
 						
 						count++;
 					}
+	        	}
+	        	else{
+					newArr.sortOn("number");
+					// console.log(newArr);
+					for (var i = 0; i < newArr.length; i++) {
+						var obj = newArr[i];
+						document.getElementById("resultsSection").innerHTML = document.getElementById("resultsSection").innerHTML + obj['divSec'];
+					}
 				}
 			}
 
 			if(count == 0){
 				document.getElementById("resultsSection").innerHTML = "&nbsp;&nbsp; No reports available!"
 			}
-			else{
-				newArr.sortOn("number");
-				// console.log(newArr);
+        }
+    });
 
-				for (var i = 0; i < newArr.length; i++) {
-					var obj = newArr[i];
 
-					document.getElementById("resultsSection").innerHTML = document.getElementById("resultsSection").innerHTML + obj['divSec'];
-				}
-			}
-		},
-		error: function(error) {
-			alert(error.message);
-		}
-	});
+
+	// var PAYEMonthlyArchives = Parse.Object.extend("PAYEMonthlyArchives");
+	// var query = new Parse.Query(PAYEMonthlyArchives);
+
+	// query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
+	// query.ascending("createdAt");
+
+	// query.find({
+	// 	success: function(results) {
+	// 		document.getElementById("resultsSection").innerHTML = "";
+
+	// 		var count = 0;
+	// 		var newArr = [];
+
+	// 		for (var i = 0; i < results.length; i++) {
+	// 			var obj = results[i];
+
+	// 			var index = getIndexIfObjWithOwnAttr(obj.get('monthlyValues'), "employeeName", empName);
+
+	// 			if(index >= 0){
+	// 				var year = obj.get('year');
+	// 				var month = obj.get('monthArchived').split(" ")[0];
+
+	// 				var startDate = new Date(startYear, parseInt(startMonth), 1);
+	// 				var endDate = new Date(toYear, parseInt(endMonth), 1);
+
+	// 				var currentDate = new Date(year, returnMonthValue(month), 1);
+
+	// 				if(currentDate >= startDate && currentDate <= endDate){
+	// 					var secDiv = '<div class="twelve columns spoolResultsItem"> <a href="#" onclick="downloadExcelReports1(\''+obj.id+'\', \''+empName+'\')">&#8594; '+obj.get('monthArchived')+'</a> </div>';
+
+	// 					var item = {};
+	// 					item['divSec'] = secDiv;
+	// 					item['number'] = month;
+
+	// 					newArr.push(item);
+						
+	// 					count++;
+	// 				}
+	// 			}
+	// 		}
+
+	// 		if(count == 0){
+	// 			document.getElementById("resultsSection").innerHTML = "&nbsp;&nbsp; No reports available!"
+	// 		}
+	// 		else{
+	// 			newArr.sortOn("number");
+	// 			// console.log(newArr);
+
+	// 			for (var i = 0; i < newArr.length; i++) {
+	// 				var obj = newArr[i];
+
+	// 				document.getElementById("resultsSection").innerHTML = document.getElementById("resultsSection").innerHTML + obj['divSec'];
+	// 			}
+	// 		}
+	// 	},
+	// 	error: function(error) {
+	// 		alert(error.message);
+	// 	}
+	// });
 }
 
 function downloadExcelReports1(identity, employee) {
@@ -291,39 +346,37 @@ Array.prototype.sortOn = function(key){
 }
 
 function loadMonthlyReports2(startMonth, endMonth, startYear, toYear){
-	var PAYEMonthlyArchives = Parse.Object.extend("PAYEMonthlyArchives");
-	var query = new Parse.Query(PAYEMonthlyArchives);
 
-	query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-	query.ascending("createdAt");
-	
-	query.find({
-		success: function(results) {
-			document.getElementById("resultsSection").innerHTML = "";
+	$.ajax({
+        type: 'POST',
+        url: 'loadMonthlyReports1',
+        success: function(data) {
+        	alert(data);
+        	var data = JSON.parse(data);
 
-			var count = 0;
+        	var count = 0;
 			var newArr = [];
 
-			for (var i = 0; i < results.length; i++) {
-				var obj = results[i];
+        	for(var i = 0; i < data.length; i++){
+	        	var obj = data[i];	
 
-				var year = obj.get('year');
-				var month = obj.get('monthArchived').split(" ")[0];
+        		var year = obj['year'];
+	        	var month = obj['monthArchived'].split(" ")[0];
 
-				var startDate = new Date(startYear, parseInt(startMonth), 1);
+	        	var startDate = new Date(startYear, parseInt(startMonth), 1);
 				var endDate = new Date(toYear, parseInt(endMonth), 1);
 
 				var currentDate = new Date(year, returnMonthValue(month), 1);
 
 				if(currentDate >= startDate && currentDate <= endDate){
-					var secDiv = '<div class="twelve columns spoolResultsItem"> <a href="#" onclick="downloadExcelReports2(\''+obj.id+'\')">&#8594; '+obj.get('monthArchived')+'</a> </div>';
+					var secDiv = '<div class="twelve columns spoolResultsItem"> <a href="#" onclick="downloadExcelReports1(\''+obj.id+'\', \''+empName+'\')">&#8594; '+obj.get('monthArchived')+'</a> </div>';
 
 					var item = {};
 					item['divSec'] = secDiv;
 					item['number'] = month;
 
 					newArr.push(item);
-
+					
 					count++;
 				}
 			}
@@ -331,6 +384,7 @@ function loadMonthlyReports2(startMonth, endMonth, startYear, toYear){
 			if(count == 0){
 				document.getElementById("resultsSection").innerHTML = "&nbsp;&nbsp; No reports available!"
 			}
+
 			else{
 				newArr.sortOn("number");
 
@@ -340,11 +394,66 @@ function loadMonthlyReports2(startMonth, endMonth, startYear, toYear){
 					document.getElementById("resultsSection").innerHTML = document.getElementById("resultsSection").innerHTML + obj['divSec'];
 				}
 			}
-		},
-		error: function(error) {
-			alert(error.message);
-		}
-	});
+        }
+    });
+
+
+
+
+	// var PAYEMonthlyArchives = Parse.Object.extend("PAYEMonthlyArchives");
+	// var query = new Parse.Query(PAYEMonthlyArchives);
+
+	// query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
+	// query.ascending("createdAt");
+	
+	// query.find({
+	// 	success: function(results) {
+	// 		document.getElementById("resultsSection").innerHTML = "";
+
+	// 		var count = 0;
+	// 		var newArr = [];
+
+	// 		for (var i = 0; i < results.length; i++) {
+	// 			var obj = results[i];
+
+	// 			var year = obj.get('year');
+	// 			var month = obj.get('monthArchived').split(" ")[0];
+
+	// 			var startDate = new Date(startYear, parseInt(startMonth), 1);
+	// 			var endDate = new Date(toYear, parseInt(endMonth), 1);
+
+	// 			var currentDate = new Date(year, returnMonthValue(month), 1);
+
+	// 			if(currentDate >= startDate && currentDate <= endDate){
+	// 				var secDiv = '<div class="twelve columns spoolResultsItem"> <a href="#" onclick="downloadExcelReports2(\''+obj.id+'\')">&#8594; '+obj.get('monthArchived')+'</a> </div>';
+
+	// 				var item = {};
+	// 				item['divSec'] = secDiv;
+	// 				item['number'] = month;
+
+	// 				newArr.push(item);
+
+	// 				count++;
+	// 			}
+	// 		}
+
+	// 		if(count == 0){
+	// 			document.getElementById("resultsSection").innerHTML = "&nbsp;&nbsp; No reports available!"
+	// 		}
+	// 		else{
+	// 			newArr.sortOn("number");
+
+	// 			for (var i = 0; i < newArr.length; i++) {
+	// 				var obj = newArr[i];
+
+	// 				document.getElementById("resultsSection").innerHTML = document.getElementById("resultsSection").innerHTML + obj['divSec'];
+	// 			}
+	// 		}
+	// 	},
+	// 	error: function(error) {
+	// 		alert(error.message);
+	// 	}
+	// });
 }
 
 function downloadExcelReports2(identity) {
@@ -1797,22 +1906,22 @@ function exportDataMonthly(){
 
 //Yearly Reports
 function loadYearlyReports1(empName, fromYearly){
-	var PAYEYearlyArchives = Parse.Object.extend("PAYEYearlyArchives");
-	var query = new Parse.Query(PAYEYearlyArchives);
-	query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-	query.find({
-		success: function(results) {
-			document.getElementById("resultsSection1").innerHTML = "";
 
-			var count = 0;
+	$.ajax({
+        type: 'POST',
+        url: 'loadYearlyReports1',
+        success: function(data) {
+        	alert(data);
+        	var data = JSON.parse(data);
 
-			for (var i = 0; i < results.length; i++) {
-				var obj = results[i];
+        	var count = 0;
+			for (var i = 0; i < data.length; i++) {
+				var obj = data[i];
 
-				var index = getIndexIfObjWithOwnAttr(obj.get('yearlyValues'), "employeeName", empName);
+				var index = getIndexIfObjWithOwnAttr(obj['yearly_values'], "employeeName", empName);
 
 				if(index >= 0){
-					var getYear = obj.get('year');
+					var getYear = obj['year'];
 
 					if(getYear == fromYearly){
 						var secDiv = '<div class="eight columns spoolResultsItem"> <a href="#monthlySec" onclick="downloadAnnualExcelReport1(\''+obj.id+'\', \''+empName+'\')">&#8594; '+obj.get('year')+'</a> </div>';
@@ -1827,27 +1936,64 @@ function loadYearlyReports1(empName, fromYearly){
 			if(count == 0){
 				document.getElementById("resultsSection1").innerHTML = "&nbsp;&nbsp; No reports available!"
 			}
-		},
-		error: function(error) {
-			alert(error.message);
-		}
-	});
+        }
+    });
+
+
+
+	// var PAYEYearlyArchives = Parse.Object.extend("PAYEYearlyArchives");
+	// var query = new Parse.Query(PAYEYearlyArchives);
+	// query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
+	// query.find({
+	// 	success: function(results) {
+	// 		document.getElementById("resultsSection1").innerHTML = "";
+
+	// 		var count = 0;
+
+	// 		for (var i = 0; i < results.length; i++) {
+	// 			var obj = results[i];
+
+	// 			var index = getIndexIfObjWithOwnAttr(obj.get('yearlyValues'), "employeeName", empName);
+
+	// 			if(index >= 0){
+	// 				var getYear = obj.get('year');
+
+	// 				if(getYear == fromYearly){
+	// 					var secDiv = '<div class="eight columns spoolResultsItem"> <a href="#monthlySec" onclick="downloadAnnualExcelReport1(\''+obj.id+'\', \''+empName+'\')">&#8594; '+obj.get('year')+'</a> </div>';
+
+	// 					document.getElementById("resultsSection1").innerHTML = document.getElementById("resultsSection1").innerHTML + secDiv;
+						
+	// 					count++;
+	// 				}
+	// 			}
+	// 		}
+
+	// 		if(count == 0){
+	// 			document.getElementById("resultsSection1").innerHTML = "&nbsp;&nbsp; No reports available!"
+	// 		}
+	// 	},
+	// 	error: function(error) {
+	// 		alert(error.message);
+	// 	}
+	// });
 }
 
 function loadYearlyReports2(fromYearly){
-	var PAYEYearlyArchives = Parse.Object.extend("PAYEYearlyArchives");
-	var query = new Parse.Query(PAYEYearlyArchives);
-	query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-	query.find({
-		success: function(results) {
-			document.getElementById("resultsSection1").innerHTML = "";
+
+
+	$.ajax({
+        type: 'POST',
+        url: 'loadYearlyReports1',
+        success: function(data) {
+        	alert(data);
+        	var data = JSON.parse(data);
 
 			var count = 0;
 
-			for (var i = 0; i < results.length; i++) {
-				var obj = results[i];
+			for (var i = 0; i < data.length; i++) {
+				var obj = data[i];
 
-				var getYear = obj.get('year');
+				var getYear = obj['year'];
 
 				if(getYear == fromYearly){
 					var secDiv = '<div class="eight columns spoolResultsItem"> <a href="#monthlySec" onclick="downloadAnnualExcelReport2(\''+obj.id+'\')">&#8594; '+obj.get('year')+'</a> </div>';
@@ -1861,11 +2007,42 @@ function loadYearlyReports2(fromYearly){
 			if(count == 0){
 				document.getElementById("resultsSection1").innerHTML = "&nbsp;&nbsp; No reports available!"
 			}
-		},
-		error: function(error) {
-			alert(error.message);
-		}
-	});
+        }
+    });
+
+
+
+	// var PAYEYearlyArchives = Parse.Object.extend("PAYEYearlyArchives");
+	// var query = new Parse.Query(PAYEYearlyArchives);
+	// query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
+	// query.find({
+	// 	success: function(results) {
+	// 		document.getElementById("resultsSection1").innerHTML = "";
+
+	// 		var count = 0;
+
+	// 		for (var i = 0; i < results.length; i++) {
+	// 			var obj = results[i];
+
+	// 			var getYear = obj.get('year');
+
+	// 			if(getYear == fromYearly){
+	// 				var secDiv = '<div class="eight columns spoolResultsItem"> <a href="#monthlySec" onclick="downloadAnnualExcelReport2(\''+obj.id+'\')">&#8594; '+obj.get('year')+'</a> </div>';
+
+	// 				document.getElementById("resultsSection1").innerHTML = document.getElementById("resultsSection1").innerHTML + secDiv;
+				
+	// 				count++;
+	// 			}
+	// 		}
+
+	// 		if(count == 0){
+	// 			document.getElementById("resultsSection1").innerHTML = "&nbsp;&nbsp; No reports available!"
+	// 		}
+	// 	},
+	// 	error: function(error) {
+	// 		alert(error.message);
+	// 	}
+	// });
 }
 
 function downloadAnnualExcelReport2(identity) {

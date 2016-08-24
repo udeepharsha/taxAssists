@@ -39,16 +39,10 @@
 <link rel="stylesheet" type="text/css" media="all" href="<?php echo base_url(); ?>assets/popup/fancybox/jquery.fancybox.css">
 
 <script type="text/javascript">
-	// $(document).ready(function(){
-	// 	if(isLoggedIn()){
-	// 		document.getElementById('username').innerHTML =  currentUser.get('username')+"!";
-	// 		loadEmployees();
-	// 		loadPayeDetails();
-	// 	}
-	// 	else{
-	// 		window.location = "index.html";
-	// 	}
-	// });
+	$(document).ready(function(){
+		//loadEmployees();
+		loadPayeDetails();
+	});
 </script>
 
 <!--[if lt IE 9]>
@@ -345,6 +339,7 @@
 					Tax Identification No. (FIRS)
 					<div id="taxNoDiv">
 						<input type="text" class="input-box1" name="taxNo" id="taxNo" />
+						<input type="hidden" id="monthlyValues" name="monthlyValues"/>
 					</div>
 				</div>
 

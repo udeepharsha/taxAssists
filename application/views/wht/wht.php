@@ -34,6 +34,12 @@
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/login_signup.js"></script>
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/submit_wht.js"></script>
 
+<script type="text/javascript">
+	$(document).ready(function(){
+		loadWhtDetails();
+	});
+</script>
+
 <!--[if lt IE 9]>
 	<script src="../../../html5shim.googlecode.com/svn/trunk/html5.js"></script>
 <![endif]-->
@@ -162,7 +168,7 @@
 				<div class="twelve columns calculator_sec">
 					Month covered:
 					<div id="monthCoveredDiv">
-						<select class="select-box1" name="monthCovered" id="monthCovered"=>
+						<select class="select-box1" name="monthCovered" id="monthCovered">
 							<option value="January">January</option>
 							<option value="February">February</option>
 							<option value="March">March</option>
@@ -242,27 +248,31 @@
 					Tax Identification No.
 					<div id="taxNoDiv">
 						<input type="text" value="<?php if(count($wht_data) != 0){echo $wht_data[0]->tax_no; } ?>" class="input-box1" name="taxNo" id="taxNo" />
+					
+						<input type="hidden" name="suppliersOfService" id="suppliersOfService"/>
+						<input type="hidden" name="suppliersOfGoods" id="suppliersOfGoods"/>
+
 					</div>
 				</div>
 
 				<div class="twelve columns calculator_sec">
 					FIRS tax filing office
 					<div id="firsTaxOfficeDiv">
-						<input type="text" class="input-box1" name="firsTaxOffice" id="firsTaxOffice" />
+						<input type="text" value="<?php if(count($wht_data) != 0){echo $wht_data[0]->firs_tax_office; } ?>" class="input-box1" name="firsTaxOffice" id="firsTaxOffice" />
 					</div>
 				</div>
 
 				<div class="twelve columns calculator_sec">
 					State tax filing office (If applicable)
 					<div id="stateTaxFillingOfficeDiv">
-						<input type="text" class="input-box1" name="stateTaxFillingOffice" id="stateTaxFillingOffice" />
+						<input type="text" value="<?php if(count($wht_data) != 0){echo $wht_data[0]->state_tax_filling_office; } ?>" class="input-box1" name="stateTaxFillingOffice" id="stateTaxFillingOffice" />
 					</div>
 				</div>
 
 				<div class="twelve columns calculator_sec">
 					Tax station code (For state if applicable)
 					<div id="taxStationCodeDiv">
-						<input type="text" class="input-box1" name="taxStationCode" id="taxStationCode" />
+						<input value="<?php if(count($wht_data) != 0){echo $wht_data[0]->tax_station_code; } ?>" type="text" class="input-box1" name="taxStationCode" id="taxStationCode" />
 					</div>
 				</div>
 
@@ -537,6 +547,19 @@
      </div>
      <!-- Container / End -->
 </div>
+
+<script type="text/javascript">
+	var year = '<?php if(count($wht_data) != 0){echo $wht_data[0]->year; } ?>';
+	var month_covered = '<?php if(count($wht_data) != 0){echo $wht_data[0]->month_covered; } ?>';
+	if(year != ''){
+		document.getElementById('year').value = year;
+	}
+	if(month_covered != ''){
+		document.getElementById('monthCovered').value = month_covered;
+	}
+	
+	
+</script>
 
 <script src="<?php echo base_url(); ?>assets/scripts/jquery.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/scripts/jquery.themepunch.plugins.min.js"></script>

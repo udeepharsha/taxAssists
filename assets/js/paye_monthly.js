@@ -1,4 +1,3 @@
-var user = getCurrentUser();
 var monthlyValues = [];
 var rowCount = 0;
 var isArchived = false;
@@ -560,20 +559,22 @@ function functiontofindIndexByKeyValue(arraytosearch, key, valuetosearch) {
 }
 
 function loadPayeDetails(){
-	var PAYEMonthly = Parse.Object.extend("PAYEMonthly");
-	var query = new Parse.Query(PAYEMonthly);
-	query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-	query.first({
-		success: function(resultsObj) {
-			if(resultsObj){
-				document.getElementById("month").value = resultsObj.get('month');
-				document.getElementById("year").value = resultsObj.get('year');
-				document.getElementById("taxNo").value = resultsObj.get('taxNo');
-				document.getElementById("taxId").value = resultsObj.get('taxId');
-				document.getElementById("stateBir").value = resultsObj.get('stateBir');
-				document.getElementById("taxStationCode").value = resultsObj.get('taxStationCode');
 
-				var loadArray = resultsObj.get('monthlyValues');
+	$.ajax({
+		url: 'loadPayeDetails',
+		type: 'POST',
+		success: function(data, status) {
+			var data = JSON.parse(data);
+
+			if(data.length != 0){
+				document.getElementById("month").value = data[0]['month'];
+				document.getElementById("year").value = data[0]['year'];
+				document.getElementById("taxNo").value = data[0]['tax_no'];
+				document.getElementById("taxId").value = data[0]['tax_id'];
+				document.getElementById("stateBir").value = data[0]['state_bir'];
+				document.getElementById("taxStationCode").value = data[0]['tax_station_code'];
+
+				var loadArray =  JSON.parse(data[0]['monthly_values']);
 
 				for (var i = 0; i < loadArray.length; i++) {
 					var obj = loadArray[i];
@@ -741,11 +742,197 @@ function loadPayeDetails(){
 					monthlyValues.push(arr);
 				}
 			}
-		},
-		error: function(error) {
-			// alert("Please check your internet connection!");
 		}
 	});
+
+
+
+	// var PAYEMonthly = Parse.Object.extend("PAYEMonthly");
+	// var query = new Parse.Query(PAYEMonthly);
+	// query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
+	// query.first({
+	// 	success: function(resultsObj) {
+	// 		if(resultsObj){
+	// 			document.getElementById("month").value = resultsObj.get('month');
+	// 			document.getElementById("year").value = resultsObj.get('year');
+	// 			document.getElementById("taxNo").value = resultsObj.get('taxNo');
+	// 			document.getElementById("taxId").value = resultsObj.get('taxId');
+	// 			document.getElementById("stateBir").value = resultsObj.get('stateBir');
+	// 			document.getElementById("taxStationCode").value = resultsObj.get('taxStationCode');
+
+	// 			var loadArray = resultsObj.get('monthlyValues');
+
+	// 			for (var i = 0; i < loadArray.length; i++) {
+	// 				var obj = loadArray[i];
+
+	// 				var txt1 = obj['employeeName'];
+	// 				var txt2 = obj['totalEmployment'];
+	// 				var txt3 = obj['benefitsInKind'];
+	// 				var txt4 = obj['incomeFromSource'];
+	// 				var txt5 = obj['pension'];
+	// 				var hiddenValue = obj['hiddenValue'];
+
+	// 				rowCount++;
+
+	// 				var divSec = '<div id="monthlyValueRow'+rowCount+'"> <div class="rowTD">'+txt1+'</div> <div class="rowTD">'+txt2+'</div> <div class="rowTD">'+txt3+'</div> <div class="rowTD"> '+txt4+' </div> <div class="rowTD">'+txt5+'</div> <div class="rowTD"> <button class="btn1" onclick="removeItem('+rowCount+', '+hiddenValue+')">Delete</button> &nbsp;&nbsp; <button class="btn1" onclick="editServiceItem('+rowCount+', '+hiddenValue+')">Edit</button> </div> </div>';
+
+	// 				document.getElementById("rowDataMonthlyValues").innerHTML = document.getElementById("rowDataMonthlyValues").innerHTML + divSec;
+					
+	// 				var value1 = 0;
+	// 				var value2 = 0;
+
+	// 				if(txt5 == "Yes"){
+	// 					value1 = parseInt((parseInt(txt2) + parseInt(txt3))*0.1);
+	// 					value2 = parseInt(txt2) + parseInt(txt4) + parseInt(txt3) + value1;
+	// 				}
+	// 				else{
+	// 					value1 = 0;
+	// 					value2 = parseInt(txt2) + parseInt(txt4) + parseInt(txt3);
+	// 				}
+
+	// 				var value3 = 0;
+
+	// 				if(value2*0.01 < 200000/12){
+	// 					value3 = parseInt(200000/12);
+	// 				}
+	// 				else{
+	// 					value3 = parseInt(value2*0.01);
+	// 				}
+
+	// 				var value4 = parseInt(value2 * 0.2);
+
+	// 				var value5 = 0;
+	// 				var value6 = 0;
+
+	// 				if(txt5 == "Yes"){
+	// 					value5 = parseInt((parseInt(txt2) + parseInt(txt3))*0.1 + (parseInt(txt2) + parseInt(txt3))*0.08);
+	// 					value6 = value3 + value4 + value5;
+	// 				}
+	// 				else{
+	// 					value5 = 0;
+	// 					value6 = value3 + value4;
+	// 				}
+
+	// 				var value7 = value2 - value6;
+
+	// 				var value8 = 0;
+
+	// 				if(value7 > 0){
+	// 					if(value7 > 300000/12){
+	// 						value8 = parseInt((300000/12)*0.07);
+	// 					}
+	// 					else{
+	// 						value8 = parseInt(value7*0.07)
+	// 					}
+	// 				}
+	// 				else{
+	// 					value8 = value2*0.01;
+	// 				}
+
+	// 				var value9 = 0;
+
+	// 				if((value7 - 300000/12) > 0){
+	// 					if(value7 > 600000/12){
+	// 						value9 = 300000/12*0.11;
+	// 					}
+	// 					else{
+	// 						value9 = (value7 - 300000/12)*0.11;
+	// 					}
+	// 				}
+	// 				else{
+	// 					value9 = 0;
+	// 				}
+
+	// 				var value10 = 0;
+
+	// 				if((value7 - 600000/12) > 0){
+	// 					if(value7 > 1100000/12){
+	// 						value10 = 500000/12*0.15;
+	// 					}
+	// 					else{
+	// 						value10 = (value7 - 600000/12)*0.15;
+	// 					}
+	// 				}
+	// 				else{
+	// 					value10 = 0;
+	// 				}
+
+	// 				var value11 = 0;
+
+	// 				if((value7 - 1100000/12) > 0){
+	// 					if(value7 > 1600000/12){
+	// 						value11 = 500000/12*0.19;
+	// 					}
+	// 					else{
+	// 						value11 = (value7 - 1100000/12)*0.19;
+	// 					}
+	// 				}
+	// 				else{
+	// 					value11 = 0;
+	// 				}
+
+
+	// 				var value12 = 0;
+
+	// 				if((value7 - 1600000/12) > 0){
+	// 					if(value7 > 3200000/12){
+	// 						value12 = 1600000/12*0.19;
+	// 					}
+	// 					else{
+	// 						value12 = (value7 - 1600000/12)*0.19;
+	// 					}
+	// 				}
+	// 				else{
+	// 					value12 = 0;
+	// 				}
+
+	// 				var value13 = 0;
+
+	// 				if((value7 - 3200000/12) > 0){
+	// 					if(value7 > 3200000/12){
+	// 						value13 = (value7 - 3200000/12)*0.24;
+	// 					}
+	// 					else{
+	// 						value13 = 0;
+	// 					}
+	// 				}
+	// 				else{
+	// 					value13 = 0;
+	// 				}
+
+	// 				var value14 = value8 + value9 + value10  + value11 + value12 + value13;
+
+	// 				var value15 = 0;
+
+	// 				if(txt5 == "Yes"){
+	// 					value15 = value5 + value14;
+	// 				}
+	// 				else{
+	// 					value15 = value14;
+	// 				}
+					
+	// 				var value16 = parseInt(value2 - value15);
+
+	// 				var arr = {};
+	// 				arr['employeeName'] = txt1;
+	// 				arr['totalEmployment'] = txt2;
+	// 				arr['benefitsInKind'] = txt3;
+	// 				arr['incomeFromSource'] = txt4;
+	// 				arr['pension'] = txt5;
+	// 				arr['cumulativeNetEmoluments'] = value16;
+	// 				arr['cumulativeTaxFreeEmoluments'] = value6 - value1;
+	// 				arr['cumulativeTaxableEmoluments'] = value7;
+	// 				arr['correspondingCumulativeTax'] = value14;
+	// 				arr['hiddenValue'] = hiddenValue;
+
+	// 				monthlyValues.push(arr);
+	// 			}
+	// 		}
+	// 	},
+	// 	error: function(error) {
+	// 		// alert("Please check your internet connection!");
+	// 	}
+	// });
 }
 
 
@@ -754,7 +941,17 @@ $(document).ready(function() {
 
 	$('#monthly_cal').on('submit', function(event){
 		event.preventDefault();
+
+		if(monthlyValues.length != 0){
+			document.getElementById('monthlyValues').value = JSON.stringify(monthlyValues);
+		}
+
 		var formData = new FormData(this);
+
+		var other_data = $('#monthly_cal').serializeArray();
+	    $.each(other_data,function(key,input){
+	        formData.append(input.name,input.value);
+	    });
 
 		archiveForMonth(formData);
 
@@ -768,15 +965,14 @@ $(document).ready(function() {
 			contentType: false,
 			processData: false,
 			success: function(data, status) {
-				alert(data);
-				// if(data == 1){
-				// 	alert("Your vat calculation form is saved! If you think this is final version for month, please archive it. Only archived reports can be spooled later!");
-	 		// 		document.getElementById("loadingSec").innerHTML = '<div style="width:100%; height:6px;"></div> Successfully Saved!';
-	 		// 		exportDataSave();
-				// }
-				// else{
-				// 	document.getElementById("loadingSec").innerHTML = "";
-				// }
+				if(data == 1){
+						alert("Your paye monthly calculation form is saved! If you think this is final version for month, please archive it. Only archived reports can be spooled later!");
+						document.getElementById("loadingSec").innerHTML = '<div style="width:100%; height:6px;"></div> Successfully Saved!';
+						exportDataSave();
+				}
+				else{
+					document.getElementById("loadingSec").innerHTML = "";
+				}
 			}
 		});
 
@@ -1056,7 +1252,7 @@ function archiveForMonth(formData){
 			processData: false,
 			success: function(data, status) {
 				alert(data);
-				if(data == 1){
+				if(data == 11){
 					//saveAfetrArchive();
 					alert("Your paye calculation form is archived!");
 					document.getElementById("loadingSec").innerHTML = '<div style="width:100%; height:6px;"></div> Successfully Archived!</a>';
@@ -1747,10 +1943,12 @@ function exportDataSave(){
 
 	document.getElementById("table").value = tableDiv;
 
+	alert('aaa');
+
 	$.ajax({
         type: 'POST',
         url: 'saveHmtlSave',
-        data: $("#form_name").serialize(),
+        data: $("#monthly_cal").serialize(),
         success: function(result) {
         	var res = result.split("#");
         	var linkId = res[res.length - 1];

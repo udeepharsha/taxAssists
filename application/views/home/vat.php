@@ -52,6 +52,7 @@
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/jquery-1.11.2.min.js" language="javascript"></script>
+<script type="text/javascript" src="<?php echo base_url(); ?>assets/js/common.js" language="javascript"></script>
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/login_signup.js"></script>
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/submit_vat.js"></script>
 
@@ -359,7 +360,7 @@
 					<div class="twelve columns calculator_sec">
 						Output VAT for the Month
 						<div id="outputVatDiv">
-							<input type="text" class="input-box1" id="outputVat" name="outputVat" readonly />
+							<input value="<?php if(count($vat_data) != 0){echo $vat_data[0]->output_vat; } ?>" type="text" class="input-box1" id="outputVat" name="outputVat" readonly />
 						</div>
 					</div>
 
@@ -388,42 +389,42 @@
 					<div class="twelve columns calculator_sec">
 						VAT paid on local supplies (Goods only. Services and fixed assets are excluded)
 						<div id="vatOnLocalSuppliesDiv">
-							<input type="text" class="input-box1" id="vatOnLocalSupplies" name="vatOnLocalSupplies" onkeyup="changeValues2()" onkeypress="return validateNumeric(event)" />
+							<input value="<?php if(count($vat_data) != 0){echo $vat_data[0]->vat_on_local_supplies; } ?>" type="text" class="input-box1" id="vatOnLocalSupplies" name="vatOnLocalSupplies" onkeyup="changeValues2()" onkeypress="return validateNumeric(event)" />
 						</div>
 					</div>
 
 					<div class="twelve columns calculator_sec">
 						VAT paid on imported goods (Services and fixed assets are excluded)
 						<div id="vatOnImportedGoodsDiv">
-							<input type="text" class="input-box1" id="vatOnImportedGoods" name="vatOnImportedGoods" onkeyup="changeValues2()" onkeypress="return validateNumeric(event)" />
+							<input value="<?php if(count($vat_data) != 0){echo $vat_data[0]->vat_on_imported_goods; } ?>" type="text" class="input-box1" id="vatOnImportedGoods" name="vatOnImportedGoods" onkeyup="changeValues2()" onkeypress="return validateNumeric(event)" />
 						</div>
 					</div>
 
 					<div class="twelve columns calculator_sec">
 						VAT paid on subcontracted services
 						<div id="vatOnSubcontractedDiv">
-							<input type="text" class="input-box1" id="vatOnSubcontracted" name="vatOnSubcontracted" onkeyup="changeValues2()" onkeypress="return validateNumeric(event)" />
+							<input type="text" value="<?php if(count($vat_data) != 0){echo $vat_data[0]->vat_on_subcontracted; } ?>" class="input-box1" id="vatOnSubcontracted" name="vatOnSubcontracted" onkeyup="changeValues2()" onkeypress="return validateNumeric(event)" />
 						</div>
 					</div>
 
 					<div class="twelve columns calculator_sec">
 						Total input Tax claimable
 						<div id="totalInputTaxClaimableDiv">
-							<input type="text" class="input-box1" id="totalInputTaxClaimable" name="totalInputTaxClaimable" readonly />
+							<input type="text" value="<?php if(count($vat_data) != 0){echo $vat_data[0]->total_input_tax_claimable; } ?>" class="input-box1" id="totalInputTaxClaimable" name="totalInputTaxClaimable" readonly />
 						</div>
 					</div>
 
 					<div class="twelve columns calculator_sec">
 						Excess input VAT brought forward from previous month
 						<div id="excessInputVatDiv">
-							<input type="text" class="input-box1" id="excessInputVat" name="excessInputVat" onkeyup="changeValues2()" onkeypress="return validateNumeric(event)" />
+							<input type="text" value="<?php if(count($vat_data) != 0){echo $vat_data[0]->excess_input_vat; } ?>" class="input-box1" id="excessInputVat" name="excessInputVat" onkeyup="changeValues2()" onkeypress="return validateNumeric(event)" />
 						</div>
 					</div>
 
 					<div class="twelve columns calculator_sec">
 						VAT payable for the month
 						<div id="vatPayableForMonthDiv">
-							<input type="text" class="input-box1" id="vatPayableForMonth" name="vatPayableForMonth" readonly />
+							<input type="text" value="<?php if(count($vat_data) != 0){echo $vat_data[0]->vat_payable_for_month; } ?>" class="input-box1" id="vatPayableForMonth" name="vatPayableForMonth" readonly />
 						</div>
 					</div>
 
@@ -438,28 +439,28 @@
 			     	<div class="twelve columns calculator_sec">
 			     		Authorized Signatory
 						<div id="authorizedSignatoryDiv">
-							<input type="text" class="input-box1" id="authorizedSignatory" name="authorizedSignatory" />
+							<input value="<?php if(count($vat_data) != 0){echo $vat_data[0]->authorized_signatory; } ?>" type="text" class="input-box1" id="authorizedSignatory" name="authorizedSignatory" />
 						</div>
 					</div>
 
 					<div class="twelve columns calculator_sec">
 						Designation
 						<div id="designationDiv">
-							<input type="text" class="input-box1" id="designation" name="designation" />
+							<input value="<?php if(count($vat_data) != 0){echo $vat_data[0]->designation; } ?>" type="text" class="input-box1" id="designation" name="designation" />
 						</div>
 					</div>
 
 					<div class="twelve columns calculator_sec">
 						Signature
 						<div id="signatureDiv">
-							<input type="text" class="input-box1" id="signature" name="signature" />
+							<input value="<?php if(count($vat_data) != 0){echo $vat_data[0]->signature; } ?>" type="text" class="input-box1" id="signature" name="signature" />
 						</div>
 					</div>
 
 					<div class="twelve columns calculator_sec">
 						Company stamp and date
 						<div id="companyStampAndDateDiv">
-							<input type="text" class="input-box1" id="companyStampAndDate" name="companyStampAndDate" />
+							<input value="<?php if(count($vat_data) != 0){echo $vat_data[0]->company_stamp_and_date; } ?>" type="text" class="input-box1" id="companyStampAndDate" name="companyStampAndDate" />
 						</div>
 					</div>
 

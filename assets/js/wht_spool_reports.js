@@ -1,10 +1,10 @@
-var user = getCurrentUser();
 var suppliersOfService = [];
 var suppliersOfGoods = [];
 var serviceRowCount = 0;
 var goodsRowCount = 0;
 var isArchived = false;
 var archivedDocument = "";
+var base_url = 'http://localhost/TaxAssists/';
 
 $(document).ready(function(){
 	"use strict";
@@ -17,7 +17,7 @@ function searchWHTReportsForCorporate(){
 	var fromCorporate = document.getElementById("fromCorporate").value;
 	var toCorporate = document.getElementById("toCorporate").value;
 
-	document.getElementById("resultsSection").innerHTML = '<img src="images/loading.gif" style="width:35px; height:35px; margin-left:15px;">';
+	document.getElementById("resultsSection").innerHTML = '<img src="'+base_url+'assets/images/loading.gif" style="width:35px; height:35px; margin-left:15px;">';
 
 	var startMonth = fromCorporate.split("/")[0];
 	var endMonth = toCorporate.split("/")[0];
@@ -31,7 +31,7 @@ function searchWHTReportsForIndividual(){
 	var fromIndividual = document.getElementById("fromIndividual").value;
 	var toIndividual = document.getElementById("toIndividual").value;
 
-	document.getElementById("resultsSection1").innerHTML = '<img src="images/loading.gif" style="width:35px; height:35px; margin-left:15px;">';
+	document.getElementById("resultsSection1").innerHTML = '<img src="'+base_url+'assets/images/loading.gif" style="width:35px; height:35px; margin-left:15px;">';
 
 	var startMonth = fromIndividual.split("/")[0];
 	var endMonth = toIndividual.split("/")[0];
@@ -49,19 +49,20 @@ function loadReportsCorporate(startMonth, endMonth, startYear, toYear){
         success: function(data) {
         	var data = JSON.parse(data);
 
+        	document.getElementById("resultsSection").innerHTML = "";
+
         	var count = 0;
         	for(var i = 0; i < data.length; i++){
 	        	var obj = data[i];			
-	        	var year = obj['year_under_review'];
-	        	var month = obj['month_under_review'];
-
+	        	var year = obj['year'];
+	        	var month = obj['month_covered'];
 				var startDate = new Date(startYear, parseInt(startMonth), 1);
 				var endDate = new Date(toYear, parseInt(endMonth), 1);
 
 				var currentDate = new Date(year, returnMonthValue(month), 1);
 
 				if(currentDate >= startDate && currentDate <= endDate){
-					var secDiv = '<div class="twelve columns spoolResultsItem"> <a href="#" onclick="downloadCorporateExcel(\''+obj.id+'\')">&#8594; '+obj.get('monthArchived')+'</a> </div>';
+					var secDiv = '<div class="twelve columns spoolResultsItem"> <a href="#" onclick="downloadCorporateExcel(\''+obj.id+'\')">&#8594; '+obj['month_archived']+'</a> </div>';
 
 					document.getElementById("resultsSection").innerHTML = document.getElementById("resultsSection").innerHTML + secDiv;
 					
@@ -116,22 +117,24 @@ function loadReportsCorporate(startMonth, endMonth, startYear, toYear){
 }
 
 function downloadCorporateExcel(identity){
-	document.getElementById("generatingExcelCorporate").innerHTML = "<img class='loadingImage' src='images/loading1.gif' />";
+	document.getElementById("generatingExcelCorporate").innerHTML = "<img class='loadingImage' src='"+base_url+"assets/images/loading1.gif' />";
 
-	var WHTArchives = Parse.Object.extend("WHTArchives");
-	var query = new Parse.Query(WHTArchives);
-	query.equalTo("objectId", identity);
-	query.first({
-		success: function(resultsObj) {
-			document.getElementById("monthCovered").value = resultsObj.get('monthCovered');
-			document.getElementById("year").value = resultsObj.get('year');
-			document.getElementById("taxNo").value = resultsObj.get('taxNo');
-			document.getElementById("firsTaxOffice").value = resultsObj.get('firsTaxOffice');
-			document.getElementById("stateTaxFillingOffice").value = resultsObj.get('stateTaxFillingOffice');
-			document.getElementById("taxStationCode").value = resultsObj.get('taxStationCode');
+	$.ajax({
+		url: 'downloadCorporateExcel',
+		type: 'POST',
+		data: {id:identity},
+		success: function(data, status) {
+			var data = JSON.parse(data);
 
-			var inSuppliersOfService = resultsObj.get('suppliersOfService');
-			var inSuppliersOfGoods = resultsObj.get('suppliersOfGoods');
+			document.getElementById("monthCovered").value = data[0]['month_covered'];
+			document.getElementById("year").value = data[0]['year'];
+			document.getElementById("taxNo").value = data[0]['tax_no'];
+			document.getElementById("firsTaxOffice").value = data[0]['firs_tax_office'];
+			document.getElementById("stateTaxFillingOffice").value = data[0]['state_tax_filling_office'];
+			document.getElementById("taxStationCode").value = data[0]['tax_station_code'];
+
+			var inSuppliersOfService = JSON.parse(data[0]['suppliers_of_service']);
+			var inSuppliersOfGoods = JSON.parse(data[0]['suppliers_of_goods']);
 
 			//Services
 			var tableDiv1 = '<table border="1"> <tr> <th>Supplier Name</th> <th>Supplier Address</th> <th>Supplier Tin</th> <th>Type of transaction</th> <th>Amount (Excluding VAT on invoice NGN)</th> <th>WHT Deducted (NGN)</th></tr>';
@@ -185,22 +188,104 @@ function downloadCorporateExcel(identity){
 
 			$.ajax({
 	            type: 'POST',
-	            url: 'archieveScripts/wht/saveHmtl.php',
+	            url: 'saveHtml',
 	            data: $("#form_name").serialize(),
 	            success: function(result) {
 	            	var res = result.split("#");
 	            	var linkId = res[res.length - 1];
 
-	                window.location = "generate.php?linkId="+linkId;
+	                window.location = "../generate.php?linkId="+linkId;
 
-	                 document.getElementById("generatingExcelCorporate").innerHTML = "<img class='doneImage' src='images/done.png' />";
+	                 document.getElementById("generatingExcelCorporate").innerHTML = "<img class='doneImage' src='"+base_url+"assets/images/done.png' />";
 	            }
 	        });
-		},
-		error: function(error) {
-			// alert("Please check your internet connection!");
+
 		}
 	});
+
+	// var WHTArchives = Parse.Object.extend("WHTArchives");
+	// var query = new Parse.Query(WHTArchives);
+	// query.equalTo("objectId", identity);
+	// query.first({
+	// 	success: function(resultsObj) {
+	// 		document.getElementById("monthCovered").value = resultsObj.get('monthCovered');
+	// 		document.getElementById("year").value = resultsObj.get('year');
+	// 		document.getElementById("taxNo").value = resultsObj.get('taxNo');
+	// 		document.getElementById("firsTaxOffice").value = resultsObj.get('firsTaxOffice');
+	// 		document.getElementById("stateTaxFillingOffice").value = resultsObj.get('stateTaxFillingOffice');
+	// 		document.getElementById("taxStationCode").value = resultsObj.get('taxStationCode');
+
+	// 		var inSuppliersOfService = resultsObj.get('suppliersOfService');
+	// 		var inSuppliersOfGoods = resultsObj.get('suppliersOfGoods');
+
+	// 		//Services
+	// 		var tableDiv1 = '<table border="1"> <tr> <th>Supplier Name</th> <th>Supplier Address</th> <th>Supplier Tin</th> <th>Type of transaction</th> <th>Amount (Excluding VAT on invoice NGN)</th> <th>WHT Deducted (NGN)</th></tr>';
+
+	// 		for (var i = 0; i < inSuppliersOfService.length; i++) {
+	// 			var obj = inSuppliersOfService[i];
+
+	// 			var supplierName = obj['supplierName'];
+	// 			var supplierAddress = obj['supplierAddress'];
+	// 			var supplierTIN = obj['supplierTIN'];
+	// 			var typeOfTransaction = obj['typeOfTransaction'];
+	// 			var amount = obj['amount'];
+	// 			var whtDeduction = getWHTDeductionCorporate(amount, typeOfTransaction);
+
+	// 			amount = parseFloat(amount).toFixed(2);
+	// 			whtDeduction = parseFloat(whtDeduction).toFixed(2);
+
+	// 			var insideDiv = '<tr><td>'+supplierName+'</td>'+'<td>'+supplierAddress+'</td>'+'<td>'+supplierTIN+'</td>'+'<td>'+typeOfTransaction+'</td>'+'<td>'+amount+'</td>'+'<td>'+whtDeduction+'</td></tr>';
+				
+	// 			tableDiv1 = tableDiv1 + insideDiv;
+	// 		}
+
+	// 		tableDiv1 = tableDiv1 + '</table>';
+
+	// 		document.getElementById("table1").value = tableDiv1;
+
+	// 		//Goods
+	// 		var tableDiv2 = '<table border="1"> <tr> <th>Supplier Name</th> <th>Supplier Address</th> <th>Supplier Tin</th> <th>Type of transaction</th> <th>Amount (Excluding VAT on invoice NGN)</th> <th>WHT Deducted (NGN)</th></tr>';
+
+	// 		for (var i = 0; i < inSuppliersOfGoods.length; i++) {
+	// 			var obj = inSuppliersOfGoods[i];
+
+	// 			var supplierName = obj['supplierName'];
+	// 			var supplierAddress = obj['supplierAddress'];
+	// 			var supplierTIN = obj['supplierTIN'];
+	// 			var typeOfTransaction = obj['typeOfTransaction'];
+	// 			var amount = obj['amount'];
+	// 			var whtDeduction = getWHTDeductionCorporate(amount, typeOfTransaction);
+
+	// 			amount = parseFloat(amount).toFixed(2);
+	// 			whtDeduction = parseFloat(whtDeduction).toFixed(2);
+
+	// 			var insideDiv = '<tr><td>'+supplierName+'</td>'+'<td>'+supplierAddress+'</td>'+'<td>'+supplierTIN+'</td>'+'<td>'+typeOfTransaction+'</td>'+'<td>'+amount+'</td>'+'<td>'+whtDeduction+'</td></tr>';
+				
+	// 			tableDiv2 = tableDiv2 + insideDiv;
+	// 		}
+
+	// 		tableDiv2 = tableDiv2 + '</table>';
+
+	// 		document.getElementById("table2").value = tableDiv2;
+
+	// 		$.ajax({
+	//             type: 'POST',
+	//             url: 'archieveScripts/wht/saveHmtl.php',
+	//             data: $("#form_name").serialize(),
+	//             success: function(result) {
+	//             	var res = result.split("#");
+	//             	var linkId = res[res.length - 1];
+
+	//                 window.location = "generate.php?linkId="+linkId;
+
+	//                  document.getElementById("generatingExcelCorporate").innerHTML = "<img class='doneImage' src='images/done.png' />";
+	//             }
+	//         });
+	// 	},
+	// 	error: function(error) {
+	// 		// alert("Please check your internet connection!");
+	// 	}
+	// });
 }
 
 function returnMonthValue(month){
@@ -271,7 +356,7 @@ function saveAfetrArchive(whtArchivesId){
 	var stateTaxFillingOffice = document.getElementById("stateTaxFillingOffice").value;
 	var taxStationCode = document.getElementById("taxStationCode").value;
 
-	document.getElementById("loadingSec").innerHTML = '<img src="images/loading.gif" style="width:37px; height:37px;">';
+	document.getElementById("loadingSec").innerHTML = '<img src="'+base_url+'assets/images/loading.gif" style="width:37px; height:37px;">';
 
 	var WHT = Parse.Object.extend("WHT");
 	var query = new Parse.Query(WHT);
@@ -323,7 +408,7 @@ function archiveForMonth(){
 	var stateTaxFillingOffice = document.getElementById("stateTaxFillingOffice").value;
 	var taxStationCode = document.getElementById("taxStationCode").value;
 
-	document.getElementById("loadingSec").innerHTML = '<img src="images/loading.gif" style="width:37px; height:37px;">';
+	document.getElementById("loadingSec").innerHTML = '<img src="'+base_url+'assets/images/loading.gif" style="width:37px; height:37px;">';
 
 	var WHTArchives = Parse.Object.extend("WHTArchives");
 	var query = new Parse.Query(WHTArchives);
@@ -388,7 +473,6 @@ function assistsMe(){
 		url: 'sendAssistMe.php',
 		data: $("#form_name").serialize(),
 		success: function(result) {
-			alert(result);
 		}
 	});
 }
@@ -487,12 +571,14 @@ function loadReportsIndividual(startMonth, endMonth, startYear, toYear){
         success: function(data) {
         	var data = JSON.parse(data);
 
+        	console.log(data);
+
         	document.getElementById("resultsSection1").innerHTML = "";
         	var count = 0;
         	for(var i = 0; i < data.length; i++){
 	        	var obj = data[i];			
-	        	var year = obj['year_under_review'];
-	        	var month = obj['month_under_review'];
+	        	var year = obj['year'];
+	        	var month = obj['month_covered'];
 
 				var startDate = new Date(startYear, parseInt(startMonth), 1);
 				var endDate = new Date(toYear, parseInt(endMonth), 1);
@@ -500,7 +586,7 @@ function loadReportsIndividual(startMonth, endMonth, startYear, toYear){
 				var currentDate = new Date(year, returnMonthValue(month), 1);
 
 				if(currentDate >= startDate && currentDate <= endDate){
-					var secDiv = '<div class="twelve columns spoolResultsItem"> <a href="#" onclick="downloadCorporateExcel(\''+obj.id+'\')">&#8594; '+obj.get('monthArchived')+'</a> </div>';
+					var secDiv = '<div class="twelve columns spoolResultsItem"> <a href="#" onclick="downloadIndividualExcel(\''+obj.id+'\')">&#8594; '+obj['month_archived']+'</a> </div>';
 
 					document.getElementById("resultsSection1").innerHTML = document.getElementById("resultsSection1").innerHTML + secDiv;
 					
@@ -517,23 +603,24 @@ function loadReportsIndividual(startMonth, endMonth, startYear, toYear){
 }
 
 function downloadIndividualExcel(identity){
-	document.getElementById("generatingExcelIndividual").innerHTML = "<img class='loadingImage' src='images/loading1.gif' />";
+	document.getElementById("generatingExcelIndividual").innerHTML = "<img class='loadingImage' src='"+base_url+"assets/images/loading1.gif' />";
 
-	var WHTIndividualArchives = Parse.Object.extend("WHTIndividualArchives");
-	var query = new Parse.Query(WHTIndividualArchives);
-	query.equalTo("objectId", identity);
-	query.first({
-		success: function(resultsObj) {
-			document.getElementById("monthCovered").value = resultsObj.get('monthCovered');
-			document.getElementById("year").value = resultsObj.get('year');
-			document.getElementById("taxNo").value = resultsObj.get('taxNo');
-			document.getElementById("firsTaxOffice").value = resultsObj.get('firsTaxOffice');
-			document.getElementById("stateTaxFillingOffice").value = resultsObj.get('stateTaxFillingOffice');
-			document.getElementById("taxStationCode").value = resultsObj.get('taxStationCode');
+	$.ajax({
+		url: 'downloadIndividualExcel',
+		type: 'POST',
+		data: {id:identity},
+		success: function(data, status) {
+			var data = JSON.parse(data);
 
-			var inSuppliersOfService = resultsObj.get('suppliersOfService');
-			var inSuppliersOfGoods = resultsObj.get('suppliersOfGoods');
+			document.getElementById("monthCovered").value = data[0]['month_covered'];
+			document.getElementById("year").value = data[0]['year'];
+			document.getElementById("taxNo").value = data[0]['tax_no'];
+			document.getElementById("firsTaxOffice").value = data[0]['firs_tax_office'];
+			document.getElementById("stateTaxFillingOffice").value = data[0]['state_tax_filling_office'];
+			document.getElementById("taxStationCode").value = data[0]['tax_station_code'];
 
+			var inSuppliersOfService = JSON.parse(data[0]['suppliers_of_service']);
+			var inSuppliersOfGoods = JSON.parse(data[0]['suppliers_of_goods']);
 
 			//Services
 			var tableDiv1 = '<table border="1"> <tr> <th>Supplier Name</th> <th>Supplier Address</th> <th>Supplier Tin</th> <th>Type of transaction</th> <th>Amount (Excluding VAT on invoice NGN)</th> <th>WHT Deducted (NGN)</th></tr>';
@@ -587,22 +674,106 @@ function downloadIndividualExcel(identity){
 
 			$.ajax({
 	            type: 'POST',
-	            url: 'archieveScripts/wht/saveHmtl.php',
+	            url: 'saveHtml',
 	            data: $("#form_name").serialize(),
 	            success: function(result) {
 	            	var res = result.split("#");
 	            	var linkId = res[res.length - 1];
 
-	                window.location = "generate.php?linkId="+linkId;
+	                window.location = "../generate.php?linkId="+linkId;
 
-					document.getElementById("generatingExcelIndividual").innerHTML = "<img class='doneImage' src='images/done.png' />";
+	                 document.getElementById("generatingExcelCorporate").innerHTML = "<img class='doneImage' src='"+base_url+"assets/images/done.png' />";
 	            }
 	        });
-		},
-		error: function(error) {
-			// alert("Please check your internet connection!");
+
 		}
 	});
+
+
+	// var WHTIndividualArchives = Parse.Object.extend("WHTIndividualArchives");
+	// var query = new Parse.Query(WHTIndividualArchives);
+	// query.equalTo("objectId", identity);
+	// query.first({
+	// 	success: function(resultsObj) {
+	// 		document.getElementById("monthCovered").value = resultsObj.get('monthCovered');
+	// 		document.getElementById("year").value = resultsObj.get('year');
+	// 		document.getElementById("taxNo").value = resultsObj.get('taxNo');
+	// 		document.getElementById("firsTaxOffice").value = resultsObj.get('firsTaxOffice');
+	// 		document.getElementById("stateTaxFillingOffice").value = resultsObj.get('stateTaxFillingOffice');
+	// 		document.getElementById("taxStationCode").value = resultsObj.get('taxStationCode');
+
+	// 		var inSuppliersOfService = resultsObj.get('suppliersOfService');
+	// 		var inSuppliersOfGoods = resultsObj.get('suppliersOfGoods');
+
+
+	// 		//Services
+	// 		var tableDiv1 = '<table border="1"> <tr> <th>Supplier Name</th> <th>Supplier Address</th> <th>Supplier Tin</th> <th>Type of transaction</th> <th>Amount (Excluding VAT on invoice NGN)</th> <th>WHT Deducted (NGN)</th></tr>';
+
+	// 		for (var i = 0; i < inSuppliersOfService.length; i++) {
+	// 			var obj = inSuppliersOfService[i];
+
+	// 			var supplierName = obj['supplierName'];
+	// 			var supplierAddress = obj['supplierAddress'];
+	// 			var supplierTIN = obj['supplierTIN'];
+	// 			var typeOfTransaction = obj['typeOfTransaction'];
+	// 			var amount = obj['amount'];
+	// 			var whtDeduction = getWHTDeductionCorporate(amount, typeOfTransaction);
+
+	// 			amount = parseFloat(amount).toFixed(2);
+	// 			whtDeduction = parseFloat(whtDeduction).toFixed(2);
+
+	// 			var insideDiv = '<tr><td>'+supplierName+'</td>'+'<td>'+supplierAddress+'</td>'+'<td>'+supplierTIN+'</td>'+'<td>'+typeOfTransaction+'</td>'+'<td>'+amount+'</td>'+'<td>'+whtDeduction+'</td></tr>';
+				
+	// 			tableDiv1 = tableDiv1 + insideDiv;
+	// 		}
+
+	// 		tableDiv1 = tableDiv1 + '</table>';
+
+	// 		document.getElementById("table1").value = tableDiv1;
+
+	// 		//Goods
+	// 		var tableDiv2 = '<table border="1"> <tr> <th>Supplier Name</th> <th>Supplier Address</th> <th>Supplier Tin</th> <th>Type of transaction</th> <th>Amount (Excluding VAT on invoice NGN)</th> <th>WHT Deducted (NGN)</th></tr>';
+
+	// 		for (var i = 0; i < inSuppliersOfGoods.length; i++) {
+	// 			var obj = inSuppliersOfGoods[i];
+
+	// 			var supplierName = obj['supplierName'];
+	// 			var supplierAddress = obj['supplierAddress'];
+	// 			var supplierTIN = obj['supplierTIN'];
+	// 			var typeOfTransaction = obj['typeOfTransaction'];
+	// 			var amount = obj['amount'];
+	// 			var whtDeduction = getWHTDeductionCorporate(amount, typeOfTransaction);
+
+	// 			amount = parseFloat(amount).toFixed(2);
+	// 			whtDeduction = parseFloat(whtDeduction).toFixed(2);
+
+	// 			var insideDiv = '<tr><td>'+supplierName+'</td>'+'<td>'+supplierAddress+'</td>'+'<td>'+supplierTIN+'</td>'+'<td>'+typeOfTransaction+'</td>'+'<td>'+amount+'</td>'+'<td>'+whtDeduction+'</td></tr>';
+				
+	// 			tableDiv2 = tableDiv2 + insideDiv;
+	// 		}
+
+	// 		tableDiv2 = tableDiv2 + '</table>';
+
+	// 		document.getElementById("table2").value = tableDiv2;
+
+	// 		$.ajax({
+	//             type: 'POST',
+	//             url: 'archieveScripts/wht/saveHmtl.php',
+	//             data: $("#form_name").serialize(),
+	//             success: function(result) {
+	//             	var res = result.split("#");
+	//             	var linkId = res[res.length - 1];
+
+	//                 window.location = "generate.php?linkId="+linkId;
+
+	// 				document.getElementById("generatingExcelIndividual").innerHTML = "<img class='doneImage' src='images/done.png' />";
+	//             }
+	//         });
+	// 	},
+	// 	error: function(error) {
+	// 		// alert("Please check your internet connection!");
+	// 	}
+	// });
 }
 
 function saveAfetrArchiveIndividual(whtArchivesId){
@@ -613,7 +784,7 @@ function saveAfetrArchiveIndividual(whtArchivesId){
 	var stateTaxFillingOffice = document.getElementById("stateTaxFillingOffice").value;
 	var taxStationCode = document.getElementById("taxStationCode").value;
 
-	document.getElementById("loadingSec").innerHTML = '<img src="images/loading.gif" style="width:37px; height:37px;">';
+	document.getElementById("loadingSec").innerHTML = '<img src="'+base_url+'assets/images/loading.gif" style="width:37px; height:37px;">';
 
 	var WHTIndividual = Parse.Object.extend("WHTIndividual");
 	var query = new Parse.Query(WHTIndividual);
@@ -665,7 +836,7 @@ function archiveForMonthIndividual(){
 	var stateTaxFillingOffice = document.getElementById("stateTaxFillingOffice").value;
 	var taxStationCode = document.getElementById("taxStationCode").value;
 
-	document.getElementById("loadingSec").innerHTML = '<img src="images/loading.gif" style="width:37px; height:37px;">';
+	document.getElementById("loadingSec").innerHTML = '<img src="'+base_url+'assets/images/loading.gif" style="width:37px; height:37px;">';
 
 	var WHTIndividualArchives = Parse.Object.extend("WHTIndividualArchives");
 	var query = new Parse.Query(WHTIndividualArchives);

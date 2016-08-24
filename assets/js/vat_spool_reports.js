@@ -109,6 +109,8 @@ function loadReports(startMonth, endMonth, startYear, toYear){
         success: function(data) {
         	var data = JSON.parse(data);
 
+        	document.getElementById("resultsSection").innerHTML = "";
+
         	var count = 0;
         	for(var i = 0; i < data.length; i++){
 	        	var obj = data[i];			
@@ -120,7 +122,7 @@ function loadReports(startMonth, endMonth, startYear, toYear){
 				var currentDate = new Date(year, returnMonthValue(month), 1);
 
 				if(currentDate >= startDate && currentDate <= endDate){
-					var secDiv = '<div class="twelve columns spoolResultsItem"> <a href="#" onclick="downloadExcel(\''+obj.id+'\')">&#8594; '+obj.get('monthArchived')+'</a> </div><br/>';
+					var secDiv = '<div class="twelve columns spoolResultsItem"> <a href="#" onclick="downloadExcel(\''+obj.id+'\')">&#8594; '+obj['month_archived']+'</a> </div><br/>';
 
 					document.getElementById("resultsSection").innerHTML = document.getElementById("resultsSection").innerHTML + secDiv;
 					
@@ -136,51 +138,51 @@ function loadReports(startMonth, endMonth, startYear, toYear){
 }
 
 function downloadExcel(identity){
-	document.getElementById("generatingExcel").innerHTML = "<img class='loadingImage' src='images/loading1.gif' />";
+	document.getElementById("generatingExcel").innerHTML = '<img class="loadingImage" src="'+base_url+'assets/images/loading1.gif"/>';
 
-	var VATArchives = Parse.Object.extend("VATArchives");
-	var query = new Parse.Query(VATArchives);
-	query.equalTo("objectId", identity);
-	query.first({
-		success: function(resultsObj) {			
-			document.getElementById("monthUnderReview").value = resultsObj.get('monthUnderReview');
-			document.getElementById("yearUnderReview").value = resultsObj.get('yearUnderReview');
-			document.getElementById("taxNo").value = resultsObj.get('taxNo');
-			document.getElementById("vatNo").value = resultsObj.get('vatNo');
-			document.getElementById("firsTaxOffice").value = resultsObj.get('firsTaxOffice');
-			document.getElementById("outputSalesIncome").value = resultsObj.get('outputSalesIncome');
-			document.getElementById("exemptedZero").value = resultsObj.get('exemptedZero');
-			document.getElementById("totalSuppliesVat").value = resultsObj.get('totalSuppliesVat');
-			document.getElementById("outputVat").value = resultsObj.get('outputVat');
-			document.getElementById("vatOnLocalSupplies").value = resultsObj.get('vatOnLocalSupplies');
-			document.getElementById("vatOnImportedGoods").value = resultsObj.get('vatOnImportedGoods');
-			document.getElementById("vatOnSubcontracted").value = resultsObj.get('vatOnSubcontracted');
-			document.getElementById("totalInputTaxClaimable").value = resultsObj.get('totalInputTaxClaimable');
-			document.getElementById("excessInputVat").value = resultsObj.get('excessInputVat');
-			document.getElementById("vatPayableForMonth").value = resultsObj.get('vatPayableForMonth');
-			document.getElementById("authorizedSignatory").value = resultsObj.get('authorizedSignatory');
-			document.getElementById("designation").value = resultsObj.get('designation');
-			document.getElementById("signature").value = resultsObj.get('signature');
-			document.getElementById("companyStampAndDate").value = resultsObj.get('companyStampAndDate');
+	$.ajax({
+        type: 'POST',
+        url: 'downloadExcel',
+        data: {id:identity},
+        success: function(data) {
+        	var data = JSON.parse(data);
+
+        	document.getElementById("monthUnderReview").value = data[0]['month_under_review'];
+			document.getElementById("yearUnderReview").value = data[0]['year_under_review'];
+			document.getElementById("taxNo").value = data[0]['tax_no'];
+			document.getElementById("vatNo").value = data[0]['vat_no'];
+			document.getElementById("firsTaxOffice").value = data[0]['firs_tax_office'];
+			document.getElementById("outputSalesIncome").value = data[0]['output_sales_income'];
+			document.getElementById("exemptedZero").value = data[0]['exempted_zero'];
+			document.getElementById("totalSuppliesVat").value = data[0]['total_supplies_vat'];
+			document.getElementById("outputVat").value = data[0]['output_vat'];
+			document.getElementById("vatOnLocalSupplies").value = data[0]['vat_on_local_supplies'];
+			document.getElementById("vatOnImportedGoods").value = data[0]['vat_on_imported_goods'];
+			document.getElementById("vatOnSubcontracted").value = data[0]['vat_on_subcontracted'];
+			document.getElementById("totalInputTaxClaimable").value = data[0]['total_input_tax_claimable'];
+			document.getElementById("excessInputVat").value = data[0]['excess_input_vat'];
+			document.getElementById("vatPayableForMonth").value = data[0]['vat_payable_for_month'];
+			document.getElementById("authorizedSignatory").value = data[0]['authorized_signatory'];
+			document.getElementById("designation").value = data[0]['designation'];
+			document.getElementById("signature").value = data[0]['signature'];
+			document.getElementById("companyStampAndDate").value = data[0]['company_stamp_and_date'];
 
 			$.ajax({
 	            type: 'POST',
-	            url: 'archieveScripts/vat/saveHtml.php',
+	            url: 'saveHtml',
 	            data: $("#form_name").serialize(),
 	            success: function(result) {
 	            	var res = result.split("#");
 	            	var linkId = res[res.length - 1];
 
-	                window.location = "generate.php?linkId="+linkId;
+	                window.location = "../generate.php?linkId="+linkId;
 
-	                document.getElementById("generatingExcel").innerHTML = "<img class='doneImage' src='images/done.png' />";
+	                document.getElementById("generatingExcel").innerHTML = '<img class="doneImage" src="'+base_url+'assets/images/done.png" />';
 	            }
 	        });
-		},
-		error: function(error) {
-			// alert("Please check your internet connection!");
-		}
-	});
+        }
+    });
+
 }
 
 function returnMonthValue(month){
@@ -293,85 +295,6 @@ var QueryString = function () {
 	}
 	return query_string;
 } ();
-
-function saveAfetrArchive(){
-	var monthUnderReview = document.getElementById("monthUnderReview").value;
-	var yearUnderReview = document.getElementById("yearUnderReview").value;
-	var taxNo = document.getElementById("taxNo").value;
-	var vatNo = document.getElementById("vatNo").value;
-	var firsTaxOffice = document.getElementById("firsTaxOffice").value;
-	var outputSalesIncome = document.getElementById("outputSalesIncome").value;
-	var exemptedZero = document.getElementById("exemptedZero").value;
-	var totalSuppliesVat = document.getElementById("totalSuppliesVat").value;
-	var outputVat = document.getElementById("outputVat").value;
-	var vatOnLocalSupplies = document.getElementById("vatOnLocalSupplies").value;
-	var vatOnImportedGoods = document.getElementById("vatOnImportedGoods").value;
-	var vatOnSubcontracted = document.getElementById("vatOnSubcontracted").value;
-	var totalInputTaxClaimable = document.getElementById("totalInputTaxClaimable").value;
-	var excessInputVat = document.getElementById("excessInputVat").value;
-	var vatPayableForMonth = document.getElementById("vatPayableForMonth").value;
-	var authorizedSignatory = document.getElementById("authorizedSignatory").value;
-	var designation = document.getElementById("designation").value;
-	var signature = document.getElementById("signature").value;
-	var companyStampAndDate = document.getElementById("companyStampAndDate").value;
-	var declare = document.getElementById("declare").checked;
-
-	if(declare){
-		var VAT = Parse.Object.extend("VAT");
-		var query = new Parse.Query(VAT);
-		query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-		query.first({
-			success: function(resultsObj) {
-				var VAT = Parse.Object.extend("VAT");
-				var vat = new VAT();
-
-				vat.set("objectId", resultsObj.id);
-				vat.set("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-				vat.set("monthUnderReview", monthUnderReview);
-				vat.set("yearUnderReview", yearUnderReview);
-				vat.set("taxNo", taxNo);
-				vat.set("vatNo", vatNo);
-				vat.set("firsTaxOffice", firsTaxOffice);
-				vat.set("outputSalesIncome", outputSalesIncome);
-				vat.set("exemptedZero", exemptedZero);
-				vat.set("totalSuppliesVat", totalSuppliesVat);
-				vat.set("outputVat", outputVat);
-				vat.set("vatOnLocalSupplies", vatOnLocalSupplies);
-				vat.set("vatOnImportedGoods", vatOnImportedGoods);
-				vat.set("vatOnSubcontracted", vatOnSubcontracted);
-				vat.set("totalInputTaxClaimable", totalInputTaxClaimable);
-				vat.set("excessInputVat", excessInputVat);
-				vat.set("vatPayableForMonth", vatPayableForMonth);
-				vat.set("authorizedSignatory", authorizedSignatory);
-				vat.set("designation", designation);
-				vat.set("signature", signature);
-				vat.set("companyStampAndDate", companyStampAndDate);
-
-				var acl = new Parse.ACL();
-				acl.setPublicReadAccess(false);
-				acl.setPublicWriteAccess(false);
-				acl.setReadAccess(user, true);
-				acl.setWriteAccess(user, true);
-				vat.setACL(acl);
-
-				vat.save(null, {
-					success: function(vat) {
-						//Success
-					},
-					error: function(vat, error) {
-						alert(error.message);
-					}
-				});
-			},
-			error: function(error) {
-				alert(error.message);
-			}
-		});
-	}
-	else{
-		alert("You must agree to the terms & conditions before save or archive!");
-	}
-}
 
 function archiveForMonth(){
 	var monthUnderReview = document.getElementById("monthUnderReview").value;

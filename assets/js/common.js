@@ -1,34 +1,12 @@
-/*
- *
-       ~!! Secured from Parse ACL
- *
- */
 var start;
 var start_num = 0;
 var proceed = [];
 var proceedNumber = [];
-
-//APP ID & JAVASCRIPT KEY
-Parse.initialize("ZCgUZ1tusLkfDktamlg7jX9aEgmwUKljQ5fOEeT1", "spA3iDuWbd4jkx53ErXkRGhcsGGJTxmvhibrVmpJ");
-
-var currentUser = Parse.User.current();
-
-$(document).ready(function() {
-    if(currentUser){
-        for (var i = 1; i < 100; i++) {
-            document.getElementById("dialogs").innerHTML = document.getElementById("dialogs").innerHTML + '<div id="dialog-confirm'+i+'" title="Do you want to continue?"></div>';
-        }
-
-        window.setTimeout('checkIfContinue()', 10*60*1000);  //10 minutes
-        //document.getElementById("logged_user").innerHTML = "Hi "+currentUser.get('username')+" <a href='#logout' onclick='logOut()'><div class='right-slide-panal fa fa-power-off'></div></a>";
-    }
-});
+var base_url = 'http://localhost/TaxAssists/';
 
 function preload(arrayOfImages) {
     $(arrayOfImages).each(function(){
         $('<img/>')[0].src = this;
-        // Alternatively you could use:
-        // (new Image()).src = this;
     });
 }
 

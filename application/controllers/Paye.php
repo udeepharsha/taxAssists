@@ -40,12 +40,20 @@ class Paye extends CI_Controller {
 	}
 
 	public function loadPayEmployee(){
-		echo json_encode($this->paye_model->loadPayEmployee());
+		echo json_encode($this->paye_model->loadPayEmployee() );
+	}
+
+	public function loadPayeDetails(){
+		echo json_encode($this->paye_model->loadPayeDetails() );
+	}
+
+	public function loadPayeDetailsYearly(){
+		echo json_encode($this->paye_model->loadPayeDetailsYearly() );
 	}
 
 	public function submitPayMonthly(){
 		if (isset($_POST['save'])) {
-			$datam['monthly_values'] = '[]';
+			$datam['monthly_values'] = $this->input->post('monthlyValues');
 			$datam['tax_station_code'] = $this->input->post('taxStationCode');
 			$datam['state_bir'] = $this->input->post('stateBir');
 			$datam['tax_id'] = $this->input->post('taxId');
@@ -54,6 +62,21 @@ class Paye extends CI_Controller {
 			$datam['month'] = $this->input->post('month');
 			$datam['user_id'] = $this->session->userdata('user_id');
 			echo $this->paye_model->submitPayMonthly($datam);
+		}
+	}
+
+	public function submitPayYearly(){
+		if (isset($_POST['save'])) {
+			$datam['yearly_values'] = $this->input->post('yearlyValues');
+			$datam['tax_station_code'] = $this->input->post('taxStationCode');
+			$datam['state_bir'] = $this->input->post('stateBir');
+			$datam['tax_id'] = $this->input->post('taxId');
+			$datam['tax_no'] = $this->input->post('taxNo');
+			$datam['year'] = $this->input->post('year');
+			$datam['month'] = $this->input->post('month');
+			$datam['user_id'] = $this->session->userdata('user_id');
+			
+			echo $this->paye_model->submitPayYearly($datam);
 		}
 	}
 
@@ -71,7 +94,7 @@ class Paye extends CI_Controller {
 
 	public function archiveForMonth(){
 		if (isset($_POST['archive'])) {
-			$datam['monthly_values'] = '[]';
+			$datam['monthly_values'] = $this->input->post('monthlyValues');
 			$datam['tax_station_code'] = $this->input->post('taxStationCode');
 			$datam['state_bir'] = $this->input->post('stateBir');
 			$datam['tax_id'] = $this->input->post('taxId');
@@ -79,7 +102,23 @@ class Paye extends CI_Controller {
 			$datam['year'] = $this->input->post('year');
 			$datam['month'] = $this->input->post('month');
 			$datam['user_id'] = $this->session->userdata('user_id');
+			$datam['month_archived'] = $datam['month']." ".$datam['year'];
+			
 			echo $this->paye_model->archiveForMonth($datam);
+		}
+	}
+
+	public function archiveForYear(){
+		if (isset($_POST['archive'])) {
+			$datam['yearly_values'] = $this->input->post('yearlyValues');
+			$datam['tax_station_code'] = $this->input->post('taxStationCode');
+			$datam['state_bir'] = $this->input->post('stateBir');
+			$datam['tax_id'] = $this->input->post('taxId');
+			$datam['tax_no'] = $this->input->post('taxNo');
+			$datam['year'] = $this->input->post('year');
+			$datam['month'] = $this->input->post('month');
+			$datam['user_id'] = $this->session->userdata('user_id');
+			echo $this->paye_model->archiveForYear($datam);
 		}
 	}
 
@@ -290,6 +329,263 @@ class Paye extends CI_Controller {
 			        echo "#".$docName;
 			    }
 			}
+	}
+
+	public function saveHmtlSaveYearly(){
+			// Start the buffering //
+			ob_start();
+			
+			?>
+
+			<?php
+				$year = $_POST['year'];
+				$taxNo = $_POST['taxNo'];
+				$taxId = $_POST['taxId'];
+				$stateBir = $_POST['stateBir'];
+				$taxStationCode = $_POST['taxStationCode'];
+				$table = $_POST['table'];
+			?>
+
+			<style type="text/css">
+				table, th, td{
+					text-align: left;
+				}
+			</style>
+			
+			<table border="1">
+				<tr>
+					<th>Year:</th>
+					<th>Tax Identification No.</th>
+					<th>Tax ID - State Board of Internal Revenue</th>
+					<th>State BIR tax station</th>
+					<th>Tax station code</th>
+				</tr>
+
+				<tr>
+					<td><?php echo $year; ?></td>
+					<td><?php echo $taxNo; ?></td>
+					<td><?php echo $taxId; ?></td>
+					<td><?php echo $stateBir; ?></td>
+					<td><?php echo $taxStationCode; ?></td>
+				</tr>
+			</table>
+
+			<?php
+
+			echo "<br/><br/><h2>Yearly Values</h2>";
+
+			echo $table;
+
+		?>
+			<br/><br/>
+
+			<button onclick="printPage()">Print Results</button>
+
+			<script>
+				function printPage(){
+				    window.print();
+				}
+			</script>
+		<?php
+
+			$rand = rand(90, 10000000);
+			$docName = $rand.".php";
+
+			// Get the content that is in the buffer and put it in your file //
+			if(file_put_contents('files/'.$docName, ob_get_contents())){
+				echo "#".$docName;
+			}
+	}
+
+	public function saveHmtlYearly(){
+			// Start the buffering //
+			ob_start();
+			
+			?>
+
+			<?php
+				$year = $_POST['year'];
+				$taxNo = $_POST['taxNo'];
+				$taxId = $_POST['taxId'];
+				$stateBir = $_POST['stateBir'];
+				$taxStationCode = $_POST['taxStationCode'];
+				$table = $_POST['table'];
+			?>
+
+			<style type="text/css">
+				table, th, td{
+					text-align: left;
+				}
+			</style>
+			
+			<table border="1">
+				<tr>
+					<th>Year:</th>
+					<th>Tax Identification No.</th>
+					<th>Tax ID - State Board of Internal Revenue</th>
+					<th>State BIR tax station</th>
+					<th>Tax station code</th>
+				</tr>
+
+				<tr>
+					<td><?php echo $year; ?></td>
+					<td><?php echo $taxNo; ?></td>
+					<td><?php echo $taxId; ?></td>
+					<td><?php echo $stateBir; ?></td>
+					<td><?php echo $taxStationCode; ?></td>
+				</tr>
+			</table>
+
+			<?php
+
+			echo "<br/><br/><h2>Yearly Values</h2>";
+
+			echo $table;
+			
+			$rand = rand(9000, 10000000000);
+			$docName = $rand.".php";
+
+			// Get the content that is in the buffer and put it in your file //
+			if(file_put_contents('files/'.$docName, ob_get_contents())){
+				echo "#".$docName;
+			}
+	}
+
+	public function saveHmtlEmailYearly(){
+			// Start the buffering //
+			ob_start();
+			
+			?>
+
+			<?php
+				$name = "TaxAssist";
+				$userEmail = $this->session->userdata('email');
+				$year = $_POST['year'];
+				$taxNo = $_POST['taxNo'];
+				$taxId = $_POST['taxId'];
+				$stateBir = $_POST['stateBir'];
+				$taxStationCode = $_POST['taxStationCode'];
+				$table = $_POST['table'];
+			?>
+
+			<style type="text/css">
+				table, th, td{
+					text-align: left;
+				}
+			</style>
+			
+			<table border="1">
+				<tr>
+					<th>Year:</th>
+					<th>Tax Identification No.</th>
+					<th>Tax ID - State Board of Internal Revenue</th>
+					<th>State BIR tax station</th>
+					<th>Tax station code</th>
+				</tr>
+
+				<tr>
+					<td><?php echo $year; ?></td>
+					<td><?php echo $taxNo; ?></td>
+					<td><?php echo $taxId; ?></td>
+					<td><?php echo $stateBir; ?></td>
+					<td><?php echo $taxStationCode; ?></td>
+				</tr>
+			</table>
+
+			<?php
+
+			echo "<br/><br/>Yearly Values<br/>";
+
+			echo $table;
+
+			$rand = rand(9000, 1000000);
+			$docName = $rand.".php";
+
+			// Get the content that is in the buffer and put it in your file //
+			if(file_put_contents('files/'.$docName, ob_get_contents())){    
+			    $sendto   = $userEmail;
+			    $downloadLink = "http://vi-mtaxassist.com/files/".$docName;
+
+			    $subject  = "PAYE Calculation Form: ".$name;
+			    $headers  = "From: " . strip_tags($name) . "\r\n";
+			    $headers .= "Reply-To: ". strip_tags($name) . "\r\n";
+			    $headers .= "MIME-Version: 1.0\r\n";
+			    $headers .= "Content-Type: text/html;charset=utf-8 \r\n";
+
+			    $msg  = "<html><body style='font-family:Arial,sans-serif;'>";
+			    $msg .= "<h2 style='font-weight:bold;border-bottom:1px dotted #ccc;'>PAYE Calculation Form</h2>\r\n";
+			    $msg .= "<p><strong>User Email: </strong> ".$userEmail."</p>\r\n\r";
+			    $msg .= "<p><a href='".$downloadLink."' target='_blank'><strong>View my calculation results!</strong></a></p>\r\n";
+			    $msg .= "</body></html>";
+
+			    $this->load->library('email'); 
+
+				$this->email->from($name, 'TaxAssist');
+				$this->email->to($sendto);
+				$this->email->subject($subject);
+				$this->email->message($msg); 
+
+			    if($this->email->send()) {
+			    	 echo "#".$docName;
+			    }
+
+			}
+	}
+
+	public function loadMonthlyReports1(){
+		echo json_encode($this->paye_model->loadMonthlyReports1());
+	}
+
+	public function loadYearlyReports1(){
+		echo json_encode($this->paye_model->loadYearlyReports1());
+	}
+
+	public function assistMeProcess(){
+		$hiddenValue = @$_POST['hiddenValue'];
+		$userEmail = $this->session->userdata('email');
+		$type = @$_POST['type'];
+
+		$array = explode("#", $hiddenValue);
+
+		$sendto = 'taxassist@vi-m.com';
+		$sendto1 = 'taxassist2@vi-m.com';
+		
+		$name = "TaxAssist";
+
+	    $subject  = "Assist Me: ".$name;
+	    $headers  = "From: " . strip_tags($name) . "\r\n";
+	    $headers .= "Reply-To: ". strip_tags($name) . "\r\n";
+	    $headers .= "MIME-Version: 1.0\r\n";
+	    $headers .= "Content-Type: text/html;charset=utf-8 \r\n";
+
+	    $msg  = "<html><body style='font-family:Arial,sans-serif;'>";
+	    $msg .= "<h2 style='font-weight:bold;border-bottom:1px dotted #ccc;'>Assist Me - ".$type."</h2>\r\n";
+	    $msg .= "<p><strong>User Email: </strong>".$userEmail."</p>\r\n\r";
+	    $msg .= "<p><strong>Looking for assistance: </strong></p>\r\n\r";
+
+	    for ($i=0; $i < sizeof($array)-1; $i++) {
+	    	$var = $array[$i];
+
+	    	$msg .= "<p>".($i+1)."] ".$var."</p>\r\n";
+	    }
+
+	    $msg .= "</body></html>";
+
+	    $this->load->library('email'); 
+
+		$this->email->from($name, 'TaxAssist');
+		$this->email->to($sendto);
+		$this->email->subject($subject);
+		$this->email->message($msg); 
+
+	    if($this->email->send()) {
+	    	$this->email->from($name, 'TaxAssist');
+			$this->email->to($sendto1);
+			$this->email->subject($subject);
+			$this->email->message($msg); 
+	        echo "true";
+	    }
+
 	}
 
 	

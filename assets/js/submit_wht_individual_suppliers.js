@@ -68,7 +68,21 @@ $(document).ready(function() {
 
 	$('#individual_suppliers').on('submit', function(event){
 		event.preventDefault();
+
+		if(suppliersOfService.length != 0){
+			document.getElementById('suppliersOfService').value = JSON.stringify(suppliersOfService);
+		}
+
+		if(suppliersOfGoods.length != 0){
+			document.getElementById('suppliersOfGoods').value = JSON.stringify(suppliersOfGoods);
+		}
+
 		var formData = new FormData(this);
+
+		var other_data = $('#individual_suppliers').serializeArray();
+	    $.each(other_data,function(key,input){
+	        formData.append(input.name,input.value);
+	    });
 
 		archiveForMonth(formData);
 
@@ -85,7 +99,7 @@ $(document).ready(function() {
 				if(data == 1){
 					alert("Your wht calculation form is saved! If you think this is final version for month, please archive it. Only archived reports can be spooled later!");
 					document.getElementById("loadingSec").innerHTML = '<div style="width:100%; height:6px;"></div> Successfully Saved!';
-					//exportDataSave();
+					exportDataSave();
 				}
 				else{
 					document.getElementById("loadingSec").innerHTML = "";
@@ -160,9 +174,7 @@ function archiveForMonth(formData){
 		contentType: false,
 		processData: false,
 		success: function(data, status) {
-			alert(data);
-			if(data == 1){
-				//saveAfetrArchive();
+			if(data == 11){
 				alert("Your wht calculation form is archived!");
 				document.getElementById("loadingSec").innerHTML = '<div style="width:100%; height:6px;"></div> Successfully Archived!</a>';
 				document.getElementById("loadingSec1").innerHTML = '<select id="archiveType" style="width:200px;"> <option value="Excel">Export As Excel</option> <option value="Html">Export As Html</option> </select> <br/> <button onclick="exportData()">Export</button> &nbsp;&nbsp;&nbsp; <button id="exportEmailBtn" onclick="exportDataEmail()">Email Archive</button>';
@@ -243,85 +255,180 @@ function archiveForMonth(formData){
 }
 
 function loadWhtDetails(){
-	var WHTIndividual = Parse.Object.extend("WHTIndividual");
-	var query = new Parse.Query(WHTIndividual);
-	query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-	query.first({
-		success: function(resultsObj) {
-			document.getElementById("monthCovered").value = resultsObj.get('monthCovered');
-			document.getElementById("year").value = resultsObj.get('year');
-			document.getElementById("taxNo").value = resultsObj.get('taxNo');
-			document.getElementById("firsTaxOffice").value = resultsObj.get('firsTaxOffice');
-			document.getElementById("stateTaxFillingOffice").value = resultsObj.get('stateTaxFillingOffice');
-			document.getElementById("taxStationCode").value = resultsObj.get('taxStationCode');
 
-			var inSuppliersOfService = resultsObj.get('suppliersOfService');
-			var inSuppliersOfGoods = resultsObj.get('suppliersOfGoods');
+	$.ajax({
+		url: 'loadWhtIndividualDetails',
+		type: 'POST',
+		success: function(data, status) {
+			var data = JSON.parse(data);
 
-			for (var i = 0; i < inSuppliersOfService.length; i++) {
-				var obj = inSuppliersOfService[i];
+			if(data.length != 0){
 
-				var txt1 = obj['supplierName'];
-				var txt2 = obj['supplierAddress'];
-				var txt3 = obj['supplierTIN'];
-				var txt4 = obj['typeOfTransaction'];
-				var txt5 = obj['amount'];
-				var hiddenValue = obj['hiddenValue'];
+				document.getElementById("monthCovered").value = data[0]['month_covered'];
+				document.getElementById("year").value = data[0]['year'];
+				document.getElementById("taxNo").value = data[0]['tax_no'];
+				document.getElementById("firsTaxOffice").value = data[0]['firs_tax_office'];
+				document.getElementById("stateTaxFillingOffice").value = data[0]['state_tax_filling_office'];
+				document.getElementById("taxStationCode").value = data[0]['tax_station_code'];
 
-				txt5 = parseInt(txt5).toFixed(2);
+				var inSuppliersOfService = data[0]['suppliers_of_service'];
+				var inSuppliersOfGoods = data[0]['suppliers_of_goods'];
 
-				serviceRowCount++;
 
-				var divSec = '<div id="serviceRow'+serviceRowCount+'"> <div class="rowTD">'+txt1+'</div> <div class="rowTD">'+txt2+'</div> <div class="rowTD">'+txt3+'</div> <div class="rowTD"> '+txt4+' </div> <div class="rowTD">'+txt5+'</div> <div class="rowTD"> <button class="btn1" onclick="removeServiceItem('+serviceRowCount+', '+hiddenValue+')">Delete</button> &nbsp;&nbsp; <button class="btn1" onclick="editServiceItem('+serviceRowCount+', '+hiddenValue+')">Edit</button></div> </div>';
+				if(inSuppliersOfService != ""){
+					inSuppliersOfService = JSON.parse(inSuppliersOfService);
+					for (var i = 0; i < inSuppliersOfService.length; i++) {
+						var obj = inSuppliersOfService[i];
 
-				document.getElementById("rowDataServices").innerHTML = document.getElementById("rowDataServices").innerHTML + divSec;
+						var txt1 = obj['supplierName'];
+						var txt2 = obj['supplierAddress'];
+						var txt3 = obj['supplierTIN'];
+						var txt4 = obj['typeOfTransaction'];
+						var txt5 = obj['amount'];
+						var hiddenValue = obj['hiddenValue'];
+
+						txt5 = parseInt(txt5).toFixed(2);
+
+						serviceRowCount++;
+
+						var divSec = '<div id="serviceRow'+serviceRowCount+'"> <div class="rowTD">'+txt1+'</div> <div class="rowTD">'+txt2+'</div> <div class="rowTD">'+txt3+'</div> <div class="rowTD"> '+txt4+' </div> <div class="rowTD">'+txt5+'</div> <div class="rowTD"> <button class="btn1" onclick="removeServiceItem('+serviceRowCount+', '+hiddenValue+')">Delete</button> &nbsp;&nbsp; <button class="btn1" onclick="editServiceItem('+serviceRowCount+', '+hiddenValue+')">Edit</button></div> </div>';
+
+						document.getElementById("rowDataServices").innerHTML = document.getElementById("rowDataServices").innerHTML + divSec;
+						
+						var arr = {};
+						arr['supplierName'] = txt1;
+						arr['supplierAddress'] = txt2;
+						arr['supplierTIN'] = txt3;
+						arr['typeOfTransaction'] = txt4;
+						arr['amount'] = txt5;
+						arr['whtDeduction'] = getWHTDeduction(txt5, txt4).toFixed(2);
+						arr['hiddenValue'] = hiddenValue;
+
+						suppliersOfService.push(arr);
+					}
+				}
+
+				if(inSuppliersOfGoods != ""){
+
+					inSuppliersOfGoods = JSON.parse(inSuppliersOfGoods);
+					for (var i = 0; i < inSuppliersOfGoods.length; i++) {
+						var obj = inSuppliersOfGoods[i];
+
+						var txt1g = obj['supplierName'];
+						var txt2g = obj['supplierAddress'];
+						var txt3g = obj['supplierTIN'];
+						var txt4g = obj['typeOfTransaction'];
+						var txt5g = obj['amount'];
+						var hiddenValue = obj['hiddenValue'];
+
+						txt5g = parseInt(txt5g).toFixed(2);
+
+						goodsRowCount++;
+
+						var divSec = '<div id="goodsRow'+goodsRowCount+'"> <div class="rowTD">'+txt1g+'</div> <div class="rowTD">'+txt2g+'</div> <div class="rowTD">'+txt3g+'</div> <div class="rowTD"> '+txt4g+' </div> <div class="rowTD">'+txt5g+'</div> <div class="rowTD"> <button class="btn1" onclick="removeGoodsItem('+goodsRowCount+', '+hiddenValue+')">Delete</button>  &nbsp;&nbsp; <button class="btn1" onclick="editGoodsItem('+goodsRowCount+', '+hiddenValue+')">Edit</button></div> </div>';
+
+						document.getElementById("rowDataGoods").innerHTML = document.getElementById("rowDataGoods").innerHTML + divSec;
+						
+						var arr = {};
+						arr['supplierName'] = txt1g;
+						arr['supplierAddress'] = txt2g;
+						arr['supplierTIN'] = txt3g;
+						arr['typeOfTransaction'] = txt4g;
+						arr['amount'] = txt5g;
+						arr['whtDeduction'] = getWHTDeduction(txt5g, txt4g).toFixed(2);
+						arr['hiddenValue'] = hiddenValue;
+
+						suppliersOfGoods.push(arr);
+					}
+				}
 				
-				var arr = {};
-				arr['supplierName'] = txt1;
-				arr['supplierAddress'] = txt2;
-				arr['supplierTIN'] = txt3;
-				arr['typeOfTransaction'] = txt4;
-				arr['amount'] = txt5;
-				arr['whtDeduction'] = getWHTDeduction(txt5, txt4).toFixed(2);
-				arr['hiddenValue'] = hiddenValue;
-
-				suppliersOfService.push(arr);
 			}
 
-			for (var i = 0; i < inSuppliersOfGoods.length; i++) {
-				var obj = inSuppliersOfGoods[i];
-
-				var txt1g = obj['supplierName'];
-				var txt2g = obj['supplierAddress'];
-				var txt3g = obj['supplierTIN'];
-				var txt4g = obj['typeOfTransaction'];
-				var txt5g = obj['amount'];
-				var hiddenValue = obj['hiddenValue'];
-
-				txt5g = parseInt(txt5g).toFixed(2);
-
-				goodsRowCount++;
-
-				var divSec = '<div id="goodsRow'+goodsRowCount+'"> <div class="rowTD">'+txt1g+'</div> <div class="rowTD">'+txt2g+'</div> <div class="rowTD">'+txt3g+'</div> <div class="rowTD"> '+txt4g+' </div> <div class="rowTD">'+txt5g+'</div> <div class="rowTD"> <button class="btn1" onclick="removeGoodsItem('+goodsRowCount+', '+hiddenValue+')">Delete</button>  &nbsp;&nbsp; <button class="btn1" onclick="editGoodsItem('+goodsRowCount+', '+hiddenValue+')">Edit</button></div> </div>';
-
-				document.getElementById("rowDataGoods").innerHTML = document.getElementById("rowDataGoods").innerHTML + divSec;
-				
-				var arr = {};
-				arr['supplierName'] = txt1g;
-				arr['supplierAddress'] = txt2g;
-				arr['supplierTIN'] = txt3g;
-				arr['typeOfTransaction'] = txt4g;
-				arr['amount'] = txt5g;
-				arr['whtDeduction'] = getWHTDeduction(txt5g, txt4g).toFixed(2);
-				arr['hiddenValue'] = hiddenValue;
-
-				suppliersOfGoods.push(arr);
-			}
-		},
-		error: function(error) {
-			// alert("Please check your internet connection!");
 		}
 	});
+
+
+
+
+	// var WHTIndividual = Parse.Object.extend("WHTIndividual");
+	// var query = new Parse.Query(WHTIndividual);
+	// query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
+	// query.first({
+	// 	success: function(resultsObj) {
+	// 		document.getElementById("monthCovered").value = resultsObj.get('monthCovered');
+	// 		document.getElementById("year").value = resultsObj.get('year');
+	// 		document.getElementById("taxNo").value = resultsObj.get('taxNo');
+	// 		document.getElementById("firsTaxOffice").value = resultsObj.get('firsTaxOffice');
+	// 		document.getElementById("stateTaxFillingOffice").value = resultsObj.get('stateTaxFillingOffice');
+	// 		document.getElementById("taxStationCode").value = resultsObj.get('taxStationCode');
+
+	// 		var inSuppliersOfService = resultsObj.get('suppliersOfService');
+	// 		var inSuppliersOfGoods = resultsObj.get('suppliersOfGoods');
+
+	// 		for (var i = 0; i < inSuppliersOfService.length; i++) {
+	// 			var obj = inSuppliersOfService[i];
+
+	// 			var txt1 = obj['supplierName'];
+	// 			var txt2 = obj['supplierAddress'];
+	// 			var txt3 = obj['supplierTIN'];
+	// 			var txt4 = obj['typeOfTransaction'];
+	// 			var txt5 = obj['amount'];
+	// 			var hiddenValue = obj['hiddenValue'];
+
+	// 			txt5 = parseInt(txt5).toFixed(2);
+
+	// 			serviceRowCount++;
+
+	// 			var divSec = '<div id="serviceRow'+serviceRowCount+'"> <div class="rowTD">'+txt1+'</div> <div class="rowTD">'+txt2+'</div> <div class="rowTD">'+txt3+'</div> <div class="rowTD"> '+txt4+' </div> <div class="rowTD">'+txt5+'</div> <div class="rowTD"> <button class="btn1" onclick="removeServiceItem('+serviceRowCount+', '+hiddenValue+')">Delete</button> &nbsp;&nbsp; <button class="btn1" onclick="editServiceItem('+serviceRowCount+', '+hiddenValue+')">Edit</button></div> </div>';
+
+	// 			document.getElementById("rowDataServices").innerHTML = document.getElementById("rowDataServices").innerHTML + divSec;
+				
+	// 			var arr = {};
+	// 			arr['supplierName'] = txt1;
+	// 			arr['supplierAddress'] = txt2;
+	// 			arr['supplierTIN'] = txt3;
+	// 			arr['typeOfTransaction'] = txt4;
+	// 			arr['amount'] = txt5;
+	// 			arr['whtDeduction'] = getWHTDeduction(txt5, txt4).toFixed(2);
+	// 			arr['hiddenValue'] = hiddenValue;
+
+	// 			suppliersOfService.push(arr);
+	// 		}
+
+	// 		for (var i = 0; i < inSuppliersOfGoods.length; i++) {
+	// 			var obj = inSuppliersOfGoods[i];
+
+	// 			var txt1g = obj['supplierName'];
+	// 			var txt2g = obj['supplierAddress'];
+	// 			var txt3g = obj['supplierTIN'];
+	// 			var txt4g = obj['typeOfTransaction'];
+	// 			var txt5g = obj['amount'];
+	// 			var hiddenValue = obj['hiddenValue'];
+
+	// 			txt5g = parseInt(txt5g).toFixed(2);
+
+	// 			goodsRowCount++;
+
+	// 			var divSec = '<div id="goodsRow'+goodsRowCount+'"> <div class="rowTD">'+txt1g+'</div> <div class="rowTD">'+txt2g+'</div> <div class="rowTD">'+txt3g+'</div> <div class="rowTD"> '+txt4g+' </div> <div class="rowTD">'+txt5g+'</div> <div class="rowTD"> <button class="btn1" onclick="removeGoodsItem('+goodsRowCount+', '+hiddenValue+')">Delete</button>  &nbsp;&nbsp; <button class="btn1" onclick="editGoodsItem('+goodsRowCount+', '+hiddenValue+')">Edit</button></div> </div>';
+
+	// 			document.getElementById("rowDataGoods").innerHTML = document.getElementById("rowDataGoods").innerHTML + divSec;
+				
+	// 			var arr = {};
+	// 			arr['supplierName'] = txt1g;
+	// 			arr['supplierAddress'] = txt2g;
+	// 			arr['supplierTIN'] = txt3g;
+	// 			arr['typeOfTransaction'] = txt4g;
+	// 			arr['amount'] = txt5g;
+	// 			arr['whtDeduction'] = getWHTDeduction(txt5g, txt4g).toFixed(2);
+	// 			arr['hiddenValue'] = hiddenValue;
+
+	// 			suppliersOfGoods.push(arr);
+	// 		}
+	// 	},
+	// 	error: function(error) {
+	// 		// alert("Please check your internet connection!");
+	// 	}
+	// });
 }
 
 function getWHTDeduction(amount, type){
@@ -621,7 +728,6 @@ function functiontofindIndexByKeyValue(arraytosearch, key, valuetosearch) {
 }
 
 function exportDataEmail(){
-	document.getElementById("userEmail").value = user.get('email');
 	document.getElementById("exportEmailBtn").disabled = true;
 
 	//Services
@@ -672,7 +778,7 @@ function exportDataEmail(){
 	
 	$.ajax({
         type: 'POST',
-        url: 'archieveScripts/wht/saveHmtlEmail.php',
+        url: 'saveHmtlEmail',
         data: $("#form_name").serialize(),
         success: function(result) {
         	var res = result.split("#");
@@ -820,7 +926,7 @@ function exportDataSave(){
 
 	$.ajax({
 	    type: 'POST',
-	    url: 'saveHtmlSave',
+	    url: 'saveHmtlSave',
 	    data: $("#individual_suppliers").serialize(),
 	    success: function(result) {
 	    	var res = result.split("#");

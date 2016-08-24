@@ -1,4 +1,3 @@
-var user = getCurrentUser();
 var employeeDetails = [];
 var employeeRowCount = 0;
 
@@ -214,15 +213,23 @@ function addNewEmployee(){
 		type: 'POST',
 		data: {e_details:employeeDetails},
 		success: function(data, status) {
-			alert(data);
-			// if(data == 1){
-			// 	alert("Your vat calculation form is saved! If you think this is final version for month, please archive it. Only archived reports can be spooled later!");
- 		// 		document.getElementById("loadingSec").innerHTML = '<div style="width:100%; height:6px;"></div> Successfully Saved!';
- 		// 		exportDataSave();
-			// }
-			// else{
-			// 	document.getElementById("loadingSec").innerHTML = "";
-			// }
+			if(data == 1){
+				employeeRowCount++;
+				// var divSec = '<div id="employeeRow'+employeeRowCount+'"> <div class="rowTD">'+txt1+'</div> <div class="rowTD">'+txt2+'</div> <div class="rowTD">'+txt3+'</div> <div class="rowTD"> '+txt4+' </div> <div class="rowTD"> <button class="btn1" onclick="removeEmployee('+employeeRowCount+', '+hiddenValue+', \''+payeEmployee.id+'\')">Delete</button> &nbsp;&nbsp; <button class="btn1" onclick="editEmployee('+employeeRowCount+', '+hiddenValue+', \''+payeEmployee.id+'\')">Edit</button></div> </div>';
+
+				// document.getElementById("rowDataEmployees").innerHTML = document.getElementById("rowDataEmployees").innerHTML + divSec;
+
+				document.getElementById("txt1").value = "";
+				document.getElementById("txt2").value = "";
+				document.getElementById("txt3").value = "";
+				document.getElementById("txt4").value = "";
+
+				alert("New employee is added!");
+				window.location.reload();
+			}
+			else{
+				document.getElementById("loadingSec").innerHTML = "";
+			}
 		}
 	});
 }
@@ -254,12 +261,7 @@ function removeEmployee(id, hiddenValue, objectId){
 				type: 'POST',
 				data: {e_details:employeeDetails},
 				success: function(data, status) {
-					if(data == 1){
-						document.getElementById("employeeRow"+id).style.display = "none";
-					}
-					else{
-
-					}
+					document.getElementById("employeeRow"+id).style.display = "none";
 				}
 			});
 

@@ -17,6 +17,11 @@ class Home extends CI_Controller {
 		$this->load->view('home/vat' , $data);
 	}
 
+	public function downloadExcel(){
+		$id = $this->input->post('id');
+		echo $this->home_model->downloadExcel($id);
+	}
+
 	public function spoolReports()
 	{
 		$this->load->view('home/spool-reports');
@@ -78,31 +83,31 @@ class Home extends CI_Controller {
 		?>
 
 		<?php
-			$monthUnderReview = $_POST['monthUnderReview'];
-			$yearUnderReview = $_POST['yearUnderReview'];
-			$taxNo = $_POST['taxNo'];
-			$vatNo = $_POST['vatNo'];
-			$firsTaxOffice = $_POST['firsTaxOffice'];
-			$outputSalesIncome = $_POST['outputSalesIncome'];
-			$exemptedZero = $_POST['exemptedZero'];
-			$totalSuppliesVat = $_POST['totalSuppliesVat'];
-			$outputVat = $_POST['outputVat'];
-			$vatOnLocalSupplies = $_POST['vatOnLocalSupplies'];
-			$vatOnImportedGoods = $_POST['vatOnImportedGoods'];
-			$vatOnSubcontracted = $_POST['vatOnSubcontracted'];
-			$totalInputTaxClaimable = $_POST['totalInputTaxClaimable'];
-			$excessInputVat = $_POST['excessInputVat'];
-			$vatPayableForMonth = $_POST['vatPayableForMonth'];
-			$authorizedSignatory = $_POST['authorizedSignatory'];
-			$designation = $_POST['designation'];
-			$signature = $_POST['signature'];
-			$companyStampAndDate = $_POST['companyStampAndDate'];
+		$monthUnderReview = $_POST['monthUnderReview'];
+		$yearUnderReview = $_POST['yearUnderReview'];
+		$taxNo = $_POST['taxNo'];
+		$vatNo = $_POST['vatNo'];
+		$firsTaxOffice = $_POST['firsTaxOffice'];
+		$outputSalesIncome = $_POST['outputSalesIncome'];
+		$exemptedZero = $_POST['exemptedZero'];
+		$totalSuppliesVat = $_POST['totalSuppliesVat'];
+		$outputVat = $_POST['outputVat'];
+		$vatOnLocalSupplies = $_POST['vatOnLocalSupplies'];
+		$vatOnImportedGoods = $_POST['vatOnImportedGoods'];
+		$vatOnSubcontracted = $_POST['vatOnSubcontracted'];
+		$totalInputTaxClaimable = $_POST['totalInputTaxClaimable'];
+		$excessInputVat = $_POST['excessInputVat'];
+		$vatPayableForMonth = $_POST['vatPayableForMonth'];
+		$authorizedSignatory = $_POST['authorizedSignatory'];
+		$designation = $_POST['designation'];
+		$signature = $_POST['signature'];
+		$companyStampAndDate = $_POST['companyStampAndDate'];
 		?>
 
 		<style type="text/css">
-			table, th, td{
-				text-align: left;
-			}
+		table, th, td{
+			text-align: left;
+		}
 		</style>
 
 		<h2>VAT Report</h2><br/>
@@ -209,9 +214,9 @@ class Home extends CI_Controller {
 		<button onclick="printPage()">Print Results</button>
 
 		<script>
-			function printPage(){
-			    window.print();
-			}
+		function printPage(){
+			window.print();
+		}
 		</script>
 		
 		<?php
@@ -247,6 +252,7 @@ class Home extends CI_Controller {
 			$datas['signature'] = $this->input->post('signature');
 			$datas['company_stamp_and_date'] = $this->input->post('companyStampAndDate');
 			$datas['user_id'] = $this->session->userdata('user_id');
+			$datas['month_archived'] = $datas['month_under_review'] . " " . $datas['year_under_review'];
 			echo $this->home_model->archiveForMonth($datas);
 		}
 	}
@@ -258,31 +264,31 @@ class Home extends CI_Controller {
 		?>
 
 		<?php
-			$monthUnderReview = $_POST['monthUnderReview'];
-			$yearUnderReview = $_POST['yearUnderReview'];
-			$taxNo = $_POST['taxNo'];
-			$vatNo = $_POST['vatNo'];
-			$firsTaxOffice = $_POST['firsTaxOffice'];
-			$outputSalesIncome = $_POST['outputSalesIncome'];
-			$exemptedZero = $_POST['exemptedZero'];
-			$totalSuppliesVat = $_POST['totalSuppliesVat'];
-			$outputVat = $_POST['outputVat'];
-			$vatOnLocalSupplies = $_POST['vatOnLocalSupplies'];
-			$vatOnImportedGoods = $_POST['vatOnImportedGoods'];
-			$vatOnSubcontracted = $_POST['vatOnSubcontracted'];
-			$totalInputTaxClaimable = $_POST['totalInputTaxClaimable'];
-			$excessInputVat = $_POST['excessInputVat'];
-			$vatPayableForMonth = $_POST['vatPayableForMonth'];
-			$authorizedSignatory = $_POST['authorizedSignatory'];
-			$designation = $_POST['designation'];
-			$signature = $_POST['signature'];
-			$companyStampAndDate = $_POST['companyStampAndDate'];
+		$monthUnderReview = $_POST['monthUnderReview'];
+		$yearUnderReview = $_POST['yearUnderReview'];
+		$taxNo = $_POST['taxNo'];
+		$vatNo = $_POST['vatNo'];
+		$firsTaxOffice = $_POST['firsTaxOffice'];
+		$outputSalesIncome = $_POST['outputSalesIncome'];
+		$exemptedZero = $_POST['exemptedZero'];
+		$totalSuppliesVat = $_POST['totalSuppliesVat'];
+		$outputVat = $_POST['outputVat'];
+		$vatOnLocalSupplies = $_POST['vatOnLocalSupplies'];
+		$vatOnImportedGoods = $_POST['vatOnImportedGoods'];
+		$vatOnSubcontracted = $_POST['vatOnSubcontracted'];
+		$totalInputTaxClaimable = $_POST['totalInputTaxClaimable'];
+		$excessInputVat = $_POST['excessInputVat'];
+		$vatPayableForMonth = $_POST['vatPayableForMonth'];
+		$authorizedSignatory = $_POST['authorizedSignatory'];
+		$designation = $_POST['designation'];
+		$signature = $_POST['signature'];
+		$companyStampAndDate = $_POST['companyStampAndDate'];
 		?>
 
 		<style type="text/css">
-			table, th, td{
-				text-align: left;
-			}
+		table, th, td{
+			text-align: left;
+		}
 		</style>
 
 		<h2>VAT Report</h2><br/>
@@ -402,33 +408,33 @@ class Home extends CI_Controller {
 		?>
 
 		<?php
-			$name = "TaxAssist";
-			$userEmail = $this->session->userdata('email');
-			$monthUnderReview = $_POST['monthUnderReview'];
-			$yearUnderReview = $_POST['yearUnderReview'];
-			$taxNo = $_POST['taxNo'];
-			$vatNo = $_POST['vatNo'];
-			$firsTaxOffice = $_POST['firsTaxOffice'];
-			$outputSalesIncome = $_POST['outputSalesIncome'];
-			$exemptedZero = $_POST['exemptedZero'];
-			$totalSuppliesVat = $_POST['totalSuppliesVat'];
-			$outputVat = $_POST['outputVat'];
-			$vatOnLocalSupplies = $_POST['vatOnLocalSupplies'];
-			$vatOnImportedGoods = $_POST['vatOnImportedGoods'];
-			$vatOnSubcontracted = $_POST['vatOnSubcontracted'];
-			$totalInputTaxClaimable = $_POST['totalInputTaxClaimable'];
-			$excessInputVat = $_POST['excessInputVat'];
-			$vatPayableForMonth = $_POST['vatPayableForMonth'];
-			$authorizedSignatory = $_POST['authorizedSignatory'];
-			$designation = $_POST['designation'];
-			$signature = $_POST['signature'];
-			$companyStampAndDate = $_POST['companyStampAndDate'];
+		$name = "TaxAssist";
+		$userEmail = $this->session->userdata('email');
+		$monthUnderReview = $_POST['monthUnderReview'];
+		$yearUnderReview = $_POST['yearUnderReview'];
+		$taxNo = $_POST['taxNo'];
+		$vatNo = $_POST['vatNo'];
+		$firsTaxOffice = $_POST['firsTaxOffice'];
+		$outputSalesIncome = $_POST['outputSalesIncome'];
+		$exemptedZero = $_POST['exemptedZero'];
+		$totalSuppliesVat = $_POST['totalSuppliesVat'];
+		$outputVat = $_POST['outputVat'];
+		$vatOnLocalSupplies = $_POST['vatOnLocalSupplies'];
+		$vatOnImportedGoods = $_POST['vatOnImportedGoods'];
+		$vatOnSubcontracted = $_POST['vatOnSubcontracted'];
+		$totalInputTaxClaimable = $_POST['totalInputTaxClaimable'];
+		$excessInputVat = $_POST['excessInputVat'];
+		$vatPayableForMonth = $_POST['vatPayableForMonth'];
+		$authorizedSignatory = $_POST['authorizedSignatory'];
+		$designation = $_POST['designation'];
+		$signature = $_POST['signature'];
+		$companyStampAndDate = $_POST['companyStampAndDate'];
 		?>
 
 		<style type="text/css">
-			table, th, td{
-				text-align: left;
-			}
+		table, th, td{
+			text-align: left;
+		}
 		</style>
 		
 		<table border="1">
@@ -535,23 +541,23 @@ class Home extends CI_Controller {
 
 		// Get the content that is in the buffer and put it in your file //
 		if(file_put_contents('files/'.$docName, ob_get_contents())){    
-		    $sendto   = $userEmail;
-		    $downloadLink = "http://vi-mtaxassist.com/files/".$docName;
+			$sendto   = $userEmail;
+			$downloadLink = "http://vi-mtaxassist.com/files/".$docName;
 
-		    $subject  = "VAT Calculation Form: ".$name;
-		    $headers  = "From: " . strip_tags($name) . "\r\n";
-		    $headers .= "Reply-To: ". strip_tags($name) . "\r\n";
-		    $headers .= "MIME-Version: 1.0\r\n";
-		    $headers .= "Content-Type: text/html;charset=utf-8 \r\n";
+			$subject  = "VAT Calculation Form: ".$name;
+			$headers  = "From: " . strip_tags($name) . "\r\n";
+			$headers .= "Reply-To: ". strip_tags($name) . "\r\n";
+			$headers .= "MIME-Version: 1.0\r\n";
+			$headers .= "Content-Type: text/html;charset=utf-8 \r\n";
 
-		    $msg  = "<html><body style='font-family:Arial,sans-serif;'>";
-		    $msg .= "<h2 style='font-weight:bold;border-bottom:1px dotted #ccc;'>VAT Calculation Form</h2>\r\n";
-		    $msg .= "<p><strong>User Email: </strong> ".$userEmail."</p>\r\n\r";
-		    $msg .= "<p><a href='".$downloadLink."' target='_blank'><strong>View my calculation results!</strong></a></p>\r\n";
-		    $msg .= "</body></html>";
+			$msg  = "<html><body style='font-family:Arial,sans-serif;'>";
+			$msg .= "<h2 style='font-weight:bold;border-bottom:1px dotted #ccc;'>VAT Calculation Form</h2>\r\n";
+			$msg .= "<p><strong>User Email: </strong> ".$userEmail."</p>\r\n\r";
+			$msg .= "<p><a href='".$downloadLink."' target='_blank'><strong>View my calculation results!</strong></a></p>\r\n";
+			$msg .= "</body></html>";
 
 
-		    $this->load->library('email'); 
+			$this->load->library('email'); 
 			$this->email->from($name, 'TaxAssist');
 
 			$this->email->to($sendto);
@@ -559,9 +565,9 @@ class Home extends CI_Controller {
 
 			$this->email->message($msg); 
 
-		    if($this->email->send()){
-		    	echo "#".$docName;
-		    }
+			if($this->email->send()){
+				echo "#".$docName;
+			}
 
 		}
 	}
@@ -582,27 +588,27 @@ class Home extends CI_Controller {
 		
 		$name = "TaxAssist";
 
-	    $subject  = "Assist Me: ".$name;
-	    $headers  = "From: " . strip_tags($name) . "\r\n";
-	    $headers .= "Reply-To: ". strip_tags($name) . "\r\n";
-	    $headers .= "MIME-Version: 1.0\r\n";
-	    $headers .= "Content-Type: text/html;charset=utf-8 \r\n";
+		$subject  = "Assist Me: ".$name;
+		$headers  = "From: " . strip_tags($name) . "\r\n";
+		$headers .= "Reply-To: ". strip_tags($name) . "\r\n";
+		$headers .= "MIME-Version: 1.0\r\n";
+		$headers .= "Content-Type: text/html;charset=utf-8 \r\n";
 
-	    $msg  = "<html><body style='font-family:Arial,sans-serif;'>";
-	    $msg .= "<h2 style='font-weight:bold;border-bottom:1px dotted #ccc;'>Assist Me - ".$type."</h2>\r\n";
-	    $msg .= "<p><strong>User Email: </strong>".$userEmail."</p>\r\n\r";
-	    $msg .= "<p><strong>Looking for assistance: </strong></p>\r\n\r";
+		$msg  = "<html><body style='font-family:Arial,sans-serif;'>";
+		$msg .= "<h2 style='font-weight:bold;border-bottom:1px dotted #ccc;'>Assist Me - ".$type."</h2>\r\n";
+		$msg .= "<p><strong>User Email: </strong>".$userEmail."</p>\r\n\r";
+		$msg .= "<p><strong>Looking for assistance: </strong></p>\r\n\r";
 
-	    for ($i=0; $i < sizeof($array)-1; $i++) {
-	    	$var = $array[$i];
+		for ($i=0; $i < sizeof($array)-1; $i++) {
+			$var = $array[$i];
 
-	    	$msg .= "<p>".($i+1)."] ".$var."</p>\r\n";
-	    }
+			$msg .= "<p>".($i+1)."] ".$var."</p>\r\n";
+		}
 
-	    $msg .= "</body></html>";
+		$msg .= "</body></html>";
 
 
-	    $this->load->library('email'); 
+		$this->load->library('email'); 
 
 		$this->email->from($name, 'TaxAssist');
 		$this->email->to($sendto);
@@ -610,13 +616,13 @@ class Home extends CI_Controller {
 		$this->email->message($msg); 
 
 
-	    if($this->email->send()) {
-	    	$this->email->from($name, 'TaxAssist');
+		if($this->email->send()) {
+			$this->email->from($name, 'TaxAssist');
 			$this->email->to($sendto1);
 			$this->email->subject($subject);
 			$this->email->message($msg); 
-	        echo "true";
-	    }
+			echo "true";
+		}
 	}
 
 }

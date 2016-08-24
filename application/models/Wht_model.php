@@ -46,6 +46,20 @@ class Wht_model extends CI_Model {
                 return $data;
         }
 
+        public function loadWhtDetails(){
+            $this->db->from('wht');
+            $this->db->where('user_id',$this->session->userdata('user_id'));
+            $data = $this->db->get()->result();
+            return $data;
+        }
+
+        public function loadWhtIndividualDetails(){
+            $this->db->from('wht_individual');
+            $this->db->where('user_id',$this->session->userdata('user_id'));
+            $data = $this->db->get()->result();
+            return $data;
+        }
+
         public function archiveForMonth($datas){
                 $this->db->from('wht_archives');
                 $this->db->where('user_id',$this->session->userdata('user_id'));
@@ -60,7 +74,9 @@ class Wht_model extends CI_Model {
                         $this->db->where('user_id',$this->session->userdata('user_id'));
                         echo $this->db->update('wht_archives', $datas);
                 }
-                //$this->submitWht($datas);
+
+                unset($datas['month_archived']);
+                $this->submitWht($datas);
         }
 
          public function archiveForMonthIndividualSuppliers($datas){
@@ -77,12 +93,27 @@ class Wht_model extends CI_Model {
                         $this->db->where('user_id',$this->session->userdata('user_id'));
                         echo $this->db->update('wht_individual_archives', $datas);
                 }
-                //$this->submitWht($datas);
+                unset($datas['month_archived']);
+                $this->individualSuppliersSubmit($datas);
         }
 
         public function loadWatReportsIndividuals(){
                 $this->db->from('wht_individual_archives');
                 $this->db->where('user_id',$this->session->userdata('user_id'));
+                $data = $this->db->get()->result();
+                return json_encode($data);
+        }
+
+        public function downloadCorporateExcel($id){
+                $this->db->from('wht_archives');
+                $this->db->where('id',$id);
+                $data = $this->db->get()->result();
+                return json_encode($data);
+        }
+
+        public function downloadIndividualExcel($id){
+                $this->db->from('wht_individual_archives');
+                $this->db->where('id',$id);
                 $data = $this->db->get()->result();
                 return json_encode($data);
         }

@@ -96,16 +96,15 @@
           }
 
           document.getElementById("hiddenValue").value = valString;
-          document.getElementById("userEmail").value = getCurrentUser().get('email');
           document.getElementById("type").value = "PAYE";
 
           $.ajax({
                type: 'POST',
-               url: 'archieveScripts/assistMe.php',
+               url: 'assistMeProcess',
                data: $("#form_name").serialize(),
                success: function(result) {
                     alert("Your message is sent!");
-                    window.location = "paye-assist-me.html";
+                    window.location.reload();
                }
           });
      }

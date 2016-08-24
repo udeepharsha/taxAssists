@@ -39,16 +39,10 @@
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/paye_yearly.js"></script>
 
 <script type="text/javascript">
-	// $(document).ready(function(){
-	// 	if(isLoggedIn()){
-	// 		document.getElementById('username').innerHTML =  currentUser.get('username')+"!";
-	// 		loadEmployees();
-	// 		loadPayeDetails();
-	// 	}
-	// 	else{
-	// 		window.location = "index.html";
-	// 	}
-	// });
+	$(document).ready(function(){
+		//loadEmployees();
+		loadPayeDetails();
+	});
 </script>
 
 <!--[if lt IE 9]>
@@ -256,7 +250,7 @@
 	<br/><br/>
 
 	<div class="container">
-		<form id="form_name" name="form_name" method="POST" action="#" onsubmit="return false;">
+		<form id="form_name" name="form_name" method="POST">
 			<input type="hidden" id="userEmail" name="userEmail" />
 			<input type="hidden" id="table" name="table" />
 		
@@ -345,6 +339,7 @@
 					Tax Identification No. (FIRS)
 					<div id="taxNoDiv">
 						<input type="text" class="input-box1" name="taxNo" id="taxNo" />
+						<input type="hidden" id="yearlyValues" name="yearlyValues"/>
 					</div>
 				</div>
 
@@ -380,7 +375,7 @@
 					<div class="rowData0">
 						<div id="serviceRow1Sec">
 							<div class="rowTD0" id="employeeNameSet">
-								
+								<input type="text" id="txt1" placeholder="EmployeeName" />
 							</div>
 							<div class="rowTD0"><input type="text" id="txt2" placeholder="Total employment income for year" onkeypress="return validateNumeric(event)"/></div>
 							<div class="rowTD0"><input type="text" id="txt3" placeholder="Benefits in kind" onkeypress="return validateNumeric(event)" /></div>
@@ -419,9 +414,13 @@
 
 				<div class="twelve columns">
 		     		<div style="float:left;">
-		     			<button class="btn" onclick="saveDetails()">Calculate & Save</button>
+		     			<!-- <button class="btn" onclick="saveDetails()">Calculate & Save</button>
 
-		     			<button class="btn" onclick="archiveForYear()">Archive for year</button>
+		     			<button class="btn" onclick="archiveForYear()">Archive for year</button> -->
+
+		     			<button type="submit" name="save" class="btn" alt="Save" value="Save">Calculate & Save</button>
+						<button type="submit" name="archive" class="btn" alt="Archive" value="archive">Archive for month</button>
+		     			
 		     		</div>
 
 		     		<div style="float:left; margin-left:20px; font-size:20px;" id="loadingSec">

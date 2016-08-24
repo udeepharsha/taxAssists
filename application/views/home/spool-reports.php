@@ -111,29 +111,28 @@
 	</div>
 
 	<div class="container">
-     	<div class="three columns">
-     		<div id="mobile-navigation">
-     			<a href="#menu" class="menu-trigger"><i class="icon-reorder"></i></a> <span class="search-trigger"><i class="icon-search"></i></span>
-     		</div>
-     		<div id="logo">
-     			<h1><a href="index.html"><img src="<?php echo base_url(); ?>assets/images/logo.png" alt="Vi-m" /></a></h1>
-     		</div>
-     	</div>
-     	<div class="thirteen columns">
-     		<nav id="navigation" class="menu">
-     			<ul id="responsive">
-     				<li><a href="<?= base_url('home')?>" id="current">VAT</a> </li>
-                         <li><a href="<?= base_url('wht')?>">WHT</a></li>
-                         <li><a href="<?= base_url('paye')?>">PAYE</a></li>
-     				<li><a href="feedback.html">Feedback</a></li>
-     				<li><a href="mydetails.html">My Details</a></li>
-     				<li>
-     					<div class="login_signup_btn" onclick="logOut()">Logout</div>
-     				</li>
-     			</ul>
-     		</nav>
-     	</div>
-     </div>
+          <div class="three columns">
+               <div id="mobile-navigation">
+                    <a href="#menu" class="menu-trigger"><i class="icon-reorder"></i></a> <span class="search-trigger"><i class="icon-search"></i></span> </div>
+                    <div id="logo">
+                         <h1><a href="index.html"><img src="<?php echo base_url(); ?>assets/images/logo.png" /></a></h1>
+                    </div>
+               </div>
+               <div class="thirteen columns">
+                    <nav id="navigation" class="menu">
+                         <ul id="responsive">
+                              <li><a href="<?= base_url('home')?>" id="current">VAT</a> </li>
+                              <li><a href="<?= base_url('wht')?>">WHT</a></li>
+                              <li><a href="<?= base_url('paye')?>">PAYE</a></li>
+                              <li><a href="feedback.html">Feedback</a></li>
+                              <li><a href="mydetails.html">My Details</a></li>
+                              <li>
+                                   <div class="login_signup_btn" id="loginClick" onclick="logOut()">Logout</div>
+                              </li>
+                         </ul>
+                    </nav>
+               </div>
+          </div>
 </header>
 <!-- Header / End -->
 

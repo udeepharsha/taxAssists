@@ -48,14 +48,15 @@ class Wht extends CI_Controller {
 			$datau['firs_tax_office'] = $this->input->post('firsTaxOffice');
 			$datau['state_tax_filling_office'] = $this->input->post('stateTaxFillingOffice');
 			$datau['tax_station_code'] = $this->input->post('taxStationCode');
-			$datau['suppliers_of_service'] = '[]';
-			$datau['suppliers_of_goods'] = '[]';
+			$datau['suppliers_of_service'] = $this->input->post('suppliersOfService');
+			$datau['suppliers_of_goods'] = $this->input->post('suppliersOfGoods');
 			$datau['user_id'] = $this->session->userdata('user_id');
 			echo $this->wht_model->individualSuppliersSubmit($datau);
 		}
 	}
 
 	public function submitWht(){
+
 		if (isset($_POST['save'])) {
 			$datau['month_covered'] = $this->input->post('monthCovered');
 			$datau['year'] = $this->input->post('year');
@@ -63,8 +64,8 @@ class Wht extends CI_Controller {
 			$datau['firs_tax_office'] = $this->input->post('firsTaxOffice');
 			$datau['state_tax_filling_office'] = $this->input->post('stateTaxFillingOffice');
 			$datau['tax_station_code'] = $this->input->post('taxStationCode');
-			$datau['suppliers_of_service'] = '[]';
-			$datau['suppliers_of_goods'] = '[]';
+			$datau['suppliers_of_service'] = $this->input->post('suppliersOfService');
+			$datau['suppliers_of_goods'] = $this->input->post('suppliersOfGoods');
 			$datau['user_id'] = $this->session->userdata('user_id');
 			echo $this->wht_model->submitWht($datau);
 		}
@@ -120,6 +121,24 @@ class Wht extends CI_Controller {
 	    }
 	}
 
+	public function loadWhtDetails(){
+		echo json_encode($this->wht_model->loadWhtDetails());
+	}
+
+	public function downloadCorporateExcel(){
+		$id = $this->input->post('id');
+		echo $this->wht_model->downloadCorporateExcel($id);
+	}
+
+	public function downloadIndividualExcel(){
+		$id = $this->input->post('id');
+		echo $this->wht_model->downloadIndividualExcel($id);
+	}
+
+	public function loadWhtIndividualDetails(){
+		echo json_encode($this->wht_model->loadWhtIndividualDetails());
+	}
+
 	public function archiveForMonth(){
 		if (isset($_POST['archive'])) {
 			$datau['month_covered'] = $this->input->post('monthCovered');
@@ -128,8 +147,8 @@ class Wht extends CI_Controller {
 			$datau['firs_tax_office'] = $this->input->post('firsTaxOffice');
 			$datau['state_tax_filling_office'] = $this->input->post('stateTaxFillingOffice');
 			$datau['tax_station_code'] = $this->input->post('taxStationCode');
-			$datau['suppliers_of_service'] = '[]';
-			$datau['suppliers_of_goods'] = '[]';
+			$datau['suppliers_of_service'] = $this->input->post('suppliersOfService');
+			$datau['suppliers_of_goods'] = $this->input->post('suppliersOfGoods');
 			$datau['user_id'] = $this->session->userdata('user_id');
 			$datau['month_archived'] = $datau['month_covered']." ".$datau['year'];
 			echo $this->wht_model->archiveForMonth($datau);
@@ -144,8 +163,8 @@ class Wht extends CI_Controller {
 			$datau['firs_tax_office'] = $this->input->post('firsTaxOffice');
 			$datau['state_tax_filling_office'] = $this->input->post('stateTaxFillingOffice');
 			$datau['tax_station_code'] = $this->input->post('taxStationCode');
-			$datau['suppliers_of_service'] = '[]';
-			$datau['suppliers_of_goods'] = '[]';
+			$datau['suppliers_of_service'] = $this->input->post('suppliersOfService');
+			$datau['suppliers_of_goods'] = $this->input->post('suppliersOfGoods');
 			$datau['user_id'] = $this->session->userdata('user_id');
 			$datau['month_archived'] = $datau['month_covered']." ".$datau['year'];
 			echo $this->wht_model->archiveForMonthIndividualSuppliers($datau);
