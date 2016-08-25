@@ -4,7 +4,6 @@ var serviceRowCount = 0;
 var goodsRowCount = 0;
 var isArchived = false;
 var archivedDocument = "";
-var base_url = 'http://localhost/TaxAssists/';
 
 $(document).ready(function(){
 	"use strict";

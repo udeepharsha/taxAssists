@@ -167,10 +167,10 @@
                          <li><a href="<?= base_url('home')?>">VAT</a> </li>
                          <li><a href="<?= base_url('wht')?>">WHT</a></li>
                       	<li><a href="<?= base_url('paye')?>" id="current">PAYE</a></li>
-                      	<li><a href="feedback.html">Feedback</a></li>
-                      	<li><a href="mydetails.html">My Details</a></li>
+                      	<li><a href="<?= base_url('home/feedBack')?>">Feedback</a></li>
+                         <li><a href="<?= base_url('home/myDetails')?>">My Details</a></li>
                          <li>
-                              <div class="login_signup_btn" id="loginClick" onclick="logOut()">Logout</div>
+                              <div class="login_signup_btn" id="loginClick" onclick="logOutIndex()">Logout</div>
                   		</li>
                  	</ul>
                </nav>

@@ -51,6 +51,25 @@ class Paye extends CI_Controller {
 		echo json_encode($this->paye_model->loadPayeDetailsYearly() );
 	}
 
+	public function loadEmployees(){
+		echo json_encode($this->paye_model->loadEmployees() );
+	}
+
+	public function loadPayeDetailsYearlyIdentity(){
+		$id = $this->input->post('id');
+		echo json_encode($this->paye_model->loadPayeDetailsYearlyIdentity($id) );
+	}
+
+	public function loadPayeDetailsMonthly(){
+		$id = $this->input->post('id');
+		echo json_encode($this->paye_model->loadPayeDetailsMonthly($id) );
+	}
+
+	public function calculateCumulativeFiguresByEmployee(){
+		$year = $this->input->post('year');
+		echo json_encode($this->paye_model->calculateCumulativeFiguresByEmployee($year) );
+	}
+
 	public function submitPayMonthly(){
 		if (isset($_POST['save'])) {
 			$datam['monthly_values'] = $this->input->post('monthlyValues');
@@ -73,7 +92,6 @@ class Paye extends CI_Controller {
 			$datam['tax_id'] = $this->input->post('taxId');
 			$datam['tax_no'] = $this->input->post('taxNo');
 			$datam['year'] = $this->input->post('year');
-			$datam['month'] = $this->input->post('month');
 			$datam['user_id'] = $this->session->userdata('user_id');
 			
 			echo $this->paye_model->submitPayYearly($datam);
@@ -116,7 +134,6 @@ class Paye extends CI_Controller {
 			$datam['tax_id'] = $this->input->post('taxId');
 			$datam['tax_no'] = $this->input->post('taxNo');
 			$datam['year'] = $this->input->post('year');
-			$datam['month'] = $this->input->post('month');
 			$datam['user_id'] = $this->session->userdata('user_id');
 			echo $this->paye_model->archiveForYear($datam);
 		}

@@ -74,7 +74,7 @@ class User extends CI_Controller {
 	public function registerIndividuals(){
 
 		$data = new stdClass();
-		$this -> form_validation -> set_rules('emailAddressIndividual', 'Email', 'trim|required|valid_email|is_unique[user.email]');
+		$this -> form_validation -> set_rules('emailAddressIndividual', 'Email', 'trim|required|valid_email|is_unique[users.email]');
 
 		if ($this -> form_validation -> run() === false) {
 			$errors = $this->form_validation->error_array();
@@ -98,7 +98,7 @@ class User extends CI_Controller {
 	public function registerOrganizations(){
 
 		$data = new stdClass();
-		$this -> form_validation -> set_rules('emailAddress', 'Email', 'trim|required|valid_email|is_unique[user.email]');
+		$this -> form_validation -> set_rules('emailAddress', 'Email', 'trim|required|valid_email|is_unique[users.email]');
 
 		if ($this -> form_validation -> run() === false) {
 			$errors = $this->form_validation->error_array();

@@ -1,6 +1,5 @@
 var isArchived = false;
 var archivedDocument = "";
-var base_url = 'http://localhost/TaxAssists/';
 
 $(window).load(function() {
 	"use strict";
@@ -23,86 +22,7 @@ function searchForVatReports(){
 	loadReports(startMonth, endMonth, startYear, toYear);
 }
 
-function loadReports2(startMonth, endMonth, startYear, toYear){
-	var VATArchives = Parse.Object.extend("VATArchives");
-	var query = new Parse.Query(VATArchives);
-	query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-	query.find({
-		success: function(results) {
-			document.getElementById("resultsSection").innerHTML = "";
-
-			var count = 0;
-
-			for (var i = 0; i < results.length; i++) {
-				var obj = results[i];
-
-				var year = obj.get('yearUnderReview');
-				var month = obj.get('monthUnderReview');
-
-				var startDate = new Date(startYear, (parseInt(startMonth) - 1), 1);
-				var endDate = new Date(toYear, (parseInt(endMonth) - 1), 1);
-
-				var currentDate = new Date(year, returnMonthValue(month), 1);
-
-				if(currentDate >= startDate && currentDate <= endDate){
-					var secDiv = '<div class="twelve columns spoolResultsItem"> <a href="#" onclick="downloadExcel(\''+obj.id+'\')">&#8594; '+obj.get('monthArchived')+'</a> </div><br/>';
-
-					document.getElementById("resultsSection").innerHTML = document.getElementById("resultsSection").innerHTML + secDiv;
-					
-					count++;
-				}
-			}
-
-			if(count == 0){
-				document.getElementById("resultsSection").innerHTML = "&nbsp;&nbsp; No reports available!"
-			}
-		},
-		error: function(error) {
-			alert(error.message);
-			document.getElementById("loadingSec").innerHTML = "";
-		}
-	});
-}
-
 function loadReports(startMonth, endMonth, startYear, toYear){
-	// var VATArchives = Parse.Object.extend("VATArchives");
-	// var query = new Parse.Query(VATArchives);
-	// query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-	// query.find({
-	// 	success: function(results) {
-	// 		document.getElementById("resultsSection").innerHTML = "";
-
-	// 		var count = 0;
-
-	// 		for (var i = 0; i < results.length; i++) {
-	// 			var obj = results[i];
-
-	// 			var year = obj.get('yearUnderReview');
-	// 			var month = obj.get('monthUnderReview');
-
-	// 			var startDate = new Date(startYear, (parseInt(startMonth) - 1), 1);
-	// 			var endDate = new Date(toYear, (parseInt(endMonth) - 1), 1);
-
-	// 			var currentDate = new Date(year, returnMonthValue(month), 1);
-
-	// 			if(currentDate >= startDate && currentDate <= endDate){
-	// 				var secDiv = '<div class="twelve columns spoolResultsItem"> <a href="#" onclick="downloadExcel(\''+obj.id+'\')">&#8594; '+obj.get('monthArchived')+'</a> </div><br/>';
-
-	// 				document.getElementById("resultsSection").innerHTML = document.getElementById("resultsSection").innerHTML + secDiv;
-					
-	// 				count++;
-	// 			}
-	// 		}
-
-	// 		if(count == 0){
-	// 			document.getElementById("resultsSection").innerHTML = "&nbsp;&nbsp; No reports available!"
-	// 		}
-	// 	},
-	// 	error: function(error) {
-	// 		alert(error.message);
-	// 		document.getElementById("loadingSec").innerHTML = "";
-	// 	}
-	// });
 	$.ajax({
         type: 'POST',
         url: 'loadReports',
@@ -182,7 +102,6 @@ function downloadExcel(identity){
 	        });
         }
     });
-
 }
 
 function returnMonthValue(month){

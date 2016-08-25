@@ -1,3 +1,23 @@
+<?php
+     if(!isset($_SESSION)) 
+    { 
+     session_start();
+    }
+
+    if( !isset($_SESSION["logged_in"]) ) {
+     header("Location: ".base_url()."");
+    } 
+    else{
+     $role_id = $_SESSION["role_id"];
+        if( ($role_id == 1) ||  ($role_id == 2) ){
+        }
+        else{
+            header("Location: ".base_url()."");
+        }
+    }
+
+?>
+
 <!DOCTYPE html>
 <!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
 <!--[if (gte IE 9)|!(IE)]><!-->
@@ -40,7 +60,7 @@
 
 <script type="text/javascript">
 	$(document).ready(function(){
-		//loadEmployees();
+		loadEmployees();
 		loadPayeDetails();
 	});
 </script>
@@ -75,7 +95,7 @@
      <div class="topbar">
           <div class="container">
                <div class="eight columns call">
-                    Welcome <span id="username"></span>
+                    Welcome <span id="username"><?php echo $_SESSION['username'] ?></span>
                </div>
                <div class="eight columns">
                     <ul class="social-icons right">
@@ -101,13 +121,13 @@
           <div class="thirteen columns">
                <nav id="navigation" class="menu">
                     <ul id="responsive">
-                         <li><a href="<?= base_url('home')?>">VAT</a> </li>
-                         <li><a href="<?= base_url('wht')?>">WHT</a></li>
+                        <li><a href="<?= base_url('home')?>">VAT</a> </li>
+                        <li><a href="<?= base_url('wht')?>">WHT</a></li>
                       	<li><a href="<?= base_url('paye')?>" id="current">PAYE</a></li>
-                      	<li><a href="feedback.html">Feedback</a></li>
-                      	<li><a href="mydetails.html">My Details</a></li>
-                         <li>
-                              <div class="login_signup_btn" id="loginClick" onclick="logOut()">Logout</div>
+                      	<li><a href="<?= base_url('home/feedBack')?>">Feedback</a></li>
+     					<li><a href="<?= base_url('home/myDetails')?>">My Details</a></li>
+                        <li>
+                              <div class="login_signup_btn" id="loginClick" onclick="logOutIndex()">Logout</div>
                   		</li>
                  	</ul>
                </nav>

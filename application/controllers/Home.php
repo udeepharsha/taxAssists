@@ -17,6 +17,16 @@ class Home extends CI_Controller {
 		$this->load->view('home/vat' , $data);
 	}
 
+	public function feedBack()
+	{
+		$this->load->view('feedback');
+	}
+
+	public function myDetails()
+	{
+		$this->load->view('mydetails');
+	}
+
 	public function downloadExcel(){
 		$id = $this->input->post('id');
 		echo $this->home_model->downloadExcel($id);
@@ -31,6 +41,54 @@ class Home extends CI_Controller {
 	{
 		$this->load->view('home/assist-me');
 	}
+
+	public function loadMyDetails(){
+		echo $this->home_model->loadMyDetails();
+	}
+
+	public function loadOrganizationDetails(){
+		echo $this->home_model->loadOrganizationDetails();
+	}
+
+	public function saveMyDetailsOrganization(){
+		$nam_of_organizaion = $this->input->post('name_org');
+		$type_of_organization = $this->input->post('type_org');
+		$nature_of_business_activity = $this->input->post('nature_bactivity');
+		$business_address = $this->input->post('b_adress');
+		$contact_person = $this->input->post('c_person');
+		$designation = $this->input->post('des');
+		$email = $this->input->post('email');
+		$password = $this->input->post('u_pass');
+
+		$datao['nam_of_organizaion'] = $nam_of_organizaion;
+		$datao['type_of_organization'] = $type_of_organization;
+		$datao['nature_of_business_activity'] = $nature_of_business_activity;
+		$datao['business_address'] = $business_address;
+		$datao['contact_person'] = $contact_person;
+		$datao['designation'] = $designation;
+
+		$datap['email'] = $email;
+
+		if($password != ""){
+			$datap['password'] = $this->hash_password($password);
+		}
+
+		echo $this->home_model->saveMyDetailsOrganization($datao , $datap);
+	}
+
+	public function saveMyDetailsIndividual(){
+		$email = $this->input->post('email');
+		$datap['email'] = $email;
+		$password = $this->input->post('u_pass');
+		if($password != ""){
+			$datap['password'] = $this->hash_password($password);
+		}
+		echo $this->home_model->saveMyDetailsIndividual($datap);
+	}
+
+  	private function hash_password($password) {
+    	return password_hash($password, PASSWORD_BCRYPT);
+  	}
 
 	public function logOut()
 	{
@@ -252,7 +310,7 @@ class Home extends CI_Controller {
 			$datas['signature'] = $this->input->post('signature');
 			$datas['company_stamp_and_date'] = $this->input->post('companyStampAndDate');
 			$datas['user_id'] = $this->session->userdata('user_id');
-			$datas['month_archived'] = $datas['month_under_review'] . " " . $datas['year_under_review'];
+			$datas['month_archived'] = $datas['month_under_review']. " " .$datas['year_under_review'];
 			echo $this->home_model->archiveForMonth($datas);
 		}
 	}
@@ -615,6 +673,88 @@ class Home extends CI_Controller {
 		$this->email->subject($subject);
 		$this->email->message($msg); 
 
+
+		if($this->email->send()) {
+			$this->email->from($name, 'TaxAssist');
+			$this->email->to($sendto1);
+			$this->email->subject($subject);
+			$this->email->message($msg); 
+			echo "true";
+		}
+	}
+
+	public function sendFeedback(){
+		$form1_content = @$_POST['form1_content'];
+	    $userEmail = $this->session->userdata('email');
+
+		$sendto = 'taxassist@vi-m.com';
+	    $sendto1 = 'taxassist2@vi-m.com';
+	    
+		$name = "TaxAssist";
+
+	    $subject  = "Feedback: ".$name;
+	    $headers  = "From: " . strip_tags($name) . "\r\n";
+	    $headers .= "Reply-To: ". strip_tags($name) . "\r\n";
+	    $headers .= "MIME-Version: 1.0\r\n";
+	    $headers .= "Content-Type: text/html;charset=utf-8 \r\n";
+
+	    $msg  = "<html><body style='font-family:Arial,sans-serif;'>";
+	    $msg .= "<h2 style='font-weight:bold;border-bottom:1px dotted #ccc;'>Feedback</h2>\r\n";
+	    $msg .= "<p><strong>Feedback Message From: </strong>".$userEmail."</p>\r\n\r";
+	    $msg .= "<p>".$form1_content."</p>\r\n";
+	    $msg .= "</body></html>";
+
+	    $this->load->library('email'); 
+		$this->email->from($name, 'TaxAssist');
+		$this->email->to($sendto);
+		$this->email->subject($subject);
+		$this->email->message($msg); 
+
+		if($this->email->send()) {
+			$this->email->from($name, 'TaxAssist');
+			$this->email->to($sendto1);
+			$this->email->subject($subject);
+			$this->email->message($msg); 
+			echo "true";
+		}
+	}
+
+	public function myDetailsProcess(){
+		$hiddenValue = @$_POST['hiddenValue'];
+		$userEmail = $this->session->userdata('email');
+
+		$array = explode("#", $hiddenValue);
+
+		$sendto = 'taxassist@vi-m.com';
+		$sendto1 = 'taxassist2@vi-m.com';
+		
+		$name = "TaxAssist";
+
+	    $subject  = "Request Assistance: ".$name;
+	    $headers  = "From: " . strip_tags($name) . "\r\n";
+	    $headers .= "Reply-To: ". strip_tags($name) . "\r\n";
+	    $headers .= "MIME-Version: 1.0\r\n";
+	    $headers .= "Content-Type: text/html;charset=utf-8 \r\n";
+
+	    $msg  = "<html><body style='font-family:Arial,sans-serif;'>";
+	    $msg .= "<h2 style='font-weight:bold;border-bottom:1px dotted #ccc;'>Not registered for tax? Request assistance</h2>\r\n";
+	    $msg .= "<p><strong>User Email: </strong>".$userEmail."</p>\r\n\r";
+	    $msg .= "<p><strong>Looking for assistance: </strong></p>\r\n\r";
+
+	    for ($i=0; $i < sizeof($array); $i++) {
+	    	$var = $array[$i];
+
+	    	$msg .= "<p>".($i+1)."] ".$var."</p>\r\n";
+	    }
+
+	    $msg .= "</body></html>";
+
+
+	    $this->load->library('email'); 
+		$this->email->from($name, 'TaxAssist');
+		$this->email->to($sendto);
+		$this->email->subject($subject);
+		$this->email->message($msg); 
 
 		if($this->email->send()) {
 			$this->email->from($name, 'TaxAssist');

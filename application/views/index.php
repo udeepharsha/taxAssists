@@ -1,13 +1,24 @@
+<?php
+     if(!isset($_SESSION)) 
+    { 
+     session_start();
+    }
+
+    if( !isset($_SESSION["logged_in"]) ) {
+    } 
+    else{
+     	$role_id = $_SESSION["role_id"];
+        if( ($role_id == 1) ||  ($role_id == 2) ){
+        	header("Location: ".base_url()."home");
+        }
+    }
+
+?>
+
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/jquery-2.2.4.min.js" language="javascript"></script> 
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/login_signup.js"></script>
+<script type="text/javascript" src="<?php echo base_url(); ?>assets/js/common.js"></script>
 
-// <script type="text/javascript">
-// 	$(document).ready(function(){
-// 		if(isLoggedIn()){
-// 			window.location = "vat.html";
-// 		}
-// 	});
-// </script>
 
 <!DOCTYPE html>
 <html>

@@ -1,3 +1,23 @@
+<?php
+     if(!isset($_SESSION)) 
+    { 
+     session_start();
+    }
+
+    if( !isset($_SESSION["logged_in"]) ) {
+     header("Location: ".base_url()."");
+    } 
+    else{
+     $role_id = $_SESSION["role_id"];
+        if( ($role_id == 1) ||  ($role_id == 2) ){
+        }
+        else{
+            header("Location: ".base_url()."");
+        }
+    }
+
+?>
+
 <!DOCTYPE html>
 <!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
 <!--[if (gte IE 9)|!(IE)]><!-->
@@ -56,7 +76,7 @@
      <div class="topbar">
           <div class="container">
                <div class="eight columns call">
-                    Welcome <span id="username"></span>
+                    Welcome <span id="username"><?php echo $_SESSION['username'] ?></span>
                </div>
                <div class="eight columns">
                     <ul class="social-icons right">
@@ -85,10 +105,10 @@
                         <li><a href="<?= base_url('home')?>">VAT</a> </li>
                         <li><a href="<?= base_url('wht')?>" id="current">WHT</a></li>
                       	<li><a href="<?= base_url('paye')?>">PAYE</a></li>
-                      	<li><a href="feedback.html">Feedback</a></li>
-                      	<li><a href="mydetails.html">My Details</a></li>
+                      	<li><a href="<?= base_url('home/feedBack')?>">Feedback</a></li>
+     					<li><a href="<?= base_url('home/myDetails')?>">My Details</a></li>
                         <li>
-                              <div class="login_signup_btn" id="loginClick" onclick="logOut()">Logout</div>
+                              <div class="login_signup_btn" id="loginClick" onclick="logOutIndex()">Logout</div>
                   		</li>
                  	</ul>
                </nav>
@@ -551,6 +571,7 @@
     </div>
     <!-- Container / End -->
 </div>
+
 
 <script src="<?php echo base_url(); ?>assets/scripts/jquery.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/scripts/jquery.themepunch.plugins.min.js"></script>

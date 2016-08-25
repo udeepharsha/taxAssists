@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 23, 2016 at 01:11 AM
+-- Generation Time: Aug 25, 2016 at 12:45 AM
 -- Server version: 5.7.9
 -- PHP Version: 7.0.0
 
@@ -61,14 +61,14 @@ CREATE TABLE IF NOT EXISTS `individual` (
   `user_id` int(11) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `individual`
 --
 
 INSERT INTO `individual` (`user_id`, `id`) VALUES
-(9, 4);
+(10, 5);
 
 -- --------------------------------------------------------
 
@@ -87,14 +87,14 @@ CREATE TABLE IF NOT EXISTS `organization` (
   `contact_person` varchar(255) NOT NULL,
   `designation` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `organization`
 --
 
 INSERT INTO `organization` (`user_id`, `id`, `nam_of_organizaion`, `type_of_organization`, `nature_of_business_activity`, `business_address`, `contact_person`, `designation`) VALUES
-(8, 4, 'wew', 'Unincorporated', 'ewew', 'ew', 'eweewe', 'wew');
+(11, 5, 'elegance technology', 'Incorporated', 'realtime busness', 'rawathawathhhe,moratuwa', 'hiran', 'software engineer');
 
 -- --------------------------------------------------------
 
@@ -108,14 +108,14 @@ CREATE TABLE IF NOT EXISTS `paye_employee` (
   `employee_details` varchar(1000) NOT NULL,
   `user_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `paye_employee`
 --
 
 INSERT INTO `paye_employee` (`id`, `employee_details`, `user_id`) VALUES
-(5, '[{"employeeName":"121","taxIdentificationNumber":"121","designation":"1212","employeeAddress":"2121","hiddenValue":"2453284663752726000"},{"employeeName":"sds","taxIdentificationNumber":"s","designation":"dsd","employeeAddress":"sdds","hiddenValue":"2776941924678438000"}]', 8);
+(6, '[{"employeeName":"emp1","taxIdentificationNumber":"1234","designation":"des4","employeeAddress":"ad7","hiddenValue":"4934292855481841000"},{"employeeName":"ec44","taxIdentificationNumber":"2344","designation":"de5","employeeAddress":"ad4","hiddenValue":"1490596038271834000"}]', 10);
 
 -- --------------------------------------------------------
 
@@ -133,16 +133,16 @@ CREATE TABLE IF NOT EXISTS `paye_monthly` (
   `tax_id` varchar(255) DEFAULT NULL,
   `state_bir` varchar(255) DEFAULT NULL,
   `tax_station_code` varchar(255) DEFAULT NULL,
-  `monthly_values` varchar(255) DEFAULT NULL,
+  `monthly_values` longtext,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `paye_monthly`
 --
 
 INSERT INTO `paye_monthly` (`id`, `user_id`, `month`, `year`, `tax_no`, `tax_id`, `state_bir`, `tax_station_code`, `monthly_values`) VALUES
-(1, 8, NULL, NULL, '', '', '', '', '[]');
+(4, 10, 'January', '2016', '345', '123', 'st1', 'code1', '[{"employeeName":"emp1","totalEmployment":"122","benefitsInKind":"433","incomeFromSource":"340","pension":"Yes","cumulativeNetEmoluments":841,"cumulativeTaxFreeEmoluments":16900,"cumulativeTaxableEmoluments":-16005,"correspondingCumulativeTax":9.5,"hiddenValue":1373650119412879000}]');
 
 -- --------------------------------------------------------
 
@@ -160,16 +160,69 @@ CREATE TABLE IF NOT EXISTS `paye_monthly_archives` (
   `tax_id` varchar(255) DEFAULT NULL,
   `state_bir` varchar(255) DEFAULT NULL,
   `tax_station_code` varchar(255) DEFAULT NULL,
-  `monthly_values` varchar(255) DEFAULT NULL,
+  `monthly_values` longtext,
+  `month_archived` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `paye_monthly_archives`
 --
 
-INSERT INTO `paye_monthly_archives` (`id`, `user_id`, `month`, `year`, `tax_no`, `tax_id`, `state_bir`, `tax_station_code`, `monthly_values`) VALUES
-(2, 8, NULL, NULL, '', '', '', '', '[]');
+INSERT INTO `paye_monthly_archives` (`id`, `user_id`, `month`, `year`, `tax_no`, `tax_id`, `state_bir`, `tax_station_code`, `monthly_values`, `month_archived`) VALUES
+(4, 10, 'January', '2016', '345', '123', 'st1', 'code1', '[{"employeeName":"emp1","totalEmployment":"122","benefitsInKind":"433","incomeFromSource":"340","pension":"Yes","cumulativeNetEmoluments":841,"cumulativeTaxFreeEmoluments":16900,"cumulativeTaxableEmoluments":-16005,"correspondingCumulativeTax":9.5,"hiddenValue":1373650119412879000}]', 'January 2016');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `paye_yearly`
+--
+
+DROP TABLE IF EXISTS `paye_yearly`;
+CREATE TABLE IF NOT EXISTS `paye_yearly` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `year` varchar(255) DEFAULT NULL,
+  `tax_no` varchar(255) DEFAULT NULL,
+  `tax_id` varchar(255) DEFAULT NULL,
+  `state_bir` varchar(255) DEFAULT NULL,
+  `tax_station_code` varchar(255) DEFAULT NULL,
+  `yearly_values` longtext,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `paye_yearly`
+--
+
+INSERT INTO `paye_yearly` (`id`, `user_id`, `year`, `tax_no`, `tax_id`, `state_bir`, `tax_station_code`, `yearly_values`) VALUES
+(11, 10, '2016', '1234', '122', '122', 'tax', '[{"employeeName":"emp1","totalEmployment":"123","benefitsInKind":"122","incomeFromSource":"1222","pension":"Yes","hiddenValue":2668936711011584500}]');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `paye_yearly_archives`
+--
+
+DROP TABLE IF EXISTS `paye_yearly_archives`;
+CREATE TABLE IF NOT EXISTS `paye_yearly_archives` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `year` varchar(255) DEFAULT NULL,
+  `tax_no` varchar(255) DEFAULT NULL,
+  `tax_id` varchar(255) DEFAULT NULL,
+  `state_bir` varchar(255) DEFAULT NULL,
+  `tax_station_code` varchar(255) DEFAULT NULL,
+  `yearly_values` longtext NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `paye_yearly_archives`
+--
+
+INSERT INTO `paye_yearly_archives` (`id`, `user_id`, `year`, `tax_no`, `tax_id`, `state_bir`, `tax_station_code`, `yearly_values`) VALUES
+(11, 10, '2016', '1234', '122', '122', 'tax', '[{"employeeName":"emp1","totalEmployment":"123","benefitsInKind":"122","incomeFromSource":"1222","pension":"Yes","hiddenValue":2668936711011584500}]');
 
 -- --------------------------------------------------------
 
@@ -209,15 +262,15 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email_verified_hash` varchar(255) NOT NULL,
   `created_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `role_id`, `is_email_verified`, `email_verified_hash`, `created_at`) VALUES
-(8, 'ewwe', 'udeepharsha@gmail.com', '$2y$10$5H4bhKSW/79zaPVlece.p.lKB8i61D.sc3Z6bqYg.YW3ZlZ3J7JHm', 2, 'true', 'b056eb1587586b71e2da9acfe4fbd19e', '2016-08-21 20:48:33'),
-(9, 'udeepha', 'udeepha@gmail.com', '$2y$10$4PkdwJ3d8nn086n3bTrV7.Qo/6QV.o0IMjmnn9ybIrJHj/pqMn9J.', 1, 'true', 'cdc0d6e63aa8e41c89689f54970bb35f', '2016-08-21 20:48:48');
+(11, 'udeepharshaorg', 'udeepharshaorg@gmail.com', '$2y$10$154drC8pmtfy4fIIp0IZjeIJPH3piQL1OFxlQLt6Vx4VxVV9vDNnO', 2, 'true', '185c29dc24325934ee377cfda20e414c', '2016-08-24 23:49:02'),
+(10, 'udeepharsha', 'udeepharsha@gmail.com', '$2y$10$qRn/uULaL0DRdImZiyUpIOXZcA54vwuqZkic2qGEHzF2CW/7i.A3C', 1, 'true', 'b3e3e393c77e35a4a3f3cbd1e429b5dc', '2016-08-24 20:02:54');
 
 -- --------------------------------------------------------
 
@@ -249,14 +302,14 @@ CREATE TABLE IF NOT EXISTS `vat` (
   `tax_no` varchar(255) DEFAULT NULL,
   `user_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `vat`
 --
 
 INSERT INTO `vat` (`id`, `month_under_review`, `year_under_review`, `vat_no`, `firs_tax_office`, `output_sales_income`, `exempted_zero`, `total_supplies_vat`, `output_vat`, `vat_on_local_supplies`, `vat_on_imported_goods`, `vat_on_subcontracted`, `total_input_tax_claimable`, `excess_input_vat`, `vat_payable_for_month`, `authorized_signatory`, `designation`, `signature`, `company_stamp_and_date`, `tax_no`, `user_id`) VALUES
-(11, 'January', '2050', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 8);
+(13, 'August', '2016', '2345', 'taxoffice1', '122', '33', '89', '4.45', '120', '22', '45', '187', '12', '-194.55', 'signatory', 'des', 'sig', 'date', '1234', 10);
 
 -- --------------------------------------------------------
 
@@ -287,15 +340,16 @@ CREATE TABLE IF NOT EXISTS `vat_archives` (
   `company_stamp_and_date` varchar(255) DEFAULT NULL,
   `tax_no` varchar(255) DEFAULT NULL,
   `user_id` int(11) NOT NULL,
+  `month_archived` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `vat_archives`
 --
 
-INSERT INTO `vat_archives` (`id`, `month_under_review`, `year_under_review`, `vat_no`, `firs_tax_office`, `output_sales_income`, `exempted_zero`, `total_supplies_vat`, `output_vat`, `vat_on_local_supplies`, `vat_on_imported_goods`, `vat_on_subcontracted`, `total_input_tax_claimable`, `excess_input_vat`, `vat_payable_for_month`, `authorized_signatory`, `designation`, `signature`, `company_stamp_and_date`, `tax_no`, `user_id`) VALUES
-(12, 'January', '2050', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 8);
+INSERT INTO `vat_archives` (`id`, `month_under_review`, `year_under_review`, `vat_no`, `firs_tax_office`, `output_sales_income`, `exempted_zero`, `total_supplies_vat`, `output_vat`, `vat_on_local_supplies`, `vat_on_imported_goods`, `vat_on_subcontracted`, `total_input_tax_claimable`, `excess_input_vat`, `vat_payable_for_month`, `authorized_signatory`, `designation`, `signature`, `company_stamp_and_date`, `tax_no`, `user_id`, `month_archived`) VALUES
+(16, 'August', '2016', '2345', 'taxoffice1', '122', '33', '89', '4.45', '120', '22', '45', '187', '12', '-194.55', 'signatory', 'des', 'sig', 'date', '1234', 10, 'August 2016');
 
 -- --------------------------------------------------------
 
@@ -313,17 +367,17 @@ CREATE TABLE IF NOT EXISTS `wht` (
   `firs_tax_office` varchar(255) DEFAULT NULL,
   `state_tax_filling_office` varchar(255) DEFAULT NULL,
   `tax_station_code` varchar(255) DEFAULT NULL,
-  `suppliers_of_service` varchar(255) DEFAULT NULL,
-  `suppliers_of_goods` varchar(255) DEFAULT NULL,
+  `suppliers_of_service` longtext,
+  `suppliers_of_goods` longtext,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `wht`
 --
 
 INSERT INTO `wht` (`id`, `user_id`, `month_covered`, `year`, `tax_no`, `firs_tax_office`, `state_tax_filling_office`, `tax_station_code`, `suppliers_of_service`, `suppliers_of_goods`) VALUES
-(2, '8', 'January', '2050', '123', '', '', '', '[]', '[]');
+(20, '10', 'January', '2016', '1234', 'office', 'office2', '3344', '[{"supplierName":"mysup","supplierAddress":"adress","supplierTIN":"ttin","typeOfTransaction":"Consultancy Service","amount":"12500.00","whtDeduction":"1250.00","hiddenValue":9492859331437212000}]', '[{"supplierName":"good","supplierAddress":"ad3","supplierTIN":"tin2","typeOfTransaction":"Supply of goods","amount":"56000.00","whtDeduction":"2800.00","hiddenValue":1873758283119464400},{"supplierName":"goo2","supplierAddress":"ad5","supplierTIN":"tin5","typeOfTransaction":"Supply of goods","amount":"57000.00","whtDeduction":"2850.00","hiddenValue":1847418910252776000}]');
 
 -- --------------------------------------------------------
 
@@ -341,18 +395,18 @@ CREATE TABLE IF NOT EXISTS `wht_archives` (
   `firs_tax_office` varchar(255) DEFAULT NULL,
   `state_tax_filling_office` varchar(255) DEFAULT NULL,
   `tax_station_code` varchar(255) DEFAULT NULL,
-  `suppliers_of_service` varchar(255) DEFAULT NULL,
-  `suppliers_of_goods` varchar(255) DEFAULT NULL,
+  `suppliers_of_service` longtext,
+  `suppliers_of_goods` longtext,
   `month_archived` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `wht_archives`
 --
 
 INSERT INTO `wht_archives` (`id`, `user_id`, `month_covered`, `year`, `tax_no`, `firs_tax_office`, `state_tax_filling_office`, `tax_station_code`, `suppliers_of_service`, `suppliers_of_goods`, `month_archived`) VALUES
-(3, '8', 'January', '2050', '123', '', '', '', '[]', '[]', 'January 2050');
+(13, '10', 'January', '2016', '1234', 'office', 'office2', '3344', '[{"supplierName":"mysup","supplierAddress":"adress","supplierTIN":"ttin","typeOfTransaction":"Consultancy Service","amount":"12500.00","whtDeduction":"1250.00","hiddenValue":9492859331437212000}]', '[{"supplierName":"good","supplierAddress":"ad3","supplierTIN":"tin2","typeOfTransaction":"Supply of goods","amount":"56000.00","whtDeduction":"2800.00","hiddenValue":1873758283119464400},{"supplierName":"goo2","supplierAddress":"ad5","supplierTIN":"tin5","typeOfTransaction":"Supply of goods","amount":"57000.00","whtDeduction":"2850.00","hiddenValue":1847418910252776000}]', 'January 2016');
 
 -- --------------------------------------------------------
 
@@ -370,17 +424,10 @@ CREATE TABLE IF NOT EXISTS `wht_individual` (
   `firs_tax_office` varchar(255) DEFAULT NULL,
   `state_tax_filling_office` varchar(255) DEFAULT NULL,
   `tax_station_code` varchar(255) DEFAULT NULL,
-  `suppliers_of_service` varchar(255) DEFAULT NULL,
-  `suppliers_of_goods` varchar(255) DEFAULT NULL,
+  `suppliers_of_service` longtext,
+  `suppliers_of_goods` longtext,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `wht_individual`
---
-
-INSERT INTO `wht_individual` (`id`, `user_id`, `month_covered`, `year`, `tax_no`, `firs_tax_office`, `state_tax_filling_office`, `tax_station_code`, `suppliers_of_service`, `suppliers_of_goods`) VALUES
-(3, '8', NULL, NULL, '', '', '', '', '[]', '[]');
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -398,18 +445,11 @@ CREATE TABLE IF NOT EXISTS `wht_individual_archives` (
   `firs_tax_office` varchar(255) DEFAULT NULL,
   `state_tax_filling_office` varchar(255) DEFAULT NULL,
   `tax_station_code` varchar(255) DEFAULT NULL,
-  `suppliers_of_service` varchar(255) DEFAULT NULL,
-  `suppliers_of_goods` varchar(255) DEFAULT NULL,
+  `suppliers_of_service` longtext,
+  `suppliers_of_goods` longtext,
   `month_archived` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `wht_individual_archives`
---
-
-INSERT INTO `wht_individual_archives` (`id`, `user_id`, `month_covered`, `year`, `tax_no`, `firs_tax_office`, `state_tax_filling_office`, `tax_station_code`, `suppliers_of_service`, `suppliers_of_goods`, `month_archived`) VALUES
-(4, '8', NULL, NULL, '', '', '', '', '[]', '[]', ' ');
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

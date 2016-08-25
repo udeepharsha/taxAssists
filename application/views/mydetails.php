@@ -27,20 +27,20 @@
 <head>
 <!-- Basic Page Needs
 ================================================== -->
-<meta charset="utf-8"/>
+<meta charset="utf-8">
 <meta http-equiv="Cache-Control" content="private" />
 <meta http-equiv="Expires" content="86400000" />
 <meta http-equiv="Cache-Control" content="max-age=86400000" />
 <title>Vi-M taxassist</title>
 <!-- Favicon
     ============================================== -->
-<link rel="icon" href="images/favicon.ico"/>
+<link rel="icon" href="<?php echo base_url(); ?>assets/images/favicon.ico">
 <!-- Mobile Specific
 ================================================== -->
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <!-- CSS
 ================================================== -->
-<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/style.css"/>
+<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/style.css">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/scripts/rs-plugin/css/settings.css"/>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/colors/grayblue.css" id="colors"/>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/animate.css"/>
@@ -51,47 +51,19 @@
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/jquery-1.11.2.min.js" language="javascript"></script>
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/parse-1.3.1.min.js"></script>
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/common.js"></script>
+<script type="text/javascript" src="<?php echo base_url(); ?>assets/js/login_signup.js"></script>
+<script type="text/javascript" src="<?php echo base_url(); ?>assets/js/mydetails.js"></script>
 
-<!-- For Date Pick -->
-<link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/jquery-ui.css">
-<script src="<?php echo base_url(); ?>assets/scripts/jquery-ui.js"></script>
 <script type="text/javascript">
-   
-     $(function() {
-         $( "#from" ).datepicker();
-         $( "#to" ).datepicker();
-     });
+	loadMyDetails();
 </script>
-
 <!--[if lt IE 9]>
-     <script src="../../../html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<script src="../../../html5shim.googlecode.com/svn/trunk/html5.js"></script>
 <![endif]-->
 </head>
 <body>
 <div id="dialogs"></div>
 <div class="loader"><div class="ring"><div class="spin"></div></div></div>
-
-<form id="form_name" name="form_name" method="POST" action="#" onsubmit="return false;">
-     <input type="hidden" id="monthUnderReview" name="monthUnderReview" />
-     <input type="hidden" id="yearUnderReview" name="yearUnderReview" />
-     <input type="hidden" id="taxNo" name="taxNo" />
-     <input type="hidden" id="vatNo" name="vatNo" />
-     <input type="hidden" id="firsTaxOffice" name="firsTaxOffice" />
-     <input type="hidden" id="outputSalesIncome" name="outputSalesIncome" />
-     <input type="hidden" id="exemptedZero" name="exemptedZero" />
-     <input type="hidden" id="totalSuppliesVat" name="totalSuppliesVat" />
-     <input type="hidden" id="outputVat" name="outputVat" />
-     <input type="hidden" id="vatOnLocalSupplies" name="vatOnLocalSupplies" />
-     <input type="hidden" id="vatOnImportedGoods" name="vatOnImportedGoods" />
-     <input type="hidden" id="vatOnSubcontracted" name="vatOnSubcontracted" />
-     <input type="hidden" id="totalInputTaxClaimable" name="totalInputTaxClaimable" />
-     <input type="hidden" id="excessInputVat" name="excessInputVat" />
-     <input type="hidden" id="vatPayableForMonth" name="vatPayableForMonth" />
-     <input type="hidden" id="authorizedSignatory" name="authorizedSignatory" />
-     <input type="hidden" id="designation" name="designation" />
-     <input type="hidden" id="signature" name="signature" />
-     <input type="hidden" id="companyStampAndDate" name="companyStampAndDate" />
-</form>
 <!-- Header
 ================================================== -->
 <header id="header">
@@ -111,28 +83,29 @@
 	</div>
 
 	<div class="container">
-          <div class="three columns">
-               <div id="mobile-navigation">
-                    <a href="#menu" class="menu-trigger"><i class="icon-reorder"></i></a> <span class="search-trigger"><i class="icon-search"></i></span> </div>
-                    <div id="logo">
-                         <h1><a href="index.html"><img src="<?php echo base_url(); ?>assets/images/logo.png" /></a></h1>
-                    </div>
-               </div>
-               <div class="thirteen columns">
-                    <nav id="navigation" class="menu">
-                         <ul id="responsive">
-                              <li><a href="<?= base_url('home')?>" id="current">VAT</a> </li>
-                              <li><a href="<?= base_url('wht')?>">WHT</a></li>
-                              <li><a href="<?= base_url('paye')?>">PAYE</a></li>
-                              <li><a href="<?= base_url('home/feedBack')?>">Feedback</a></li>
-                              <li><a href="<?= base_url('home/myDetails')?>">My Details</a></li>
-                              <li>
-                                   <div class="login_signup_btn" id="loginClick" onclick="logOutIndex()">Logout</div>
-                              </li>
-                         </ul>
-                    </nav>
-               </div>
-          </div>
+     	<div class="three columns">
+     		<div id="mobile-navigation">
+     			<a href="#menu" class="menu-trigger"><i class="icon-reorder"></i></a> <span class="search-trigger"><i class="icon-search"></i></span>
+     		</div>
+     		<div id="logo">
+     			<h1><a href="index.html"><img src="<?php echo base_url(); ?>assets/images/logo.png" alt="Vi-m" /></a></h1>
+     		</div>
+     	</div>
+     	<div class="thirteen columns">
+     		<nav id="navigation" class="menu">
+     			<ul id="responsive">
+     				<li><a href="<?= base_url('home')?>">VAT</a> </li>
+                         <li><a href="<?= base_url('wht')?>">WHT</a></li>
+                         <li><a href="<?= base_url('paye')?>">PAYE</a></li>
+     				<li><a href="<?= base_url('home/feedBack')?>">Feedback</a></li>
+                         <li><a href="<?= base_url('home/myDetails')?>" id="current">My Details</a></li>
+     				<li>
+     					<div class="login_signup_btn" id="loginClick" onclick="logOutIndex()">Logout</div>
+     				</li>
+     			</ul>
+     		</nav>
+     	</div>
+     </div>
 </header>
 <!-- Header / End -->
 
@@ -143,17 +116,17 @@
      <div id="parallex-inner" class="parallex">
           <div class="container">
                <div class="eight columns"  data-animated="fadeInUp">
-                    <h1>VAT Spool Reports</h1>
+                    <h1>My App Registration Details</h1>
                     <br/>
                     <p>
-                    	Every business organisation (or taxpayer) is mandatorily required, within 6 months of commencement of business, to compute and remit VAT (at 5%) on all taxable goods and services supplied by the business. (Note that some goods and services are exempted from VAT as shown in the exempted goods & services field below). VAT is to be computed and filed (using the VAT returns form to which the layout below is tailored) before the 21st of every month following the month of transactions. For other personalized questions and one on one consultations on VAT or your taxes in general, please use the feedback page and we will respond very quickly.
+                    	Here goes all my registration details...!!!
                     </p>
                </div>
                <div class="eight columns">
                     <nav id="breadcrumbs">
                          <ul>
                               <li><a href="#">Home</a></li>
-                              <li><a href="#">Vat</a></li>
+                              <li><a href="#">My App Registration</a></li>
                               <li>Details</li>
                          </ul>
                     </nav>
@@ -161,72 +134,100 @@
           </div>
      </div>
 
+	<div class="container">
+     	<div class="siz-teen columns">
+     		<h3 class="headline">My App Registration Details</h3>
+     	</div>
+	</div>
+
+	<div class="container" id="appRegDetails">
+		<div class="eight columns mydetails_sec">
+     		Name of the Organization:
+			<input type="text" class="input-box1" id="namOfOrganizaion" />
+		</div>
+
+		<div class="eight columns mydetails_sec">
+			Type of Organization:<br/>
+               <select id="typeOfOrganization">
+                    <option value="Unincorporated">Unincorporated</option>
+                    <option value="Incorporated">Incorporated</option>
+               </select>
+		</div>
+
+		<div class="eight columns mydetails_sec">
+			Nature of Business Activity:
+			<input type="text" class="input-box1" id="natureOfBusinessActivity" />
+		</div>
+
+		<div class="eight columns mydetails_sec">
+			Business Address:
+			<input type="text" class="input-box1" id="businessAddress" />
+		</div>
+
+		<div class="eight columns mydetails_sec">
+			Contact Person:
+			<input type="text" class="input-box1" id="contactPerson" />
+		</div>
+
+		<div class="eight columns mydetails_sec">
+			Contact person's designation:
+			<input type="text" class="input-box1" id="designation" />
+		</div>
+
+		<div class="eight columns mydetails_sec">
+			Contact person's email address:
+			<input type="text" class="input-box1" id="userEmail" />
+		</div>
+
+		<div class="eight columns mydetails_sec">
+			Enter your password:
+			<input type="password" class="input-box1" id="userPassword" />
+		</div>
+     </div>
+
      <div class="container">
-          <!-- 1/3 -->
-          <div class="one-third column">
-               <a href="<?= base_url('home')?>">
-                    <div class="sec2">
-                         <h3 class="headline">Calculate</h3>
-                    </div>
-               </a>
-          </div>
-          <!-- 1/3 -->
-          <div class="one-third column">
-               <a href="<?= base_url('home/spoolReports')?>">
-                    <div class="sec1">
-                         <h3 class="headline">Spool Reports</h3>
-                    </div>
-               </a>
-          </div>
-          <!-- 1/3 -->
-          <div class="one-third column">
-               <a href="<?= base_url('home/assistMe')?>">
-                    <div class="sec2">
-                         <h3 class="headline">Assist Me</h3>
-                    </div>
-               </a>
+          <div class="twelve columns">
+               <div style="float:left;">
+	     			<button class="btn" onclick="saveDetails()">Save Details</button>
+	     		</div>
+
+	     		<div style="float:left; margin-left:20px; font-size:20px;" id="loadingSec1"></div>
           </div>
      </div>
 
-	<br/><br/>
+    <br/><br/>
 
-	<div class="container">
-		<div class="siz-teen columns">
-			<h3 class="headline">Preriod Covered:</h3>
-		</div>
-	</div>
+    <div class="container">
+     	<div class="twelve columns">
+     		<h4>Not registered for tax? Request assistance (request one or more of the following):</h4>
+     	</div>
+     	<div class="eight columns calculator_sec">
+     		<form id="form_name" name="form_name" method="POST" action="#" onsubmit="return false;">
+				<input type="hidden" id="hiddenValue" name="hiddenValue">
+				<input type="hidden" id="userEmail1" name="userEmail1">
+			</form>
 
-	<div class="container">
-		<div class="one-third columns">
-			<input type="text" class="input-box1" id="from" placeholder="From" />
-		</div>
-
-		<div class="one-third columns">
-			<input type="text" id="to" placeholder="To" />
-		</div>
-
-		<div class="one-third columns" style="margin-left:25px;">
-			<input type="submit" class="input-box1" value="Submit  " onclick="searchForVatReports()" />
-		</div>
-
-          <div class="one-third columns" id="generatingExcel" style="margin-left:25px; margin-top:6px; font-size:20px;">
-          </div>
-	</div>
-
-	<br/>
-
-	<div class="container" id="resultsSection">
-		<!-- <img src="images/loading.gif" style="width:35px; height:35px;"> -->
-          &nbsp;&nbsp;&nbsp; Search results will appear here...
-	</div>
-
-	<br/><br/>
-
-	<div class="container">
-     	<div class="six-teen columns">
-     		<h5>PLEASE NOTE: It is the responsibility of the taxpayers, who are users of Vi-M’s Tax Assist app to ensure that their taxes are paid and filed as and when due. Vi-M accepts no responsibility for failure or default in this regard.</h5>
+     		<input type="checkbox" id="check1" /> Register me with FIRS for Companies Income Tax <br/>
+    		<input type="checkbox"  id="check2" /> Register me with FIRS for Value Added Tax <br/>
+			<input type="checkbox"  id="check3" /> Register me with LIRS or my State of business residence for personal income taxes
      	</div>
 	</div>
+
+    <br/>
+
+     <div class="container">
+     	<div class="twelve columns">
+     		<div class="twelve columns">
+               <div style="float:left;">
+	     			<button class="btn" onclick="processNow()">Process Now</button>
+	     		</div>
+
+	     		<div style="float:left; margin-left:20px; font-size:20px;" id="loadingSec2"></div>
+          </div>
+     	</div>
+	</div>
+
+	<br/><br/>
 </div>
 <!-- Content Wrapper / End -->
 
@@ -358,7 +359,25 @@
      <!-- Container / End -->
 </div>
 
-<script type="text/javascript" src="<?php echo base_url(); ?>assets/js/vat_spool_reports.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.themepunch.plugins.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.themepunch.revolution.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.themepunch.showbizpro.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/appear.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.easing.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.tooltips.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.magnific-popup.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.superfish.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.twitter.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.flexslider.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.jpanelmenu.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.zflickrfeed.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.contact.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.isotope.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.easy-pie-chart.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/parallex.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/ss-gizmo.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/custom.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
 </body>
 </html>

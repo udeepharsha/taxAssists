@@ -27,7 +27,8 @@ class Home_model extends CI_Model {
         public function archiveForMonth($datas){
                 
               $this->db->from('vat_archives');
-              $this->db->where('user_id',$this->session->userdata('user_id'));
+              $this->db->where('user_id',$this->session->userdata('user_id') );
+              $this->db->where('month_archived', $datas['month_archived'] );
               $data = $this->db->get()->result();
               $data_length = count($data);
 
@@ -62,6 +63,33 @@ class Home_model extends CI_Model {
                 $this->db->where('id',$id);
                 $data = $this->db->get()->result();
                 return json_encode($data);
+        }
+
+        public function loadMyDetails(){
+              $this->db->from('users');
+              $this->db->where('id',$this->session->userdata('user_id'));
+              $data = $this->db->get()->result();
+              return json_encode($data);
+        }
+
+        public function loadOrganizationDetails(){
+              $this->db->from('organization');
+              $this->db->where('user_id',$this->session->userdata('user_id'));
+              $data = $this->db->get()->result();
+              return json_encode($data);
+        }
+
+        public function saveMyDetailsOrganization($datao , $datap){
+          $this->db->where('id',$this->session->userdata('user_id'));
+          $this->db->update('users', $datap);
+
+          $this->db->where('user_id',$this->session->userdata('user_id'));
+          echo $this->db->update('organization', $datao);
+        }
+
+        public function saveMyDetailsIndividual($datap){
+          $this->db->where('id',$this->session->userdata('user_id'));
+          $this->db->update('users', $datap);
         }
 
 

@@ -17,11 +17,17 @@ class Paye_model extends CI_Model {
         $data_length = count($data);
 
         if($data_length == 0){
-            echo $this->db->insert('paye_employee', $datau);
+            $this->db->insert('paye_employee', $datau);
+            echo $this->db->insert_id();
+
         }
         else{
             $this->db->where('user_id',$this->session->userdata('user_id'));
-            echo $this->db->update('paye_employee', $datau);
+            $this->db->update('paye_employee', $datau);
+
+            $this->db->from('paye_employee');
+            $this->db->where('user_id',$this->session->userdata('user_id'));
+            echo $this->db->get()->row('id');
         }   
     }
 
@@ -76,6 +82,7 @@ class Paye_model extends CI_Model {
     public function archiveForYear($datau){
         $this->db->from('paye_yearly_archives');
         $this->db->where('user_id',$this->session->userdata('user_id'));
+        $this->db->where('year',$datau['year']);
         $data = $this->db->get()->result();
         $data_length = count($data);
 
@@ -124,6 +131,20 @@ class Paye_model extends CI_Model {
         return $data;
     }
 
+    public function loadPayeDetailsYearlyIdentity($id){
+        $this->db->from('paye_yearly_archives');
+        $this->db->where('id',$id);
+        $data = $this->db->get()->result();
+        return $data;
+    }
+
+    public function loadEmployees(){
+        $this->db->from('paye_employee');
+        $this->db->where('user_id',$this->session->userdata('user_id'));
+        $data = $this->db->get()->result();
+        return $data;
+    }
+
     public function removeEmployee($datau){
         $this->db->where('user_id',$this->session->userdata('user_id'));
         echo $this->db->update('paye_employee', $datau);
@@ -132,6 +153,21 @@ class Paye_model extends CI_Model {
     public function saveEditedEmployee($datau){
         $this->db->where('user_id',$this->session->userdata('user_id'));
         echo $this->db->update('paye_employee', $datau);
+    }
+
+    public function loadPayeDetailsMonthly($id){
+        $this->db->from('paye_monthly_archives');
+        $this->db->where('id',$id);
+        $data = $this->db->get()->result();
+        return $data;
+    }
+
+    public function calculateCumulativeFiguresByEmployee($year){
+        $this->db->from('paye_monthly_archives');
+        $this->db->where('user_id',$this->session->userdata('user_id'));
+        $this->db->where('year',$year);
+        $data = $this->db->get()->result();
+        return $data;
     }
 
 	

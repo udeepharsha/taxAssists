@@ -5,34 +5,32 @@ var archivedDocument = "";
 var employeeNames = [];
 var employeeTINs = [];
 var employeeAddresses = [];
-var base_url = 'http://localhost/TaxAssists/';
-
 
 function loadEmployees(){
-	var PAYEEmployee = Parse.Object.extend("PAYEEmployee");
-	var query = new Parse.Query(PAYEEmployee);
-	query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-	query.first({
-		success: function(resultsObj) {
-			if(resultsObj != undefined){
-				var employeeDetails = resultsObj.get('employeeDetails');
 
-				var employeeDiv = "";
+	$.ajax({
+		url: 'loadEmployees',
+		type: 'POST',
+		success: function(data, status) {
+			var data = JSON.parse(data);
 
-				for (var i = 0; i < employeeDetails.length; i++) {
-					var name = employeeDetails[i].employeeName;
-					employeeDiv = employeeDiv + "<option value='"+name+"'>"+name+"</option>";
+			var employeeDetails = JSON.parse(data[0]['employee_details']);
 
-					employeeNames.push(employeeDetails[i].employeeName);
-					employeeTINs.push(employeeDetails[i].taxIdentificationNumber);
-					employeeAddresses.push(employeeDetails[i].employeeAddress);
-				}
+			var employeeDiv = "";
 
-				document.getElementById("employeeNameSet").innerHTML = "<select id='txt1'><option value='' selected disabled>-- Select Employee --</option>"+employeeDiv+"</select>";
+			employeeLength = employeeDetails.length;
+
+			for (var i = 0; i < employeeDetails.length; i++) {
+				var name = employeeDetails[i].employeeName;
+				employeeDiv = employeeDiv + "<option value='"+name+"'>"+name+"</option>";
+
+				employeeNames.push(employeeDetails[i].employeeName);
+				employeeTINs.push(employeeDetails[i].taxIdentificationNumber);
+				employeeAddresses.push(employeeDetails[i].employeeAddress);
 			}
-		},
-		error: function(error) {
-			// alert("Please check your internet connection!");
+
+			document.getElementById("employeeNameSet").innerHTML = "<select id='txt1'><option value='' selected disabled>-- Select Employee --</option>"+employeeDiv+"</select>";
+
 		}
 	});
 }
@@ -176,8 +174,6 @@ function loadPayeDetails(){
 				document.getElementById("stateBir").value = data[0]['state_bir'];
 				document.getElementById("taxStationCode").value = data[0]['tax_station_code'];
 
-
-
 				var loadArray = JSON.parse(data[0]['yearly_values']);
 
 				for (var i = 0; i < loadArray.length; i++) {
@@ -212,9 +208,7 @@ function loadPayeDetails(){
 		}
 
 	});
-
 }
-
 
 $(document).ready(function() {
 
@@ -260,251 +254,26 @@ $(document).ready(function() {
 
 });
 
-function saveDetails(){
-	// var month = document.getElementById("month").value;
-	// var year = document.getElementById("year").value;
-	// var taxNo = document.getElementById("taxNo").value;
-	// var taxId = document.getElementById("taxId").value;
-	// var stateBir = document.getElementById("stateBir").value;
-	// var taxStationCode = document.getElementById("taxStationCode").value;
-
-	// document.getElementById("loadingSec").innerHTML = '<img src="images/loading.gif" style="width:37px; height:37px;">';
-
-	// var PAYEYearly = Parse.Object.extend("PAYEYearly");
-	// var query = new Parse.Query(PAYEYearly);
-	// query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-	// query.first({
-	// 	success: function(resultsObj) {
-	// 		if(resultsObj){
-	// 			var PAYEYearly = Parse.Object.extend("PAYEYearly");
-	// 			var paye = new PAYEYearly();
-
-	// 			paye.set("objectId", resultsObj.id);
-	// 			// paye.set("month", month);
-	// 			paye.set("year", year);
-	// 			paye.set("taxNo", taxNo);
-	// 			paye.set("taxId", taxId);
-	// 			paye.set("stateBir", stateBir);
-	// 			paye.set("taxStationCode", taxStationCode);
-	// 			paye.set("yearlyValues", yearlyValues);
-
-	// 			paye.save(null, {
-	// 				success: function(paye) {
-	// 					alert("Your paye yearly calculation form is saved! If you think this is final version for month, please archive it. Only archived reports can be spooled later!");
-	// 					document.getElementById("loadingSec").innerHTML = '<div style="width:100%; height:6px;"></div> Successfully Saved!';
-						
-	// 					exportDataSave();
-	// 				},
-	// 				error: function(paye, error) {
-	// 					alert(error.message);
-	// 					document.getElementById("loadingSec").innerHTML = "";
-	// 				}
-	// 			});
-	// 		}
-	// 		else{
-	// 			var PAYEYearly = Parse.Object.extend("PAYEYearly");
-	// 			var paye = new PAYEYearly();
-
-	// 			paye.set("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-	// 			// paye.set("month", month);
-	// 			paye.set("year", year);
-	// 			paye.set("taxNo", taxNo);
-	// 			paye.set("taxId", taxId);
-	// 			paye.set("stateBir", stateBir);
-	// 			paye.set("taxStationCode", taxStationCode);
-	// 			paye.set("yearlyValues", yearlyValues);
-
-	// 			var acl = new Parse.ACL();
-	// 			acl.setPublicReadAccess(false);
-	// 			acl.setPublicWriteAccess(false);
-	// 			acl.setReadAccess(user, true);
-	// 			acl.setWriteAccess(user, true);
-	// 			paye.setACL(acl);
-
-	// 			paye.save(null, {
-	// 				success: function(paye) {
-	// 					alert("Your paye yearly calculation form is saved! If you think this is final version for month, please archive it!");
-	// 					document.getElementById("loadingSec").innerHTML = '<div style="width:100%; height:6px;"></div> Successfully Saved!';
-						
-	// 					exportDataSave();
-	// 				},
-	// 				error: function(paye, error) {
-	// 					alert(error.message);
-	// 					document.getElementById("loadingSec").innerHTML = "";
-	// 				}
-	// 			});
-	// 		}
-	// 	},
-	// 	error: function(error) {
-	// 		alert(error.message);
-	// 		document.getElementById("loadingSec").innerHTML = "";
-	// 	}
-	// });
-}
-
-function saveAfetrArchive(){
-	// var month = document.getElementById("month").value;
-	var year = document.getElementById("year").value;
-	var taxNo = document.getElementById("taxNo").value;
-	var taxId = document.getElementById("taxId").value;
-	var stateBir = document.getElementById("stateBir").value;
-	var taxStationCode = document.getElementById("taxStationCode").value;
-
-	document.getElementById("loadingSec").innerHTML = '<img src="images/loading.gif" style="width:37px; height:37px;">';
-
-	var PAYEYearly = Parse.Object.extend("PAYEYearly");
-	var query = new Parse.Query(PAYEYearly);
-	query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-	query.first({
-		success: function(resultsObj) {
-			if(resultsObj){
-				var PAYEYearly = Parse.Object.extend("PAYEYearly");
-				var paye = new PAYEYearly();
-
-				paye.set("objectId", resultsObj.id);
-				// paye.set("month", month);
-				paye.set("year", year);
-				paye.set("taxNo", taxNo);
-				paye.set("taxId", taxId);
-				paye.set("stateBir", stateBir);
-				paye.set("taxStationCode", taxStationCode);
-				paye.set("yearlyValues", yearlyValues);
-
-				paye.save(null, {
-					success: function(paye) {
-						//Success
-					},
-					error: function(paye, error) {
-						alert(error.message);
-						document.getElementById("loadingSec").innerHTML = "";
-					}
-				});
-			}
-			else{
-				var PAYEYearly = Parse.Object.extend("PAYEYearly");
-				var paye = new PAYEYearly();
-
-				paye.set("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-				// paye.set("month", month);
-				paye.set("year", year);
-				paye.set("taxNo", taxNo);
-				paye.set("taxId", taxId);
-				paye.set("stateBir", stateBir);
-				paye.set("taxStationCode", taxStationCode);
-				paye.set("yearlyValues", yearlyValues);
-
-				var acl = new Parse.ACL();
-				acl.setPublicReadAccess(false);
-				acl.setPublicWriteAccess(false);
-				acl.setReadAccess(user, true);
-				acl.setWriteAccess(user, true);
-				paye.setACL(acl);
-
-				paye.save(null, {
-					success: function(paye) {
-						//Success
-					},
-					error: function(paye, error) {
-						alert(error.message);
-						document.getElementById("loadingSec").innerHTML = "";
-					}
-				});
-			}
-		},
-		error: function(error) {
-			alert(error.message);
-			document.getElementById("loadingSec").innerHTML = "";
-		}
-	});
-}
-
 function archiveForYear(formData){
 
-		$.ajax({
-			url: 'archiveForYear',
-			type: 'POST',
-			data: formData,
-			cache: false,
-			contentType: false,
-			processData: false,
-			success: function(data, status) {
-				if(data == 1){
-					//saveAfetrArchive();
-					alert("Your paye calculation form is archived!");
-					document.getElementById("loadingSec").innerHTML = '<div style="width:100%; height:6px;"></div> Successfully Archived!</a>';
-					document.getElementById("loadingSec1").innerHTML = '<select id="archiveType" style="width:200px;"> <option value="Excel">Export As Excel</option> <option value="Html">Export As Html</option> </select> <br/> <button onclick="exportData()">Export</button> &nbsp;&nbsp;&nbsp; <button id="exportEmailBtn" onclick="exportDataEmail()">Email Archive</button>';
-				}
-				else{
-					document.getElementById("loadingSec").innerHTML = "";
-				}
+	$.ajax({
+		url: 'archiveForYear',
+		type: 'POST',
+		data: formData,
+		cache: false,
+		contentType: false,
+		processData: false,
+		success: function(data, status) {
+			if(data == 11){
+				alert("Your paye calculation form is archived!");
+				document.getElementById("loadingSec").innerHTML = '<div style="width:100%; height:6px;"></div> Successfully Archived!</a>';
+				document.getElementById("loadingSec1").innerHTML = '<select id="archiveType" style="width:200px;"> <option value="Excel">Export As Excel</option> <option value="Html">Export As Html</option> </select> <br/> <button onclick="exportData()">Export</button> &nbsp;&nbsp;&nbsp; <button id="exportEmailBtn" onclick="exportDataEmail()">Email Archive</button>';
 			}
-		});
-
-
-	// var month = document.getElementById("month").value;
-	// var year = document.getElementById("year").value;
-	// var taxNo = document.getElementById("taxNo").value;
-	// var taxId = document.getElementById("taxId").value;
-	// var stateBir = document.getElementById("stateBir").value;
-	// var taxStationCode = document.getElementById("taxStationCode").value;
-
-	// document.getElementById("loadingSec").innerHTML = '<img src="images/loading.gif" style="width:37px; height:37px;">';
-
-	// var PAYEYearlyArchives = Parse.Object.extend("PAYEYearlyArchives");
-	// var query = new Parse.Query(PAYEYearlyArchives);
-	// query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-	// query.equalTo("year", year);
-	// query.first({
-	// 	success: function(resultsObj) {
-	// 		console.log(resultsObj);
-
-	// 		if(resultsObj){
-	// 			resultsObj.destroy({
-	// 				success: function(resultsObj) {
-	// 					// alert("Removed existing archived file!");
-	// 				},
-	// 				error: function(resultsObj, error) {
-	// 				}
-	// 			});
-	// 		}
-
-	// 		var PAYEYearlyArchives = Parse.Object.extend("PAYEYearlyArchives");
-	// 		var payeArchives = new PAYEYearlyArchives();
-
-	// 		payeArchives.set("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-	// 		// payeArchives.set("month", month);
-	// 		payeArchives.set("year", year);
-	// 		payeArchives.set("taxNo", taxNo);
-	// 		payeArchives.set("taxId", taxId);
-	// 		payeArchives.set("stateBir", stateBir);
-	// 		payeArchives.set("taxStationCode", taxStationCode);
-	// 		payeArchives.set("yearlyValues", yearlyValues);
-
-	// 		var acl = new Parse.ACL();
-	// 		acl.setPublicReadAccess(false);
-	// 		acl.setPublicWriteAccess(false);
-	// 		acl.setReadAccess(user, true);
-	// 		acl.setWriteAccess(user, true);
-	// 		payeArchives.setACL(acl);
-
-	// 		payeArchives.save(null, {
-	// 			success: function(vatArchives) {
-	// 				saveAfetrArchive();
-	// 				alert("Your paye calculation form is archived!");
-	// 				document.getElementById("loadingSec").innerHTML = '<div style="width:100%; height:6px;"></div> Successfully Archived!</a>';
-	// 				document.getElementById("loadingSec1").innerHTML = '<select id="archiveType" style="width:200px;"> <option value="Excel">Export As Excel</option> <option value="Html">Export As Html</option> </select> <br/> <button onclick="exportData()">Export</button> &nbsp;&nbsp;&nbsp; <button id="exportEmailBtn" onclick="exportDataEmail()">Email Archive</button>';
-	// 			},
-	// 			error: function(vatArchives, error) {
-	// 				alert(error.message);
-	// 				document.getElementById("loadingSec").innerHTML = "";
-	// 			}
-	// 		});
-	// 	},
-	// 	error: function(error) {
-	// 		alert(error.message);
-	// 		document.getElementById("loadingSec").innerHTML = "";
-	// 	}
-	// });
+			else{
+				document.getElementById("loadingSec").innerHTML = "";
+			}
+		}
+	});
 }
 
 function exportDataEmail(){

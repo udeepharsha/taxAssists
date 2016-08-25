@@ -100,10 +100,10 @@
      					<li><a href="<?= base_url('home')?>" id="current">VAT</a> </li>
      					<li><a href="<?= base_url('wht')?>">WHT</a></li>
      					<li><a href="<?= base_url('paye')?>">PAYE</a></li>
-     					<li><a href="feedback.html">Feedback</a></li>
-     					<li><a href="mydetails.html">My Details</a></li>
+     					<li><a href="<?= base_url('home/feedBack')?>">Feedback</a></li>
+     					<li><a href="<?= base_url('home/myDetails')?>">My Details</a></li>
      					<li>
-     						<div class="login_signup_btn" id="loginClick" onclick="logOut()">Logout</div>
+     						<div class="login_signup_btn" id="loginClick" onclick="logOutIndex()">Logout</div>
      					</li>
      				</ul>
      			</nav>
@@ -674,6 +674,17 @@
 <script src="<?php echo base_url(); ?>assets/scripts/ss-gizmo.js"></script>
 <script src="<?php echo base_url(); ?>assets/scripts/custom.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
+
+<script type="text/javascript">
+	var year = '<?php if(count($vat_data) != 0){echo $vat_data[0]->year_under_review; } ?>';
+	var month = '<?php if(count($vat_data) != 0){echo $vat_data[0]->month_under_review; } ?>';
+	if(year != ''){
+		document.getElementById('yearUnderReview').value = year;
+	}
+	if(month != ''){
+		document.getElementById('monthUnderReview').value = month;
+	}
+</script>
 
 <!-- Popup CSS/JS -->
 <link rel="stylesheet" type="text/css" media="all" href="<?php echo base_url(); ?>assets/popup/style.css">

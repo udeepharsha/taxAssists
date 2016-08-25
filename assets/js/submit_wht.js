@@ -4,11 +4,8 @@ var serviceRowCount = 0;
 var goodsRowCount = 0;
 var isArchived = false;
 var archivedDocument = "";
-var base_url = 'http://localhost/TaxAssists/';
-
 
 $(document).ready(function() {
-
 
 	$('#submit_wht').on('submit', function(event){
 		event.preventDefault();
@@ -55,57 +52,6 @@ $(document).ready(function() {
 
 });
 
-function saveAfetrArchive(){
-	var monthCovered = document.getElementById("monthCovered").value;
-	var year = document.getElementById("year").value;
-	var taxNo = document.getElementById("taxNo").value;
-	var firsTaxOffice = document.getElementById("firsTaxOffice").value;
-	var stateTaxFillingOffice = document.getElementById("stateTaxFillingOffice").value;
-	var taxStationCode = document.getElementById("taxStationCode").value;
-
-	document.getElementById("loadingSec").innerHTML = '<img src="images/loading.gif" style="width:37px; height:37px;">';
-
-	var WHT = Parse.Object.extend("WHT");
-	var query = new Parse.Query(WHT);
-	query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-	query.first({
-		success: function(resultsObj) {
-			var WHT = Parse.Object.extend("WHT");
-			var wht = new WHT();
-
-			wht.set("objectId", resultsObj.id);
-			wht.set("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-			wht.set("monthCovered", monthCovered);
-			wht.set("year", year);
-			wht.set("taxNo", taxNo);
-			wht.set("firsTaxOffice", firsTaxOffice);
-			wht.set("stateTaxFillingOffice", stateTaxFillingOffice);
-			wht.set("taxStationCode", taxStationCode);
-			wht.set("suppliersOfService", suppliersOfService);
-			wht.set("suppliersOfGoods", suppliersOfGoods);
-
-			var acl = new Parse.ACL();
-			acl.setPublicReadAccess(false);
-			acl.setPublicWriteAccess(false);
-			acl.setReadAccess(user, true);
-			acl.setWriteAccess(user, true);
-			wht.setACL(acl);
-
-			wht.save(null, {
-				success: function(wht) {
-					//Success
-				},
-				error: function(wht, error) {
-					alert(error.message);
-				}
-			});
-		},
-		error: function(error) {
-			alert(error.message);
-		}
-	});
-}
-
 function archiveForMonth(formData){
 
 	document.getElementById("loadingSec").innerHTML = '<img src=" '+base_url+'assets/images/loading.gif" style="width:37px; height:37px;">';
@@ -129,73 +75,6 @@ function archiveForMonth(formData){
 		}
 	});
 
-}
-
-function archiveForMonth2(){
-	var monthCovered = document.getElementById("monthCovered").value;
-	var year = document.getElementById("year").value;
-	var taxNo = document.getElementById("taxNo").value;
-	var firsTaxOffice = document.getElementById("firsTaxOffice").value;
-	var stateTaxFillingOffice = document.getElementById("stateTaxFillingOffice").value;
-	var taxStationCode = document.getElementById("taxStationCode").value;
-
-	document.getElementById("loadingSec").innerHTML = '<img src="images/loading.gif" style="width:37px; height:37px;">';
-
-	var WHTArchives = Parse.Object.extend("WHTArchives");
-	var query = new Parse.Query(WHTArchives);
-	query.equalTo("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-	query.equalTo("monthArchived", monthCovered+" "+year);
-	query.first({
-		success: function(resultsObj) {
-			if(resultsObj){
-				resultsObj.destroy({
-					success: function(resultsObj) {
-						// alert("Removed existing archived file!");
-					},
-					error: function(resultsObj, error) {
-					}
-				});
-			}
-
-			var WHTArchives = Parse.Object.extend("WHTArchives");
-			var whtArchives = new WHTArchives();
-
-			whtArchives.set("userId", { "__type": "Pointer", "className": "_User", "objectId": user.id });
-			whtArchives.set("monthCovered", monthCovered);
-			whtArchives.set("year", year);
-			whtArchives.set("taxNo", taxNo);
-			whtArchives.set("firsTaxOffice", firsTaxOffice);
-			whtArchives.set("stateTaxFillingOffice", stateTaxFillingOffice);
-			whtArchives.set("taxStationCode", taxStationCode);
-			whtArchives.set("suppliersOfService", suppliersOfService);
-			whtArchives.set("suppliersOfGoods", suppliersOfGoods);
-			whtArchives.set("monthArchived", monthCovered+" "+year);
-
-			var acl = new Parse.ACL();
-			acl.setPublicReadAccess(false);
-			acl.setPublicWriteAccess(false);
-			acl.setReadAccess(user, true);
-			acl.setWriteAccess(user, true);
-			whtArchives.setACL(acl);
-
-			whtArchives.save(null, {
-				success: function(vatArchives) {
-					saveAfetrArchive();
-					alert("Your wht calculation form is archived!");
-					document.getElementById("loadingSec").innerHTML = '<div style="width:100%; height:6px;"></div> Successfully Archived!</a>';
-					document.getElementById("loadingSec1").innerHTML = '<select id="archiveType" style="width:200px;"> <option value="Excel">Export As Excel</option> <option value="Html">Export As Html</option> </select> <br/> <button onclick="exportData()">Export</button> &nbsp;&nbsp;&nbsp; <button id="exportEmailBtn" onclick="exportDataEmail()">Email Archive</button>';
-				},
-				error: function(vatArchives, error) {
-					alert(error.message);
-					document.getElementById("loadingSec").innerHTML = "";
-				}
-			});
-		},
-		error: function(error) {
-			alert(error.message);
-			document.getElementById("loadingSec").innerHTML = "";
-		}
-	});
 }
 
 function loadWhtDetails(){

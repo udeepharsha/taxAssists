@@ -37,10 +37,9 @@
 <link rel="icon" href="<?php echo base_url(); ?>assets/images/favicon.ico"/>
 <!-- Mobile Specific
 ================================================== -->
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 <!-- CSS
 ================================================== -->
-<link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bPopup.css"/>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/style.css"/>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/scripts/rs-plugin/css/settings.css"/>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/colors/grayblue.css" id="colors"/>
@@ -49,61 +48,42 @@
 <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/my.css"/>
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/jquery-ui.css">
 
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/jquery-1.11.2.min.js" language="javascript"></script>
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/parse-1.3.1.min.js"></script>
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/common.js"></script>
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/js/login_signup.js"></script>
 
+
 <script type="text/javascript">
+    // $(document).ready(function(){
+    //   if(isLoggedIn()){
+    //     document.getElementById('username').innerHTML =  currentUser.get('username')+"!" ;
+    //   }
+    //   else{
+    //     window.location = "index.html";
+    //   }
+    // });
 
-	function processNow(){
-		var valString = "";
-
-		var check1 = document.getElementById("check1").checked;
-		var check2 = document.getElementById("check2").checked;
-		var check3 = document.getElementById("check3").checked;
-		var check4 = document.getElementById("check4").checked;
-
-		if(!check1 && !check2 && !check3 && !check4){
-			alert("Please check at least one checkbox!");
-			return;
-		}
-
-		if(check1){
-			valString = valString + "File my VAT and deliver FIRS' VAT receipt#";
-		}
-
-		if(check2){
-			valString = valString + "Register my organization for VAT#";
-		}
-
-		if(check3){
-			valString = valString + "Deliver personalized turning on VAT for my organizatin.#";
-		}
-
-		if(check4){
-			valString = valString + "Assist me compute my VAT";
-		}
-
-		document.getElementById("hiddenValue").value = valString;
-		document.getElementById("type").value = "VAT";
-
-		console.log(document.getElementById("hiddenValue").value);
-
-		$.ajax({
-			type: 'POST',
-			url: 'assistMeProcess',
-			data: $("#form_name").serialize(),
-			success: function(result) {
-				alert("Your message is sent!");
-				window.location.reload();
-			}
-		});
-	}
+    function sendFeedback1(){
+      if(document.getElementById("form1_content").value.trim() ==''){
+        alert("Please fill in feedback!");
+		    return;
+      }
+      
+      $.ajax({
+        type: 'POST',
+        url: 'sendFeedback',
+        data: $("#form_name1").serialize(),
+          success: function(result) {
+            alert("Your feedback is sent!");
+		        window.location.reload();
+          }
+      });
+    }
 </script>
-
 <!--[if lt IE 9]>
-     <script src="../../../html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<script src="../../../html5shim.googlecode.com/svn/trunk/html5.js"></script>
 <![endif]-->
 </head>
 <body>
@@ -120,7 +100,7 @@
 			<div class="eight columns">
 				  <ul class="social-icons right">
             <li><a class="facebook" href="https://www.facebook.com/vimprofessionalsolutions/" target="_blank"><i class="icon-facebook"></i></a></li>
-            <li><a class="twitter" href="https://twitter.com/nigeriantaxlady" target="_blank"><i class="icon-twitter" target="_blank"></i></a></li>
+            <li><a class="twitter" href="https://twitter.com/nigeriantaxlady" target="_blank"><i class="icon-twitter"></i></a></li>
             <li><a class="linkedin" href="https://www.linkedin.com/pub/vi-m-professional-solutions/b1/214/619" target="_blank"><i class="icon-linkedin"></i></a></li>
           </ul>
 			</div>
@@ -139,10 +119,10 @@
      	<div class="thirteen columns">
      		<nav id="navigation" class="menu">
      			<ul id="responsive">
-     				<li><a href="<?= base_url('home')?>" id="current">VAT</a> </li>
+     				<li><a href="<?= base_url('home')?>">VAT</a> </li>
             <li><a href="<?= base_url('wht')?>">WHT</a></li>
             <li><a href="<?= base_url('paye')?>">PAYE</a></li>
-     				<li><a href="<?= base_url('home/feedBack')?>">Feedback</a></li>
+     				<li><a href="<?= base_url('home/feedBack')?>" id="current">Feedback</a></li>
             <li><a href="<?= base_url('home/myDetails')?>">My Details</a></li>
      				<li>
      					<div class="login_signup_btn" id="loginClick" onclick="logOutIndex()">Logout</div>
@@ -150,162 +130,60 @@
      			</ul>
      		</nav>
      	</div>
-	</div>
+     </div>
 </header>
 <!-- Header / End -->
+
 
 <!-- Content Wrapper
 ================================================== -->
 <div id="content-wrapper">
-	<div id="loginPopup" style="display:none;" class="popup">
-		<div>
-			<span class="logo" style="font-size:25px;">Value Added Tax (VAT) Requests (Fees Only)</span>
-		</div>
-
-		<div class="ratedItem">***All fees below are exclusive of VAT @5% and minimal re-imbursable transportation costs</div>
-
-		<br/>
-		<div class="ratedItem">
-			1.] Remittance of VAT using the prescribed VAT returns form and collection of FIRS' VAT receipt
-
-			--
-
-			<b>5,000 for every N1m band of turnover</b>
-		</div>
-
-		<div class="ratedItem">
-			2.] Registration for VAT
-
-			--
-
-			<b>20,000</b>
-		</div>
-
-		<div class="ratedItem">
-			3.] Customised training
-
-			--
-
-			<b>To be agreed</b>
-		</div>
-
-		<div class="ratedItem">
-			4.] Personalised VAT computations for client
-
-			--
-
-			<b>To be agreed</b>
-		</div>
-	</div>
-
-	<div id="parallex-inner" class="parallex">
-		<div class="container">
-			<div class="eight columns"  data-animated="fadeInUp">
-				<h1>VAT Assist Me</h1>
-				<br/>
-				<p>
-					Every business organisation (or taxpayer) is mandatorily required, within 6 months of commencement of business, to compute and remit VAT (at 5%) on all taxable goods and services supplied by the business. (Note that some goods and services are exempted from VAT as shown in the exempted goods & services field below). VAT is to be computed and filed (using the VAT returns form to which the layout below is tailored) before the 21st of every month following the month of transactions. For other personalized questions and one on one consultations on VAT or your taxes in general, please use the feedback page and we will respond very quickly.
-				</p>
-			</div>
-			<div class="eight columns">
-				<nav id="breadcrumbs">
-					<ul>
-						<li><a href="#">Home</a></li>
-						<li><a href="#">Vat</a></li>
-						<li>Details</li>
-					</ul>
-				</nav>
-			</div>
-		</div>
-	</div>
-
-  <div class="container">
-  	<!-- 1/3 -->
-    <div class="one-third column">
-      <a href="<?= base_url('home')?>">
-        <div class="sec2">
-         <h3 class="headline">Calculate</h3>
-        </div>
-     </a>
-    </div>
-    <!-- 1/3 -->
-    <div class="one-third column">
-     <a href="<?= base_url('home/spoolReports')?>">
-        <div class="sec2">
-         <h3 class="headline">Spool Reports</h3>
-       </div>
-     </a>
-    </div>
-    <!-- 1/3 -->
-    <div class="one-third column">
-      <a href="<?= base_url('home/assistMe')?>">
-        <div class="sec1">
-         <h3 class="headline">Assist Me</h3>
-        </div>
-     </a>
-    </div>
-	</div>
-
-	<br/><br/>
+     <div id="parallex-inner" class="parallex">
+          <div class="container">
+               <div class="eight columns"  data-animated="fadeInUp">
+                    <h1>Feedback Form</h1>
+                    <br/>
+                    <p>
+                    	We are here to hear from you!
+                    </p>
+               </div>
+               <div class="eight columns">
+                    <nav id="breadcrumbs">
+                         <ul>
+                              <li><a href="#">Home</a></li>
+                              <li><a href="#">Feedback Form</a></li>
+                              <li>Details</li>
+                         </ul>
+                    </nav>
+               </div>
+          </div>
+     </div>
 
 	<div class="container">
-		<div class="siz-teen columns">
-			<h3 class="headline">
-				Please select one or more of the areas shown below where you need Vi-M to assist you.
-				(Note that charges apply on such assistance). For personalized questions or one-on-one consultations on your tax concerns generally, please use the feedback page.   
-			</h3>
-		</div>
-	</div>
-
-	<br/>
-
-	<div class="container">
-		<div class="eight columns calculator_sec">
-			<form id="form_name" name="form_name" method="POST">
-				<input type="hidden" id="hiddenValue" name="hiddenValue">
-        <input type="hidden" id="userEmail" name="userEmail">
-				<input type="hidden" id="type" name="type">
-			</form>
-
-			<input type="checkbox" id="check1" name="check1" />
-			File my VAT returns using my Tax Assist calculations, remit the VAT amount, collect and deliver FIRS' VAT receipt.
-
-			<br/><br/>
-
-			<input type="checkbox" id="check2" name="check2" />
-			Register my organization for VAT
-			
-			<br/><br/>
-
-			<input type="checkbox" id="check3" name="check3" />
-			Deliver personalized training on VAT for my organization.
-
-			<br/><br/>
-
-			<input type="checkbox" id="check4" name="check4" />
-			Assist me compute my VAT. I cannot do so by myself on this platform.
-		</div>
-	</div>
-
-	<br/>
-
-	<div class="container">
-		<div class="eight columns">
-			<button class="btn" onclick="processNow()">Process Now</button>
-
-			<a href="#loginPopup" class="modalbox btn" id="backLoginClick2">View Pricing Details</a>
-		</div>
-	</div>
-
-	<br/><br/>
-
-	<div class="container">
-     	<div class="six-teen columns">
-     		<h5>
-          PLEASE NOTE: It is the responsibility of the taxpayers, who are users of Vi-M’s Tax Assist app to ensure that their taxes are paid and filed as and when due. Vi-M accepts no responsibility for failure or default in this regard.
-        </h5>
+     	<div class="siz-teen columns">
+     		<h3 class="headline">Your feedback, personalized questions and one on one requests for help/clarifications are important to us. Please send them to us here and we will respond very quickly!</h3>
      	</div>
 	</div>
+
+	<form id="form_name1" name="form_name1" method="POST">
+    <input type="hidden" name="userEmail" id="userEmail" />
+		<div class="container">
+			<div class="twelve columns calculator_sec">
+				Comments
+				<textarea style="width:100%; height:200px;" name="form1_content" id="form1_content"></textarea>
+			</div>
+		</div>
+	</form>
+
+	<br/>
+	
+  	<div class="container">
+       <div class="eight columns">
+            <button class="btn" onclick="sendFeedback1()">Send</button>
+       </div>
+  	</div>
+  
+    <br/>
 </div>
 <!-- Content Wrapper / End -->
 
@@ -427,7 +305,7 @@
      <div class="container">
           <div class="eight columns">© Copyright 2016 <a href="index.html">Vi-M Professional Solutions</a>. All Rights Reserved.</div>
           <div class="eight columns">
-              <ul class="social-icons-footer">
+               <ul class="social-icons-footer">
                 <li><a href="https://www.facebook.com/vimprofessionalsolutions/" target="_blank" class="tooltip top" title="Facebook"><i class="icon-facebook"></i></a></li>
                 <li><a href="https://twitter.com/nigeriantaxlady" target="_blank" class="tooltip top" title="Twitter"><i class="icon-twitter"></i></a></li>
                 <li><a href="https://www.linkedin.com/pub/vi-m-professional-solutions/b1/214/619" target="_blank" class="tooltip top" title="Linkedin"><i class="icon-linkedin"></i></a></li>
@@ -437,24 +315,24 @@
      <!-- Container / End -->
 </div>
 
-<!-- Footer Bottom / Start -->
-<script type="text/javascript" src="<?php echo base_url(); ?>assets/js/vat_spool_reports.js"></script>
-<link rel="stylesheet" type="text/css" media="all" href="<?php echo base_url(); ?>assets/popup/style.css">
-<link rel="stylesheet" type="text/css" media="all" href="<?php echo base_url(); ?>assets/popup/fancybox/jquery.fancybox.css">
-<script type="text/javascript" src="<?php echo base_url(); ?>assets/popup/fancybox/jquery.fancybox.js?v=2.0.6"></script> 
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.themepunch.plugins.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.themepunch.revolution.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.themepunch.showbizpro.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/appear.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.easing.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.tooltips.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.magnific-popup.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.superfish.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.flexslider.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.jpanelmenu.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.zflickrfeed.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.contact.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.isotope.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/jquery.easy-pie-chart.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/parallex.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/ss-gizmo.js"></script>
+<script src="<?php echo base_url(); ?>assets/scripts/custom.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/jquery-ui.js"></script>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-         $(".modalbox").fancybox({
-             'transitionIn': 'fade',
-              'transitionOut': 'fade',
-              'speedIn': 600,
-              'speedOut': 200,
-              'overlayShow': true,
-              margin: [0, 60, 50, 60] // top, right, bottom, left
-         });
-     });   
-</script>
 </body>
 </html>

@@ -97,7 +97,8 @@ $(document).ready(function() {
 					contentType: false,
 					processData: false,
 					success: function(data, status) {
-						alert(data);
+						alert("Registration success!!.confim your email now.");
+						window.location.reload();
 					}
 				});
 			}
@@ -177,7 +178,8 @@ $(document).ready(function() {
 					contentType: false,
 					processData: false,
 					success: function(data, status) {
-						alert(data);
+						alert("Registration success!!.confim your email now.");
+						window.location.reload();
 					}
 				});
 			}
@@ -231,45 +233,6 @@ function checkPassStrength(pass) {
         return "weak";
 
     return "very weak";
-}
-
-function loginSuccess(){
-	var loginEmail = document.getElementById("loginEmail").value;
-	var password = document.getElementById("upass").value;
-
-	console.log(loginEmail + "  " + password);
-
-	if(loginEmail == "" | loginEmail == null){
-		alert("Email is missing!");
-		return false;
-	}
-
-	if(password == "" || password == null){
-		alert("Password is missing!");
-		return false;
-	}
-
-	var username = loginEmail.split("@")[0];
-
-	document.getElementById("loginButton").innerHTML = "Please Wait..";
-
-	Parse.User.logIn(username, password, {
-		success: function(user) {
-			if(user.get("emailVerified")){
-				// alert("Login success -- "+user.get('username'));
-				window.location = "vat.html";
-			}
-			else{
-				alert("Please verify your email address before you login!");
-				Parse.User.logOut();
-				window.location = "index.html";
-			}
-		},
-		error: function(user, error) {
-			alert("Login failed, Please check your username & password!");
-			window.location = "index.html";
-		}
-	});
 }
 
 function createEmptyVat(user){

@@ -2,7 +2,7 @@ var start;
 var start_num = 0;
 var proceed = [];
 var proceedNumber = [];
-var base_url = 'http://localhost/TaxAssists/';
+var base_url = 'http://localhost/Taxassists/';
 
 function preload(arrayOfImages) {
     $(arrayOfImages).each(function(){
@@ -53,6 +53,17 @@ function checkIfContinue(){
 function logOut(){
     Parse.User.logOut();
     window.location = "index.html";
+}
+
+function logOutIndex(){
+    var logouturl = base_url+'User/logout';
+    $.ajax({
+        url: logouturl,
+        type: 'POST',
+        success: function(data, status) {
+            window.location.href = base_url;
+        }
+    });
 }
 
 function isLoggedIn(){

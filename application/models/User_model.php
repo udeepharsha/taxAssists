@@ -222,21 +222,21 @@ class User_model extends CI_Model {
 	}
 
 	public function send_verification_email($email , $insert_id , $hash_random){
-		$from_email = "music@elegancetechnology.net";
+		$from_email = "udeepharsha@gmail.com";
 
 		$to_email = $email;
 
-		$url = "http://music.elegancetechnology.net/user/verify?email=".$email."&hash=".$hash_random;
+		$url = "http://www.vi-mtaxassist.com/user/verify?email=".$email."&hash=".$hash_random;
 		$msg  = "From: $from_email\n\r";
 		$msg .= "Verification Email\n\r";
-		$msg .= "Click the following link to verify your music account\n\r";
+		$msg .= "Click the following link to verify your TaxAssist account\n\r";
 		$msg .= "$url\n\r";
 		$msg .= "\r\n\r\n";
 		$msg .= "Thanks\r\n";
-		$msg .= "MusicHub Team\r\n";
+		$msg .= "TaxAssist Team\r\n";
 
 		$this->load->library('email'); 
-		$this->email->from($from_email, 'MusicHub');
+		$this->email->from($from_email, 'TaxAssist');
 
 		$this->email->to($to_email);
 		$this->email->subject('Verification Email');

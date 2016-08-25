@@ -2,12 +2,10 @@ var x = 0;
 var notCompleted = true;
 var isArchived = false;
 var archivedDocument = "";
-var base_url = 'http://localhost/TaxAssists/';
 
 $(document).ready(function() {
 
 	changeValues1();
-
 
 	$('#submit_vat').on('submit', function(event){
 		event.preventDefault();
